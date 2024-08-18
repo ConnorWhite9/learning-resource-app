@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker
 from server.db.config import settings  # Assuming settings are loaded from a config file
 
+#URL from config file
 DATABASE_URL = settings.DATABASE_URL
 
 # Create SQLAlchemy engine
