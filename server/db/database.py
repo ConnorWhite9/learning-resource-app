@@ -12,7 +12,7 @@ engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create a Base class for declarative models
-Base: DeclarativeMeta = declarative_base()
+Base = declarative_base()
 
 # Dependency to get the database session
 def get_db():
