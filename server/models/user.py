@@ -10,3 +10,14 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "email": "abdulazeez@x.com",
+                "password": "weakpassword"
+            }
+        }
+
+    tokens = relationship("Token", back_populates="owner")
+    
