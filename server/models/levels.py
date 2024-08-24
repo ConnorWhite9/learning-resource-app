@@ -4,9 +4,13 @@ from server.db.database import Base
 
 
 #Create models for user information on different language paths
-class Python:
-    __tablename__ = "python"
+class Course:
+    __tablename__ = "courses"
 
+    level = Column(Integer)
+    name = Column(String, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
 
 
     owner = relationship("User", back_populates="tokens")
+

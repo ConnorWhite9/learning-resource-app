@@ -20,5 +20,5 @@ class User(Base):
         }
 
     tokens = relationship("Token", back_populates="owner")
-    levels = relationship("Python", back_populates="owner")
+    courses = relationship("Course", back_populates="owner")
     
