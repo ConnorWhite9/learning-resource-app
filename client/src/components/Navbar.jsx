@@ -4,8 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 function Navbar() {
   const location = useLocation();
   return (
-    <div className="w-screen flex justify-center items-center h-16">
-      <ul className="flex list-none p-0 m-0 space-x-8">
+    <div className="w-screen flex justify-center items-center h-16 bg-black">
+      <ul className="flex list-none p-0 m-0 space-x-8 text-white">
         <li>
           <Link
             to="/"
@@ -13,7 +13,7 @@ function Navbar() {
           >
             Home
             <span
-              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-black transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
                 location.pathname === "/" ? "scale-x-100" : ""
               }`}
             />
@@ -26,7 +26,7 @@ function Navbar() {
           >
             Courses
             <span
-              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-black transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
                 location.pathname === "/courses" ? "scale-x-100" : ""
               }`}
             />
@@ -39,7 +39,7 @@ function Navbar() {
           >
             About Us
             <span
-              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-black transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
                 location.pathname === "/aboutus" ? "scale-x-100" : ""
               }`}
             />
@@ -52,7 +52,7 @@ function Navbar() {
           >
             Get Started
             <span
-              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-black transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
                 location.pathname === "/register" ? "scale-x-100" : ""
               }`}
             />
@@ -65,7 +65,7 @@ function Navbar() {
           >
             Login
             <span
-              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-black transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+              className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
                 location.pathname === "/login" ? "scale-x-100" : ""
               }`}
             />
