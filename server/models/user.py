@@ -21,4 +21,5 @@ class User(Base):
 
     tokens = relationship("Token", back_populates="owner")
     courses = relationship("Course", back_populates="owner")
-    
+    quizs = relationship("Quiz", back_populates="owner")
+    grades = relationship("Grade", back_populates="owner")
