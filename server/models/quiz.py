@@ -6,8 +6,8 @@ from server.db.database import Base
 class Quiz:
     __tablename__="quizs"
     id = Column(Integer, primary_key=True)
-    course = Column(String)
-    level = Column(Integer)
+    course = Column(String, index=True)
+    level = Column(Integer, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
     complete = Column(Boolean, default=False) 
 
