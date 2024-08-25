@@ -1,17 +1,15 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-
+from ..crud.course import get_courses
 
 from .limiter import limiter
 
 router = APIRouter(
-    prefix="/user",
+    prefix="/course",
 )
 
-
-@router.post("/get_user")
+@router.get("/course")
 @limiter.limit("2/second")
-def get_user(request: Request, id: int):
-    return "Hello"
-
+def catalog():
+    get_courses()

@@ -9,7 +9,9 @@ def get_quiz(db: Session, level: int, course: str ):
         quiz = db.query(models.Quiz).filter(
             models.Quiz.level == level,
             models.Quiz.course == course
-        )
+        ).first()
         return quiz
     except:
         return ValueError
+
+
