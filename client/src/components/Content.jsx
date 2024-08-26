@@ -2,7 +2,7 @@ import React from "react";
 
 function Content() {
   return (
-    <div className="flex justify-center items-center h-[500px]">
+    <div className="flex justify-center items-center h-[500px] font-custom">
       <div className="flex justify-center items-center w-[90%]">
         <section className="text-white flex-1 flex flex-col justify-center items-center">
           <div>

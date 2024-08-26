@@ -2,7 +2,7 @@ import React from "react";
 
 function Features() {
   return (
-    <section className="flex text-white h-[248px] items-center justify-center mb-8">
+    <section className="flex text-white h-[248px] items-center justify-center mb-8 font-custom">
       <div className="flex items-center w-[90%]">
         <div className="flex flex-col flex-1 items-center">
           <div className="w-[70%]">
