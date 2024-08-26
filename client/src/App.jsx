@@ -5,10 +5,11 @@ import Courses from "./pages/Courses";
 import GetStarted from "./pages/GetStarted";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="grid grid-rows-[auto_1fr] w-screen h-screen">
+    <div className="grid grid-rows-[auto_1fr_auto] w-screen h-screen">
       <Router>
         <Navbar />
         <Routes>
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
         </Routes>
+        <Footer />
       </Router>
     </div>
   );
