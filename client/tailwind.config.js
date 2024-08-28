@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         custom: ["Open Sans", "sans-serif"],
+        sans: ["Josefin Sans", "sans-serif"],
       },
     },
   },
