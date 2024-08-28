@@ -21,7 +21,7 @@ function Features() {
           <div className="w-[70%]">
             <div className="flex flex-row items-center">
               <img
-                src="./masterybar.png"
+                src="./masteryicon.png"
                 alt="mastery bar"
                 className="w-[40px]"
               />
