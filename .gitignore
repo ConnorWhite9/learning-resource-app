@@ -3,3 +3,4 @@
 
 server/db/config.py
 server/todo.txt
+.env
