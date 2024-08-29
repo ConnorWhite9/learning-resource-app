@@ -1,12 +1,14 @@
 from jose import jwt, JWTError
-import timedelta
-import datetime
+from server.db.database import get_db
+from datetime import timedelta, datetime
 import os
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
+REFRESH_TOKEN_EXPIRY = os.getenv("REFRESH_TOKEN_EXPIRY")
+ACCESS_TOKEN_EXPIRY
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta):
+def create_access_token(username: str, user_id: int, expires_delta: timedelta = None):
     encode = {'sub': username, 'id': user_id}
     expires = datetime.utcnow() + expires_delta
     encode.update({'exp': expires})
@@ -24,3 +26,13 @@ def decode_access_token(token):
         return {'username': username, 'id': user_id}
     except JWTError:
         return ValueError
+    
+
+def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):
+    
+    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRY)
+    encode = {"sub": username, 'id': user_id}
+    encode.update({'exp': expire})
+
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+    
