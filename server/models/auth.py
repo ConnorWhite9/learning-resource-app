@@ -7,11 +7,10 @@ from server.db.database import Base
 
 class Token(Base):
     __tablename__ = "tokens"
-    id = Column(Integer, primary_key=True, index=True)
     token = Column(String, unique=True, index=True )
     type = Column(String) 
     expiry = Column(DateTime)
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
 
     owner = relationship("User", back_populates="tokens")
 

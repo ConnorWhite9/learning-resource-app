@@ -21,4 +21,9 @@ def login_for_access_token(username: str, password: str):
     token = access_token_service(username, password)
     return ({'access_token': token, 'token_type': 'bearer'})
 
-    
+
+@router.post("/refresh")
+@limiter.limit("5/second")
+def refresh(token):
+    return
+
