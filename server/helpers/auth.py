@@ -34,9 +34,8 @@ def create_refresh_token(username: str, user_id: int, expires_delta: timedelta =
     expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRY)
     encode = {"sub": username, 'id': user_id}
     encode.update({'exp': expire})
-    refresh_token = models.Token(token=refresh_token, type="refresh", expiry=expire, user_id=user_id )
 
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM), expire
     
 def verify_token(token: str, credentials_exception):
     try:
