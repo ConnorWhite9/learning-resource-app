@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 import datetime
 from passlib.context import CryptContext
+from fastapi import Depends
+from server.db.database import get_db
 from bcrypt import bcrypt_context
 from . import models, schemas
 
@@ -36,3 +38,11 @@ async def authenticate_user(db: Session, username: str, password: str):
         return False
     return user
 
+def isBlacklisted(token: str, db: Session = Depends(get_db)):
+    try: 
+        check = db.query(models.blacklistedToken).filter(models.blacklistedToken.token == token).first()
+        if check:
+            return False
+        return True
+    except:
+        raise ValueError

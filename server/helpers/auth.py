@@ -1,6 +1,12 @@
 from jose import jwt, JWTError
 from server.db.database import get_db
 from datetime import timedelta, datetime
+from sqlalchemy.orm import Session
+from passlib.context import CryptContext
+from typing import Annotated
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from server.db.database import get_db
 import os
 from . import models, schemas
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -52,3 +58,4 @@ def decode_token(token: str):
         return payload
     except JWTError:
         return None
+    
