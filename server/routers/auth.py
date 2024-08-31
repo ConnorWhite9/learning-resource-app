@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from server.services.auth import access_token_service, login_service, refresh_token_service
@@ -33,4 +33,18 @@ def refresh(token: str ):
 @limiter.limit("2/second")
 def login(email: str, password: str ):
     access_token, refresh_token = login_service(email, password)
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    Response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,  # Prevents access via JavaScript
+        secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+        samesite="Lax", # Controls cross-site request handling
+    )
+    Response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,  # Prevents access via JavaScript
+        secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+        samesite="Lax", # Controls cross-site request handling
+    )
+    return {"message": "Login Successful"}
