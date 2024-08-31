@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from server.db.database import get_db
 from server.crud.auth import authenticate_user, create_access_token
 from . import models, schemas
-from server.helpers.auth import create_access_token, create_refresh_token
+from server.helpers.auth import create_access_token, create_refresh_token, decode_token
 
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -60,3 +60,25 @@ def login_service(email, password, db: Session = Depends(get_db),):
     
     return access_token, refresh_token
     
+
+def refresh_token_service(token, db: Session = Depends(get_db)):
+    # Verify the refresh token
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    
+    # Extract user info from the payload
+    username = payload.get("sub")
+
+    user_id = db.query(models.User).filter(models.User.username == username).first().user_id
+    if not username:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
+    
+    # Create new access token
+    new_access_token = create_access_token(data={'sub': username, 'id': user_id})
+    
+    # Optionally create a new refresh token
+    new_refresh_token = create_refresh_token(data={'sub': username, 'id': user_id})
+    
+    # Return the new tokens
+    return {"access_token": new_access_token, "refresh_token": new_refresh_token, "token_type": "bearer"}

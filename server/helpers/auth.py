@@ -43,3 +43,12 @@ def verify_token(token: str, credentials_exception):
         return payload
     except JWTError:
         raise credentials_exception
+    
+
+
+def decode_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
