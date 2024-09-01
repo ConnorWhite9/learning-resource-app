@@ -87,4 +87,7 @@ def refresh_token_service(token, db: Session = Depends(get_db)):
 
 
 def create_user_service(newUser):
-    return 
+    
+    message = create_user_instance(newUser)
+    
+    return {"message": message}

@@ -5,6 +5,7 @@ from fastapi import Depends
 from server.db.database import get_db
 from bcrypt import bcrypt_context
 from . import models, schemas
+from server.schemas.auth import *
 
 
 
@@ -22,13 +23,15 @@ async def login(db: Session, email: str, password: str):
     
 
 
-async def create_user(db: Session, create_user_request: schemas.CreateUserRequest):
+async def create_user_instance(db: Session, create_user_request: CreateUserSchema):
     create_user_model = models.User(
         username=create_user_request.username,
+        email=create_user_request.email,
         hashed_password = bcrypt_context.hash(create_user_request.password),
     )
     db.add(create_user_model)
     db.commit()
+    return "User Created"
 
 async def authenticate_user(db: Session, email: str, password: str):
     user = await db.query(models.User).filter(models.User.email == email).first()

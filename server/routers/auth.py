@@ -50,5 +50,5 @@ def login(email: str, password: str ):
 @router.post("/register")
 @limiter.limit("1/second")
 def create_user(user: CreateUserSchema):
-    create_user_service(user)
-    return 
+    dict = create_user_service(user)
+    return dict
