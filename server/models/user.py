@@ -8,8 +8,9 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    streak = Column(Integer)
+    username = Column(String, unique=True, index=True)
+    password = Column(String)
+    streak = Column(Integer, default=0)
     
     class Config:
         json_schema_extra = {

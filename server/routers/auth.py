@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Request, Response, Cookie
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from server.services.auth import access_token_service, login_service, refresh_token_service
-
+from server.services.auth import *
+from server.schemas.auth import *
 
 from .limiter import limiter
 
@@ -11,16 +11,11 @@ router = APIRouter(
 )
 
 
-@router.post("/create_user")
-@limiter.limit("2/second")
-def createUser(request: Request, id: int):
-    return 
-
-@router.post("/token")
+"""@router.post("/token")
 @limiter.limit("2/second")
 def login_for_access_token(username: str, password: str):
     token = access_token_service(username, password)
-    return ({'access_token': token, 'token_type': 'bearer'})
+    return ({'access_token': token, 'token_type': 'bearer'})"""
 
 
 @router.post("/refresh")
@@ -50,3 +45,10 @@ def login(email: str, password: str ):
         samesite="Lax", # Controls cross-site request handling
     )
     return {"message": "Login Successful"}
+
+
+@router.post("/register")
+@limiter.limit("1/second")
+def create_user(user: CreateUserSchema):
+    create_user_service(user)
+    return 

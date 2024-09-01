@@ -83,3 +83,8 @@ def refresh_token_service(token, db: Session = Depends(get_db)):
     # Return the new tokens
     cookies = {"access_token": new_access_token, "refresh_token": new_refresh_token}
     return cookies
+
+
+
+def create_user_service(newUser):
+    return 
