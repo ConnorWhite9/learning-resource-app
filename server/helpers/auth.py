@@ -7,6 +7,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from server.db.database import get_db
+from server.crud.user import *
 import os
 from . import models, schemas
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -59,3 +60,17 @@ def decode_token(token: str):
     except JWTError:
         return None
     
+def verify_access(token: str):
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    user_id = payload.get("sub")
+    user = get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    
+    #Add signature matching
+
+    #Add expiration check
+
+    return True
