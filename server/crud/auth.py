@@ -30,8 +30,8 @@ async def create_user(db: Session, create_user_request: schemas.CreateUserReques
     db.add(create_user_model)
     db.commit()
 
-async def authenticate_user(db: Session, username: str, password: str):
-    user = await db.query(models.User).filter(models.User.username == username).first()
+async def authenticate_user(db: Session, email: str, password: str):
+    user = await db.query(models.User).filter(models.User.email == email).first()
     if not user:
         return False
     if not bcrypt_context.verify(password, models.User.password):

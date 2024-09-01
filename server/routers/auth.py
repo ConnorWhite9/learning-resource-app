@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request, Response, Cookie
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from server.services.auth import access_token_service, login_service, refresh_token_service
@@ -25,9 +25,11 @@ def login_for_access_token(username: str, password: str):
 
 @router.post("/refresh")
 @limiter.limit("3/second")
-def refresh(token: str ):
-    tokens = refresh_token_service(token)
-    return tokens
+def refresh(request: Request):
+        cookies = request.cookies
+        cookies.get("refresh")
+        tokens = refresh_token_service(refresh)
+        return tokens
 
 @router.post("/login")
 @limiter.limit("2/second")
