@@ -4,3 +4,4 @@
 server/db/config.py
 server/todo.txt
 .env
+__pycache__/

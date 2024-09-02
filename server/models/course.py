@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship, backref
-from server.db.database import Base
+from db.database import Base
 
 
 #Create models for user information on different language paths
