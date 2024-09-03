@@ -1,9 +1,9 @@
 import React from 'react'
-import Lesson from '../components/Lesson'
+import Lessons from '../components/Lessons'
 function Courses() {
   return (
     <div className='bg-black'>
-      <Lesson /> 
+      <Lessons /> 
     </div>
   )
 }
