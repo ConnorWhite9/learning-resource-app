@@ -24,7 +24,7 @@ async def login(db: Session, email: str, password: str):
     
 
 
-async def create_user_instance(db: Session, create_user_request: CreateUserSchema):
+def create_user_instance(create_user_request: CreateUserSchema, db: Session = Depends(get_db)):
     create_user_model = User(
         username=create_user_request.username,
         email=create_user_request.email,

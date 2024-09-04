@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.orm import sessionmaker
-from db.config import settings  # Assuming settings are loaded from a config file
+from sqlalchemy.orm import sessionmaker, registry
+from db.config import settings 
 
 #URL from config file
 if settings is None:

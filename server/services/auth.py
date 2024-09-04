@@ -50,9 +50,9 @@ def login_service(email, password, db: Session = Depends(get_db),):
     access_token = create_access_token(user.username, user.user_id)
     refresh_token, expire = create_refresh_token(user.username, user.user_id)
     #Delete any previous refresh tokens
-    db.query(models.Token).filter(models.Token.user_id == user.user_id).delete()
+    db.query(Token).filter(Token.user_id == user.user_id).delete()
 
-    refresh_token_save = models.Token(token=refresh_token, type="refresh", expiry=expire, user_id=user.user_id )
+    refresh_token_save = Token(token=refresh_token, type="refresh", expiry=expire, user_id=user.user_id )
     db.add(refresh_token_save)
     db.commit()
     
@@ -88,7 +88,7 @@ def refresh_token_service(token, db: Session = Depends(get_db)):
 
 
 
-def create_user_service(newUser):
+def create_user_service(newUser: CreateUserSchema):
     
     message = create_user_instance(newUser)
     

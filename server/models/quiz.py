@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, backref
 from db.database import Base
 
 
-class Quiz:
+class Quiz(Base):
     __tablename__="quizs"
     id = Column(Integer, primary_key=True)
     course = Column(String, index=True)
@@ -11,11 +11,11 @@ class Quiz:
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
     complete = Column(Boolean, default=False) 
 
-    owner = relationship("User", back_populates="quizs")
-    grades = relationship("Grade", back_populates="quizs")
+    user = relationship("User", backref=backref("quizs", lazy="dynamic"))
+    
 
 
-class Grade: 
+class Grade(Base): 
     __tablename__="grades"
 
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
@@ -23,5 +23,5 @@ class Grade:
     quiz_id = Column(Integer, ForeignKey("quizs.id"), primary_key=True)
 
     
-    owner = relationship("User", back_populates="grades")
-    quizs = relationship("Quiz", back_populates="grades")
+    user = relationship("User", backref=backref("grades", lazy="dynamic"))
+    quiz = relationship("Quiz", backref=backref("grades", lazy="dynamic"))

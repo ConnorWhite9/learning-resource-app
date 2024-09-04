@@ -12,7 +12,7 @@ class Token(Base):
     expiry = Column(DateTime)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
 
-    owner = relationship("User", back_populates="tokens")
+    user = relationship("User", backref=backref("tokens", lazy="dynamic"))
 
 class blacklistedToken(Base):
     __tablename__ = "blacklistedTokens"
@@ -23,4 +23,4 @@ class blacklistedToken(Base):
     expiry = Column(DateTime)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
 
-    owner = relationship("User", back_populates="tokens")
+    user = relationship("User", backref=backref("blacklistedTokens", lazy="dynamic"))

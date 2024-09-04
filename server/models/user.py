@@ -1,6 +1,8 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-
+from .course import *
+from .quiz import *
+from .auth import *
 from db.database import Base
 
 class User(Base):
@@ -17,12 +19,9 @@ class User(Base):
             "example": {
                 "id": 1,
                 "email": "abdulazeez@x.com",
-                "password": "weakpassword"
+                "password": "weakpassword",
+                "username": "jack",
             }
         }
 
-    tokens = relationship("Token", back_populates="owner")
-    blacklisted = relationship("blacklistedToken", back_populates="owner")
-    courses = relationship("Course", back_populates="owner")
-    quizs = relationship("Quiz", back_populates="owner")
-    grades = relationship("Grade", back_populates="owner")
+    
