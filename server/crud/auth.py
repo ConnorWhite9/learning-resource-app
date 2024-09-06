@@ -14,7 +14,7 @@ bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 async def login(db: Session, email: str, password: str):
     try:
         username = await db.query(User).filter(User.email == email).first()
-        password = await db.query(User).filter(User.password == hash).first()
+        password = await db.query(User).filter(User.password == password).first()
         if username or password is None:
             return False
         else:
@@ -24,23 +24,28 @@ async def login(db: Session, email: str, password: str):
     
 
 
-def create_user_instance(create_user_request: CreateUserSchema, db: Session = Depends(get_db)):
+def create_user_instance(create_user_request: CreateUserSchema, db: Session):
     create_user_model = User(
         username=create_user_request.username,
         email=create_user_request.email,
-        hashed_password = bcrypt_context.hash(create_user_request.password),
+        password= bcrypt_context.hash(create_user_request.password),
     )
     db.add(create_user_model)
     db.commit()
     return "User Created"
 
-async def authenticate_user(db: Session, email: str, password: str):
-    user = await db.query(User).filter(User.email == email).first()
-    if not user:
-        return False
-    if not bcrypt_context.verify(password, User.password):
-        return False
-    return user
+def authenticate_user(db: Session, email: str, password: str):
+    try: 
+        user = db.query(User).filter(User.email == email).first()
+
+        if not user:
+            return False
+        if not bcrypt_context.verify(password, user.password):
+            return False
+        return user
+    except: 
+        print("Did not find user")
+        raise ValueError
 
 def isBlacklisted(token: str, db: Session = Depends(get_db)):
     try: 

@@ -25,9 +25,7 @@ class CreateUserRequest(BaseModel):
     username: str
     password: str
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
@@ -43,16 +41,16 @@ db_dependency = Annotated[Session, Depends(get_db)]
     return token"""
 
 
-def login_service(email, password, db: Session = Depends(get_db),):
+def login_service(email, password, db: Session):
     
-    user = authenticate_user(email, password)
+    user = authenticate_user(db, email, password)
     
-    access_token = create_access_token(user.username, user.user_id)
-    refresh_token, expire = create_refresh_token(user.username, user.user_id)
+    access_token = create_access_token(user.username, user.id)
+    refresh_token, expire = create_refresh_token(user.username, user.id)
     #Delete any previous refresh tokens
-    db.query(Token).filter(Token.user_id == user.user_id).delete()
+    #db.query(Token).filter(Token.user_id == user.id).delete()
 
-    refresh_token_save = Token(token=refresh_token, type="refresh", expiry=expire, user_id=user.user_id )
+    refresh_token_save = Token(token=refresh_token, type="bearer", expiry=expire, user_id=user.id )
     db.add(refresh_token_save)
     db.commit()
     
@@ -88,8 +86,8 @@ def refresh_token_service(token, db: Session = Depends(get_db)):
 
 
 
-def create_user_service(newUser: CreateUserSchema):
+def create_user_service(newUser: CreateUserSchema, db: Session):
     
-    message = create_user_instance(newUser)
+    message = create_user_instance(newUser, db)
     
     return {"message": message}

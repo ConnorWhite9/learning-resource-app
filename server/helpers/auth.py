@@ -1,6 +1,6 @@
 from jose import jwt, JWTError
 from db.database import get_db
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from typing import Annotated
@@ -9,15 +9,21 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from db.database import get_db
 from crud.user import *
 import os
+# importing necessary functions from dotenv library
+from dotenv import load_dotenv, dotenv_values 
+# loading variables from .env file
+load_dotenv() 
+ 
+# accessing and printing value
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
 REFRESH_TOKEN_EXPIRY = os.getenv("REFRESH_TOKEN_EXPIRY")
 ACCESS_TOKEN_EXPIRY = os.getenv("REFRESH_ACCESS_EXPIRY")
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta = None):
+def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=5)):
     encode = {'sub': username, 'id': user_id}
-    expires = datetime.utcnow() + expires_delta
+    expires = datetime.datetime.now(timezone.utc) + expires_delta
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -36,8 +42,7 @@ def decode_access_token(token):
     
 
 def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):
-    
-    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRY)
+    expire = datetime.datetime.now(timezone.utc) + timedelta(days=int(REFRESH_TOKEN_EXPIRY))
     encode = {"sub": username, 'id': user_id}
     encode.update({'exp': expire})
 

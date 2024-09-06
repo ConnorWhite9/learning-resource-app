@@ -27,27 +27,28 @@ def refresh(request: Request):
 
 @router.post("/login")
 @limiter.limit("2/second")
-def login(request: Request, email: str, password: str ):
-    access_token, refresh_token = login_service(email, password)
-    Response.set_cookie(
+def login(request: Request, email: str, password: str, db: Session = Depends(get_db) ):
+    access_token, refresh_token = login_service(email, password, db)
+    response = Response()
+    response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,  # Prevents access via JavaScript
         secure=True,    # Ensure the cookie is sent only over HTTPS (production)
         samesite="Lax", # Controls cross-site request handling
     )
-    Response.set_cookie(
+    response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,  # Prevents access via JavaScript
         secure=True,    # Ensure the cookie is sent only over HTTPS (production)
         samesite="Lax", # Controls cross-site request handling
     )
-    return {"message": "Login Successful"}
+    return response, {"message": "Login Successful"}
 
 
 @router.post("/register")
 @limiter.limit("1/second")
-def create_user(request: Request, user: CreateUserSchema):
-    dict = create_user_service(user)
+def create_user(request: Request, user: CreateUserSchema, db: Session=Depends(get_db)):
+    dict = create_user_service(user, db)
     return dict

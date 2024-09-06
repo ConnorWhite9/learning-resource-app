@@ -5,6 +5,7 @@ from routers.limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from routers.auth import router as auth
+from db.database import Base, engine
 
 
 # @asynccontextmanager
@@ -16,6 +17,8 @@ from routers.auth import router as auth
 test_router = APIRouter()
 
 app = FastAPI()
+
+Base.metadata.create_all(engine)
 
 
 @app.get("/")
