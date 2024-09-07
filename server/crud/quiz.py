@@ -22,3 +22,6 @@ def get_course_quizs(db: Session, course: str):
         return quizs
     except:
         raise ValueError
+    
+
+
