@@ -16,7 +16,7 @@ def get_quiz(db: Session, level: int, course: str ):
     except:
         return ValueError
 
-def get_course_quizs(db: Session, course: str):
+def get_course_quizs(course: str, db: Session):
     try: 
         quizs = db.query(Quiz).filter(Quiz.course == course).all()
         return quizs
