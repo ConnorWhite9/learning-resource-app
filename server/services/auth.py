@@ -91,3 +91,11 @@ def create_user_service(newUser: CreateUserSchema, db: Session):
     message = create_user_instance(newUser, db)
     
     return {"message": message}
+
+
+def logout_service(token, db: Session):
+    check = logout_crud(token, db)
+    if check:
+        return True
+    else: 
+        return False

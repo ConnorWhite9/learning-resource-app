@@ -55,3 +55,16 @@ def isBlacklisted(token: str, db: Session = Depends(get_db)):
         return True
     except:
         raise ValueError
+    
+
+def logout_crud(token, db: Session):
+    try: 
+        find = db.query(Token).filter(Token.token == token).first()
+        newBlackList = blacklistedToken(token=find.token, user_id=find.user_id, expiry=find.expiry, type=find.type)
+        db.add(newBlackList)
+        find.delete()
+        db.commit()
+        return True
+
+    except:
+        return False

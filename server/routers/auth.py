@@ -52,3 +52,20 @@ def login(request: Request, email: str, password: str, db: Session = Depends(get
 def create_user(request: Request, user: CreateUserSchema, db: Session=Depends(get_db)):
     dict = create_user_service(user, db)
     return dict
+
+
+@router.post("/logout")
+@limiter.limit("1/second")
+def logout(request: Request, response: Response, db: Session = Depends(get_db)):
+    
+    cookies = request.cookies
+    refresh = cookies.get("refresh")
+    check = logout_service(refresh, db)
+    if check:
+        message = "Logged out successfully"
+    else:
+        message = "Tokens were not able to be blacklisted and removed from data tables"
+    response.delete_cookie(key="access_token")
+    response.delete_cookie(key="refresh_token")
+
+    return {"message": message}
