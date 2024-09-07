@@ -27,8 +27,8 @@ def refresh(request: Request):
 
 @router.post("/login")
 @limiter.limit("2/second")
-def login(request: Request, email: str, password: str, db: Session = Depends(get_db) ):
-    access_token, refresh_token = login_service(email, password, db)
+def login(request: Request, info: LoginSchema, db: Session = Depends(get_db) ):
+    access_token, refresh_token = login_service(info.email, info.password, db)
     response = Response()
     response.set_cookie(
         key="access_token",
