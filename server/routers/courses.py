@@ -9,7 +9,7 @@ router = APIRouter(
     prefix="/course",
 )
 
-@router.get("/course")
+@router.get("/catalog")
 @limiter.limit("2/second")
 def catalog():
     get_courses()
