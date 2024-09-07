@@ -1,26 +1,27 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-
-from server.db.database import Base
+from .course import *
+from .quiz import *
+from .auth import *
+from db.database import Base
 
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    streak = Column(Integer)
+    username = Column(String, unique=True, index=True)
+    password = Column(String)
+    streak = Column(Integer, default=0)
     
     class Config:
         json_schema_extra = {
             "example": {
                 "id": 1,
                 "email": "abdulazeez@x.com",
-                "password": "weakpassword"
+                "password": "weakpassword",
+                "username": "jack",
             }
         }
 
-    tokens = relationship("Token", back_populates="owner")
-    courses = relationship("Course", back_populates="owner")
-    quizs = relationship("Quiz", back_populates="owner")
-    grades = relationship("Grade", back_populates="owner")
+    

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from ..crud.course import get_courses
+from crud.course import get_courses
 
 from .limiter import limiter
 

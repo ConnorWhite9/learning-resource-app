@@ -3,3 +3,9 @@
 
 server/db/config.py
 server/todo.txt
+.env
+__pycache__/
+testing.db
+server/db/database.py
+
+learning.db

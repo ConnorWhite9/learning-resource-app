@@ -4,15 +4,21 @@ from fastapi import FastAPI, APIRouter
 from routers.limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from routers.auth import router as auth
+from db.database import Base, engine
 
 
 # @asynccontextmanager
 # async def lifespan(_: FastAPI):
 #     yield
 
+#uvicorn main:app --reload
+
 test_router = APIRouter()
 
 app = FastAPI()
+
+Base.metadata.create_all(engine)
 
 
 @app.get("/")
@@ -20,7 +26,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-app.include_router(test_router)
+app.include_router(auth)
 
 app.state.limiter = limiter
 
