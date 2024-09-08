@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import delete
 import datetime
 from passlib.context import CryptContext
 from fastapi import Depends
@@ -7,20 +8,22 @@ from models.user import *
 from models.auth import *
 from schemas import *
 from schemas.auth import *
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 async def login(db: Session, email: str, password: str):
     try:
-        username = await db.query(User).filter(User.email == email).first()
-        password = await db.query(User).filter(User.password == password).first()
-        if username or password is None:
+        user = await db.execute(select(User)).where(User.email == email).first()  
+        if user is None:
             return False
-        else:
-            return True
+        if not bcrypt_context.verify(password, user.password):
+            return False
+        return user
     except:
-        return ValueError
+        raise ValueError("Could not properly grab user from database in login function")
     
 
 
@@ -28,24 +31,24 @@ def create_user_instance(create_user_request: CreateUserSchema, db: Session):
     create_user_model = User(
         username=create_user_request.username,
         email=create_user_request.email,
-        password= bcrypt_context.hash(create_user_request.password),
+        password=bcrypt_context.hash(create_user_request.password),
     )
     db.add(create_user_model)
     db.commit()
     return "User Created"
 
-def authenticate_user(db: Session, email: str, password: str):
+async def authenticate_user(db: AsyncSession, email: str, password: str):
     try: 
-        user = db.query(User).filter(User.email == email).first()
-
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar()
         if not user:
             return False
         if not bcrypt_context.verify(password, user.password):
             return False
         return user
-    except: 
-        print("Did not find user")
-        raise ValueError
+    except Exception as e: 
+        print(f"Error during authentication: {e} ")
+        raise ValueError("Authentication failed")
 
 def isBlacklisted(token: str, db: Session = Depends(get_db)):
     try: 
@@ -57,14 +60,20 @@ def isBlacklisted(token: str, db: Session = Depends(get_db)):
         raise ValueError
     
 
-def logout_crud(token, db: Session):
+async def logout_crud(token, db: AsyncSession):
     try: 
-        find = db.query(Token).filter(Token.token == token).first()
-        newBlackList = blacklistedToken(token=find.token, user_id=find.user_id, expiry=find.expiry, type=find.type)
+        result = await db.execute(delete(Token).where(Token.token == token))
+        result = result.scalar()
+        newBlackList = blacklistedToken(token=result.token, user_id=result.user_id, expiry=result.expiry, type=result.type)
         db.add(newBlackList)
-        find.delete()
-        db.commit()
-        return True
-
-    except:
+        await db.commit()
+        if result.rowcount == 0:
+            print(f"No user found with id {token.sub}")
+            return False
+        else:
+            print(f"User with id {token.sub} deleted successfully")
+            return True
+        
+    except Exception as e:
+        print(f"Could not delete tokens: {e}")
         return False

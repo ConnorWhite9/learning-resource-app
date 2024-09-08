@@ -19,16 +19,16 @@ def login_for_access_token(username: str, password: str):
 
 @router.post("/refresh")
 @limiter.limit("3/second")
-def refresh(request: Request):
+async def refresh(request: Request):
         cookies = request.cookies
         refresh = cookies.get("refresh")
-        tokens = refresh_token_service(refresh)
+        tokens = await refresh_token_service(refresh)
         return tokens
 
 @router.post("/login")
 @limiter.limit("2/second")
-def login(request: Request, info: LoginSchema, db: Session = Depends(get_db) ):
-    access_token, refresh_token = login_service(info.email, info.password, db)
+async def login(request: Request, info: LoginSchema, db: Session = Depends(get_db) ):
+    access_token, refresh_token = await login_service(info.email, info.password, db)
     response = Response()
     response.set_cookie(
         key="access_token",
@@ -56,11 +56,11 @@ def create_user(request: Request, user: CreateUserSchema, db: Session=Depends(ge
 
 @router.post("/logout")
 @limiter.limit("1/second")
-def logout(request: Request, response: Response, db: Session = Depends(get_db)):
+async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     
     cookies = request.cookies
     refresh = cookies.get("refresh")
-    check = logout_service(refresh, db)
+    check = await logout_service(refresh, db)
     if check:
         message = "Logged out successfully"
     else:

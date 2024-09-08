@@ -41,10 +41,8 @@ db_dependency = Annotated[Session, Depends(get_db)]
     return token"""
 
 
-def login_service(email, password, db: Session):
-    
-    user = authenticate_user(db, email, password)
-    
+async def login_service(email, password, db: Session):   
+    user = await authenticate_user(db, email, password)
     access_token = create_access_token(user.username, user.id)
     refresh_token, expire = create_refresh_token(user.username, user.id)
     #Delete any previous refresh tokens
@@ -52,7 +50,7 @@ def login_service(email, password, db: Session):
 
     refresh_token_save = Token(token=refresh_token, type="bearer", expiry=expire, user_id=user.id )
     db.add(refresh_token_save)
-    db.commit()
+    await db.commit()
     
     return access_token, refresh_token
     
@@ -93,8 +91,8 @@ def create_user_service(newUser: CreateUserSchema, db: Session):
     return {"message": message}
 
 
-def logout_service(token, db: Session):
-    check = logout_crud(token, db)
+async def logout_service(token, db: Session):
+    check = await logout_crud(token, db)
     if check:
         return True
     else: 

@@ -15,7 +15,8 @@ router = APIRouter(
 @router.get("/catalog")
 @limiter.limit("2/second")
 def catalog():
-    get_courses()
+    courses = get_courses()
+    return {"courses": courses}
 
 
 @router.get("/coursePage")
