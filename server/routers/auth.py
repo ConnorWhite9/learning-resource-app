@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from services.auth import *
 from schemas.auth import *
 from .limiter import limiter
+from fastapi.responses import JSONResponse
 
 router = APIRouter(
     prefix="/auth",
@@ -30,6 +31,7 @@ async def refresh(request: Request):
 async def login(request: Request, info: LoginSchema, db: Session = Depends(get_db) ):
     access_token, refresh_token = await login_service(info.email, info.password, db)
     response = Response()
+    response = JSONResponse(content={"message": "Login Successful"})
     response.set_cookie(
         key="access_token",
         value=access_token,
@@ -44,7 +46,7 @@ async def login(request: Request, info: LoginSchema, db: Session = Depends(get_d
         secure=True,    # Ensure the cookie is sent only over HTTPS (production)
         samesite="Lax", # Controls cross-site request handling
     )
-    return response, {"message": "Login Successful"}
+    return response
 
 
 @router.post("/register")
@@ -59,7 +61,10 @@ def create_user(request: Request, user: CreateUserSchema, db: Session=Depends(ge
 async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     
     cookies = request.cookies
-    refresh = cookies.get("refresh")
+    refresh = cookies.get("refresh_token")
+    print(1)
+    print(refresh)
+    print(1)
     check = await logout_service(refresh, db)
     if check:
         message = "Logged out successfully"
