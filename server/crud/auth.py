@@ -50,9 +50,10 @@ async def authenticate_user(db: AsyncSession, email: str, password: str):
         print(f"Error during authentication: {e} ")
         raise ValueError("Authentication failed")
 
-def isBlacklisted(token: str, db: Session = Depends(get_db)):
+async def isBlacklisted(token: str, db: Session = Depends(get_db)):
     try: 
-        check = db.query(blacklistedToken).filter(blacklistedToken.token == token).first()
+        result = await db.execute(select(blacklistedToken).where(blacklistedToken.token == token))
+        check = result.scalar()
         if check:
             return False
         return True
