@@ -77,3 +77,15 @@ async def logout_crud(token, db: AsyncSession):
     except Exception as e:
         print(f"Could not delete tokens: {e}")
         return False
+    
+
+
+async def save_refresh(token, expire, user_id, db: AsyncSession):
+    try:
+        refresh_token_save = Token(token=token, type="bearer", expiry=expire, user_id=user_id )
+        db.add(refresh_token_save)
+        await db.commit()
+        return True
+    except Exception as e:
+        print(f"Problem in saving new refresh token: {e}")
+        raise ValueError

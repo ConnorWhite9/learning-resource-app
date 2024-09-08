@@ -47,10 +47,7 @@ async def login_service(email, password, db: Session):
     refresh_token, expire = create_refresh_token(user.username, user.id)
     #Delete any previous refresh tokens
     #db.query(Token).filter(Token.user_id == user.id).delete()
-
-    refresh_token_save = Token(token=refresh_token, type="bearer", expiry=expire, user_id=user.id )
-    db.add(refresh_token_save)
-    await db.commit()
+    await save_refresh(refresh_token, expire, user.id, db)
     
     return access_token, refresh_token
     
