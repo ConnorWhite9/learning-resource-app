@@ -51,8 +51,8 @@ async def login(request: Request, info: LoginSchema, db: Session = Depends(get_d
 
 @router.post("/register")
 @limiter.limit("1/second")
-def create_user(request: Request, user: CreateUserSchema, db: Session=Depends(get_db)):
-    dict = create_user_service(user, db)
+async def create_user(request: Request, user: CreateUserSchema, db: Session=Depends(get_db)):
+    dict = await create_user_service(user, db)
     return dict
 
 

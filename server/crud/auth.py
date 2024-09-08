@@ -27,14 +27,14 @@ async def login(db: Session, email: str, password: str):
     
 
 
-def create_user_instance(create_user_request: CreateUserSchema, db: Session):
+async def create_user_instance(create_user_request: CreateUserSchema, db: Session):
     create_user_model = User(
         username=create_user_request.username,
         email=create_user_request.email,
         password=bcrypt_context.hash(create_user_request.password),
     )
     db.add(create_user_model)
-    db.commit()
+    await db.commit()
     return "User Created"
 
 async def authenticate_user(db: AsyncSession, email: str, password: str):

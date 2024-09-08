@@ -81,9 +81,9 @@ def refresh_token_service(token, db: Session = Depends(get_db)):
 
 
 
-def create_user_service(newUser: CreateUserSchema, db: Session):
+async def create_user_service(newUser: CreateUserSchema, db: Session):
     
-    message = create_user_instance(newUser, db)
+    message = await create_user_instance(newUser, db)
     
     return {"message": message}
 
