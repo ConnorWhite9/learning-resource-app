@@ -12,7 +12,13 @@ from crud.user import *
 
 
 def streak_counter(): 
+    #grab the current streak
+    #if 2 new days from when last activity was recorded reset streak
+    #return streak 
     return
 
 def streak_add():
+    #check when last activity was, if same day do not add streak
+    #add streak
+
     return
