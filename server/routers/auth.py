@@ -62,9 +62,7 @@ async def logout(request: Request, response: Response, db: Session = Depends(get
     
     cookies = request.cookies
     refresh = cookies.get("refresh_token")
-    print(1)
     print(refresh)
-    print(1)
     check = await logout_service(refresh, db)
     if check:
         message = "Logged out successfully"

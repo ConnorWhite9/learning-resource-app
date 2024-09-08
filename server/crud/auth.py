@@ -62,18 +62,14 @@ def isBlacklisted(token: str, db: Session = Depends(get_db)):
 
 async def logout_crud(token, db: AsyncSession):
     try: 
-        
+        print(1)
+        print(token)
+        print(1)
         result = await db.execute(delete(Token).where(Token.token == token))
-        result = result.scalar()
         newBlackList = blacklistedToken(token=result.token, user_id=result.user_id, expiry=result.expiry, type=result.type)
         db.add(newBlackList)
         await db.commit()
-        if result.rowcount == 0:
-            print(f"No user found with id {token.sub}")
-            return False
-        else:
-            print(f"User with id {token.sub} deleted successfully")
-            return True
+        return True
         
     except Exception as e:
         print(f"Could not delete tokens: {e}")
