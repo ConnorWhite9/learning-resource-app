@@ -62,11 +62,19 @@ def isBlacklisted(token: str, db: Session = Depends(get_db)):
 
 async def logout_crud(token, db: AsyncSession):
     try: 
-        print(1)
-        print(token)
-        print(1)
-        result = await db.execute(delete(Token).where(Token.token == token))
-        newBlackList = blacklistedToken(token=result.token, user_id=result.user_id, expiry=result.expiry, type=result.type)
+        select_stmt = select(Token).where(Token.token == token)
+        result = await db.execute(select_stmt)
+        token_details = result.scalar_one_or_none()  # Get the single result or None
+       
+        if token_details is None:
+            print("Token not found.")
+            return False
+        
+        rows = await db.execute(delete(Token).where(Token.token == token))
+        if rows.rowcount == 0:
+            print("No tokens were deleted.")
+            return False
+        newBlackList = blacklistedToken(token=token_details.token, user_id=token_details.user_id, expiry=token_details.expiry, type=token_details.type)
         db.add(newBlackList)
         await db.commit()
         return True
