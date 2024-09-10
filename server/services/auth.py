@@ -13,7 +13,8 @@ from models.auth import *
 from models.user import *
 from helpers.auth import *
 from crud.auth import *
-
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -52,28 +53,32 @@ async def login_service(email, password, db: Session):
     return access_token, refresh_token
     
 
-def refresh_token_service(token, db: Session = Depends(get_db)):
+async def refresh_token_service(token, db: AsyncSession):
     # Verify the refresh token
     payload = decode_token(token)
-    if not payload or isBlacklisted(token):
+    if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-    
-    # Extract user info from the payload
-    user_id = payload.get("sub")
 
-    username = db.query(User).filter(User.user_id == user_id).first().username
-    if not username:
+    # Extract user info from the payload
+    user_id = payload.get("id")
+    print(payload)
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar()
+    print(user_id)
+    print(user)
+    print(1)
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
-    
+    print(user)
     # Create new access token
-    new_access_token = create_access_token(data={'sub': user_id, 'name': username})
+    new_access_token = create_access_token(user.username, user_id)
     
     # Optionally create a new refresh token
-    new_refresh_token, expire = create_refresh_token(data={'sub': user_id, 'id': username})
+    new_refresh_token, expire = create_refresh_token(user.username, user_id)
 
     refresh_token_save = Token(token=new_refresh_token, type="refresh", expiry=expire, user_id=user_id )
     db.add(refresh_token_save)
-    db.commit()
+    await db.commit()
     
     # Return the new tokens
     cookies = {"access_token": new_access_token, "refresh_token": new_refresh_token}

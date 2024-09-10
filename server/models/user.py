@@ -26,14 +26,14 @@ class User(Base):
         }
 
 class Streak(Base):
-    __tablename__ = "streak"
+    __tablename__ = "streaks"
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     current = Column(Integer, default=0)
-    lastActivity = Column(DateTime, default=datetime.datetime.now(timezone.utc))
+    lastActivity = Column(DateTime, default=datetime.now(timezone.utc).time())
     longest = Column(Integer)
 
 
 
 
-    user = relationship("User", backref=backref("streak", lazy="dynamic"))
+    user = relationship("User", backref=backref("streaks", lazy="dynamic"))
