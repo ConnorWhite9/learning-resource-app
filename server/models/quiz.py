@@ -33,5 +33,6 @@ class Question(Base):
     number = Column(Integer)
     question = Column(String)
     answer = Column(String)
+    type = Column(String)
 
     quiz = relationship("Quiz", backref=backref("questions", lazy="dynamic"))
