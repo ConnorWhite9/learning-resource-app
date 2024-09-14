@@ -56,31 +56,33 @@ const cssVideo = "https://www.youtube.com/embed/wRNinF7YQqQ";
 const pythonVideo = "https://www.youtube.com/embed/VchuKL44s6E"
 
 function Lessons() {
-  return (
-    <div>
-      <Lesson
-        quizzes={htmlQuizzes}
-        documentation={htmlDocumentation}
-        title="Introduction to HTML"
-        color="#B2DF8A"
-        video={htmlVideo}
-      />
-      <Lesson
-        quizzes={cssQuizzes}
-        documentation={cssDocumentation}
-        title="Introduction to CSS"
-        color="#FFA76C"
-        video={cssVideo}
-      />
-      <Lesson
-        quizzes={pythonQuizzes}
-        documentation={pythonDocumentation}
-        title="Introduction to Python"
-        color="#A6DBFF"
-        video={pythonVideo}
-      />
-    </div>
-  );
+
+    return (
+      <div>
+        <Lesson
+          quizzes={htmlQuizzes}
+          documentation={htmlDocumentation}
+          title="Introduction to HTML"
+          color="#B2DF8A"
+          video={htmlVideo}
+        />
+        <Lesson
+          quizzes={cssQuizzes}
+          documentation={cssDocumentation}
+          title="Introduction to CSS"
+          color="#FFA76C"
+          video={cssVideo}
+        />
+        <Lesson
+          quizzes={pythonQuizzes}
+          documentation={pythonDocumentation}
+          title="Introduction to Python"
+          color="#A6DBFF"
+          video={pythonVideo}
+        />
+      </div>
+    );
 }
+
 
 export default Lessons;

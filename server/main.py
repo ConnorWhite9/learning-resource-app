@@ -7,6 +7,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from routers.auth import router as auth
 from db.database import Base, engine, init_db
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # @asynccontextmanager
@@ -18,6 +19,20 @@ from db.database import Base, engine, init_db
 test_router = APIRouter()
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",  # for local testing
+    "http://localhost:5173",  # if you are using React or another frontend on port 3000
+    # Add other allowed origins as necessary
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 import logging
 @asynccontextmanager
