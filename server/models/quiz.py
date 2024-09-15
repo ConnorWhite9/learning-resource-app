@@ -25,3 +25,14 @@ class Grade(Base):
     
     user = relationship("User", backref=backref("grades", lazy="dynamic"))
     quiz = relationship("Quiz", backref=backref("grades", lazy="dynamic"))
+
+class Question(Base):
+    __tablename__="questions"
+
+    quiz_id = Column(Integer, ForeignKey("quizs.id"), primary_key=True)
+    number = Column(Integer)
+    question = Column(String)
+    answer = Column(String)
+    type = Column(String)
+
+    quiz = relationship("Quiz", backref=backref("questions", lazy="dynamic"))

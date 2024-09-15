@@ -23,7 +23,7 @@ ACCESS_TOKEN_EXPIRY = os.getenv("REFRESH_ACCESS_EXPIRY")
 
 def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=5)):
     encode = {'sub': username, 'id': user_id}
-    expires = datetime.datetime.now(timezone.utc) + expires_delta
+    expires = datetime.now(timezone.utc) + expires_delta
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -42,7 +42,7 @@ def decode_access_token(token):
     
 
 def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):
-    expire = datetime.datetime.now(timezone.utc) + timedelta(days=int(REFRESH_TOKEN_EXPIRY))
+    expire = datetime.now(timezone.utc) + timedelta(days=int(REFRESH_TOKEN_EXPIRY))
     encode = {"sub": username, 'id': user_id}
     encode.update({'exp': expire})
 

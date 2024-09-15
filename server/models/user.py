@@ -1,9 +1,10 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from .course import *
 from .quiz import *
 from .auth import *
 from db.database import Base
+from datetime import datetime, timezone
 
 class User(Base):
     __tablename__ = "users"
@@ -24,4 +25,15 @@ class User(Base):
             }
         }
 
-    
+class Streak(Base):
+    __tablename__ = "streaks"
+
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    current = Column(Integer, default=0)
+    lastActivity = Column(DateTime, default=datetime.now(timezone.utc).time())
+    longest = Column(Integer)
+
+
+
+
+    user = relationship("User", backref=backref("streaks", lazy="dynamic"))

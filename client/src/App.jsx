@@ -6,6 +6,7 @@ import GetStarted from "./pages/GetStarted";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import LogOut from './components/Logout'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/courses" element={<Courses />} />
           <Route path="/register" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<LogOut />} />
         </Routes>
         <Footer />
       </Router>

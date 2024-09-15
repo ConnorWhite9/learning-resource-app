@@ -13,7 +13,8 @@ from models.auth import *
 from models.user import *
 from helpers.auth import *
 from crud.auth import *
-
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -41,44 +42,43 @@ db_dependency = Annotated[Session, Depends(get_db)]
     return token"""
 
 
-def login_service(email, password, db: Session):
-    
-    user = authenticate_user(db, email, password)
-    
+async def login_service(email, password, db: Session):   
+    user = await authenticate_user(db, email, password)
     access_token = create_access_token(user.username, user.id)
     refresh_token, expire = create_refresh_token(user.username, user.id)
     #Delete any previous refresh tokens
     #db.query(Token).filter(Token.user_id == user.id).delete()
-
-    refresh_token_save = Token(token=refresh_token, type="bearer", expiry=expire, user_id=user.id )
-    db.add(refresh_token_save)
-    db.commit()
+    await save_refresh(refresh_token, expire, user.id, db)
     
     return access_token, refresh_token
     
 
-def refresh_token_service(token, db: Session = Depends(get_db)):
+async def refresh_token_service(token, db: AsyncSession):
     # Verify the refresh token
     payload = decode_token(token)
-    if not payload or isBlacklisted(token):
+    if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-    
-    # Extract user info from the payload
-    user_id = payload.get("sub")
 
-    username = db.query(User).filter(User.user_id == user_id).first().username
-    if not username:
+    # Extract user info from the payload
+    user_id = payload.get("id")
+    print(payload)
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar()
+    print(user_id)
+    print(user)
+    print(1)
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
-    
+    print(user)
     # Create new access token
-    new_access_token = create_access_token(data={'sub': user_id, 'name': username})
+    new_access_token = create_access_token(user.username, user_id)
     
     # Optionally create a new refresh token
-    new_refresh_token, expire = create_refresh_token(data={'sub': user_id, 'id': username})
+    new_refresh_token, expire = create_refresh_token(user.username, user_id)
 
     refresh_token_save = Token(token=new_refresh_token, type="refresh", expiry=expire, user_id=user_id )
     db.add(refresh_token_save)
-    db.commit()
+    await db.commit()
     
     # Return the new tokens
     cookies = {"access_token": new_access_token, "refresh_token": new_refresh_token}
@@ -86,15 +86,15 @@ def refresh_token_service(token, db: Session = Depends(get_db)):
 
 
 
-def create_user_service(newUser: CreateUserSchema, db: Session):
+async def create_user_service(newUser: CreateUserSchema, db: Session):
     
-    message = create_user_instance(newUser, db)
+    message = await create_user_instance(newUser, db)
     
     return {"message": message}
 
 
-def logout_service(token, db: Session):
-    check = logout_crud(token, db)
+async def logout_service(token, db: Session):
+    check = await logout_crud(token, db)
     if check:
         return True
     else: 
