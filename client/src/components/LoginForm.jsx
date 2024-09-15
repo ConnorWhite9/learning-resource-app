@@ -19,7 +19,9 @@ function LoginForm() {
         axios.post("http://localhost:8000/auth/login", postData, {
             headers: {
                 'Content-Type': 'application/json'  // Ensure the server expects JSON
-            }
+                   
+            },
+            withCredentials: true  // This ensures that cookies are sent and received
         })
             .then((response) => {
                 console.log(response.data);

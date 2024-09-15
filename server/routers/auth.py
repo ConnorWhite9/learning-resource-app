@@ -55,14 +55,14 @@ async def login(request: Request, info: LoginSchema, db: AsyncSession = Depends(
         key="access_token",
         value=access_token,
         httponly=True,  # Prevents access via JavaScript
-        secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+        #secure=True,    # Ensure the cookie is sent only over HTTPS (production)
         samesite="Lax", # Controls cross-site request handling
     )
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,  # Prevents access via JavaScript
-        secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+        #secure=True,    # Ensure the cookie is sent only over HTTPS (production)
         samesite="Lax", # Controls cross-site request handling
     )
     return response
