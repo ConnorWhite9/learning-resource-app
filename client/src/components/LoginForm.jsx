@@ -46,7 +46,7 @@ function LoginForm() {
     
     return (
         <form id="loginForm" onSubmit={handleSubmit}>
-            <div className="self-center ml-[auto] mr-[auto] mt-[5rem] min-h-[30rem] w-[25rem] p-10 rounded-lg bg-gradient-to-br from-[#2f4680] to-[#500ae4] flex flex-col items-center">
+            <div className="self-center ml-[auto] mr-[auto] mt-[5rem] min-h-[30rem] w-[25rem] p-10 rounded-lg bg-[#6300ff] flex flex-col items-center">
             <h1 className="text-[3rem] decoration-white">Log In </h1>
             <div className="flex items-center gap-3 mt-[3rem]">
                 <input
@@ -55,7 +55,7 @@ function LoginForm() {
                 type="email" 
                 onChange={handleChange} 
                 value={formData.email} 
-                className="h-[50px] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
+                className="h-[50px] w-[16rem] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
                 placeholder='Email'/>
             </div>
             <div className="flex items-center gap-3 mt-[3rem]">
@@ -64,7 +64,7 @@ function LoginForm() {
                 onChange={handleChange}
                 type=""
                 value={formData.password} 
-                className="h-[50px] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
+                className="h-[50px] w-[16rem] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
                 placeholder='Password'/>
             </div>
             <div className="flex items-center gap-3 mt-[3rem] ">
