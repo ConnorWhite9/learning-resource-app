@@ -29,10 +29,22 @@ class Grade(Base):
 class Question(Base):
     __tablename__="questions"
 
-    quiz_id = Column(Integer, ForeignKey("quizs.id"), primary_key=True)
+    quiz_id = Column(Integer, ForeignKey("quizs.id"), index=True)
     number = Column(Integer)
+    id = Column(Integer, primary_key=True)
     question = Column(String)
     answer = Column(String)
     type = Column(String)
 
     quiz = relationship("Quiz", backref=backref("questions", lazy="dynamic"))
+
+
+class Answer(Base):
+    __tablename__="answers"
+    
+    quiz_id = Column(Integer, ForeignKey("questions.id"))
+    answer = Column(String)
+    id = Column(Integer, primary_key=True)
+    correct = Column(Boolean)
+    
+    quiz = relationship("Quiz", backref=backref("answers", lazy="dynamic"))
