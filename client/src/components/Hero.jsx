@@ -1,5 +1,5 @@
 import React from "react";
-
+import {Link} from "react-router-dom";
 function Hero() {
   return (
     <div className="flex font-custom h-[500px] mb-8 justify-center items-center">
@@ -13,9 +13,11 @@ function Hero() {
               Greater mastery and understanding on programming languages—HTML,
               CSS, Python.
             </p>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[125px] mt-[40px]">
-              Sign Up
-            </button>
+            <Link to="/register">
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[125px] mt-[40px]">
+                Sign Up
+              </button>
+            </Link>
           </div>
         </section>
         <aside className="flex justify-center items-center flex-1">

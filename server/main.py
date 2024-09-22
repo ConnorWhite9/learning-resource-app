@@ -1,3 +1,4 @@
+from openai import OpenAI
 from typing import Union
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, Request, Response

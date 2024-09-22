@@ -9,3 +9,5 @@ testing.db
 server/db/database.py
 quizGenerator/
 learning.db
+generator.py
+output.csv
