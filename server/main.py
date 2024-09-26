@@ -9,7 +9,8 @@ from slowapi.errors import RateLimitExceeded
 from routers.auth import router as auth
 from db.database import Base, engine, init_db
 from fastapi.middleware.cors import CORSMiddleware
-
+from sqlalchemy.ext.asyncio import AsyncEngine
+from db.database import engine
 
 # @asynccontextmanager
 # async def lifespan(_: FastAPI):
@@ -67,7 +68,14 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=status_code,
         content={"error": custom_message},
     )
-
+async def rebuild_database(async_engine: AsyncEngine):
+    async with async_engine.begin() as conn:
+        # Drop all tables and recreate them asynchronously
+        await conn.run_sync(Base.metadata.drop_all)  # Drops all tables
+        await conn.run_sync(Base.metadata.create_all)  # Recreates all tables
+@app.on_event("startup")
+async def startup_event():
+    await rebuild_database(engine)
 
 @app.get("/")
 def read_root():
