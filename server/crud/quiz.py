@@ -1,33 +1,38 @@
 
 from sqlalchemy.orm import Session
+from sqlalchemy import delete
+import datetime
+from passlib.context import CryptContext
+from fastapi import Depends
+from db.database import get_db
+from models.user import *
+from models.auth import *
+from schemas import *
+from schemas.auth import *
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from . import models, schemas
-from models.quiz import *
-from models.course import *
 
-
-def get_quiz(db: Session, level: int, course: str ):
+async def get_quiz_crud(db: AsyncSession, level: int, course: str ):
     try: 
-        quiz = db.query(Quiz).filter(
-            Quiz == level,
-            Quiz == course
+        quiz = await db.execute(select(Quiz)).where(Quiz.level == level, Quiz.course == course
         ).first()
         return quiz
     except:
         return ValueError
 
-def get_course_quizs(course: str, db: Session):
+async def get_course_quizs(course: str, db: Session):
     try: 
-        quizs = db.query(Quiz).filter(Quiz.course == course).all()
+        quizs = await db.execute(select(Quiz)).where(Quiz.course == course).all()
         return quizs
     except:
         raise ValueError
     
 
-def get_questions(db: Session, id: int):
+async def get_questions(db: AsyncSession, id: int):
     try:
-        questions = db.query(Question).filter(Quiz.id == id).all()
-        return questions
+        questions = await db.execute(select(Question)).where(Question.quiz_id == id)
+        return questions.scalars().all()
     except:
         raise ValueError
     

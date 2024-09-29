@@ -21,7 +21,7 @@ function App() {
           <Route path="/register" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<LogOut />} />
-          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/quiz/:course/:level" element={<Quiz />} />
         </Routes>
         <Footer />
       </Router>

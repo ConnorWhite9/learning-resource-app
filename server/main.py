@@ -7,6 +7,7 @@ from routers.limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from routers.auth import router as auth
+from routers.courses import router as course
 from db.database import Base, engine, init_db
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -83,6 +84,7 @@ def read_root():
 
 
 app.include_router(auth)
+app.include_router(course)
 
 app.state.limiter = limiter
 

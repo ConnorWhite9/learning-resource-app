@@ -1,7 +1,32 @@
 import react, {useState} from "react";
 import axios from 'axios';
 
-function setQuestion(){
+function setQuestion(props){
+
+    const [questions, setQuestions] = useState(null);
+    
+
+    /*axios.get(`http://localhost:8000/auth/getQuiz/${props.course}/${props.level}`, {
+        headers: {
+            'Content-Type': 'application/json'  // Ensure the server expects JSON
+               
+        },
+        withCredentials: true  // This ensures that cookies are sent and received
+    })
+        .then((response) => {
+            console.log(response.data);
+            setQuestions(response.data.questions);
+            
+        })
+        .catch((error) => {
+            console.error("Error:", error)
+        })*/
+    
+    
+
+
+
+
     const [answers, setAnswers] = useState({
         0: 0,
         1: 0,
@@ -16,7 +41,7 @@ function setQuestion(){
 
     })
     const [index, setIndex] = useState(0);
-    const [question, setQuestion] = useState(index);
+    //const [question, setQuestion] = useState(index);
     const [choice, setChoice] = useState(0);
 
     const updateAnswer = (newAnswer) => {
@@ -30,34 +55,68 @@ function setQuestion(){
         setChoice(newChoice);
         setAnswer((prevAnswer) => ({
             ...prevAnswer,
-            index: choice,
+            index: newChoice,
         }))
     };
 
+    const [question] = useState({
+        0: { "question": "What is the right text?",
+        options: [
+            [1, "Hello There"],
+            [
+                2, "What is going on"
+            ],
+            [
+                3, "Why me"
+            ],
+            [
+               4, "How you doing"
+            ]
+            
+        ]},
+        1: { "question": "What is the right text?",
+            options: [
+                [1, "Fortnite"],
+                [
+                    2, "Freaky"
+                ],
+                [
+                    3, "Friday"
+                ],
+                [
+                   4, "Free"
+                ]
+                
+            ]}
+    })
 
     const resetChoice = () => {
         setChoice(0);
+        setIndex(prevIndex => prevIndex + 1);
     }
 
     return (
-        <div>
-            <ul>
-            {question.options.map(option => (
-            <li key={option.id}>
-                <label>
-                <input
-                    type="radio"
-                    value={option.id}
-                    checked={selectedAnswer === option.id}
-                    onChange={() => handleOptionChange(option.id)}
-                />
-                {option.text}
-                </label>
-            </li>
-            ))}
-            </ul>
-            <button onClick={resetChoice}>Next</button>
-        </div>
+        <>
+            <p>Hello World</p>
+            <div className="ml-auto mr-auto mt-[10rem] bg-[green] w-[30rem] h-[30rem]">
+                <ul className="ml-auto mr-auto flex-column">
+                    {question[index].options.map(option => (
+                    <li key={option[0]}>
+                        <label>
+                        <input
+                            type="radio"
+                            value={option[0]}
+                            checked={choice === option[0]}
+                            onChange={() => updateChoice(option[0])}
+                        />
+                        {option[1]}
+                        </label>
+                    </li>
+                    ))}
+                </ul>
+                <button onClick={resetChoice}>Next</button>
+            </div>
+        </>
     );
 }
 

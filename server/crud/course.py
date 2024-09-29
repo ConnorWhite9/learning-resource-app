@@ -1,11 +1,9 @@
 from sqlalchemy.orm import Session
-
-from . import models, schemas
-
+from models.course import Course
 
 def get_courses(db:Session):
     try:
-        courses = db.query(models.Course).all()
+        courses = db.query(Course).all()
         return courses
     except:
         return ValueError
