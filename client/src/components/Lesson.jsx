@@ -6,7 +6,7 @@ import Documentation from "./Documentation";
 
 
 
-function Lesson({ quizzes, documentation, title, color, video }) {
+function Lesson({language, quizzes, documentation, title, color, video }) {
   return (
     <>
       <div className="flex justify-center mt-[40px] font-sans">
@@ -17,7 +17,7 @@ function Lesson({ quizzes, documentation, title, color, video }) {
           <div className="flex">
             <div className="flex flex-col justify-between w-[30%] h-full">
               <Overview title={title} />
-              <Quizzes quizzes={quizzes} />
+              <Quizzes language={language} quizzes={quizzes} />
             </div>
             <div className="flex flex-col">
               <Video link={video} />

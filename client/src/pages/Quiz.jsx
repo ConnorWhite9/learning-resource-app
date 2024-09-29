@@ -4,7 +4,7 @@ import Question from '../components/Question';
 function Quiz() {
     const {course, level} = useParams();
     return(
-        <div>
+        <div className="bg-black">
            <Question course={course} level={level} />
         </div>
     );

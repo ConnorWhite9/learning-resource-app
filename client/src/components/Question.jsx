@@ -95,26 +95,42 @@ function setQuestion(props){
         setIndex(prevIndex => prevIndex + 1);
     }
 
+    const prev = () => {
+        setChoice(0);
+        setIndex(prevIndex => prevIndex - 1)
+    }
+
     return (
         <>
-            <p>Hello World</p>
-            <div className="ml-auto mr-auto mt-[10rem] bg-[green] w-[30rem] h-[30rem]">
+            <div className="ml-auto mr-auto mt-[10rem] bg-[white] w-[30rem] h-[30rem] p-[3rem]  flex-column rounded-[10%]">
                 <ul className="ml-auto mr-auto flex-column">
+                    <p className="text-[1.5rem]">{index + 1}: {question[index]["question"]} </p>
                     {question[index].options.map(option => (
                     <li key={option[0]}>
                         <label>
-                        <input
-                            type="radio"
+                        <button
+                            style={{ 
+                                backgroundColor: choice === option[0] ? 'blue' : 'white',
+                                border: choice === option[0] ? '4px solid blue' : '1px solid gray',
+
+
+                            }}
+                            className="w-[20rem] h-[3rem] ml-[2rem]  mt-[2rem] py-2.5 px-6 text-sm rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-indigo-400 shadow-lg shadow-indigo-500/50 text-white cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 hover:bg-gradient-to-l"
+                            id={option[0]}
                             value={option[0]}
-                            checked={choice === option[0]}
-                            onChange={() => updateChoice(option[0])}
-                        />
-                        {option[1]}
+                            onClick={() => updateChoice(option[0])}
+                        >
+                            {option[1]}
+                        </button>
                         </label>
                     </li>
                     ))}
                 </ul>
-                <button onClick={resetChoice}>Next</button>
+                <div className="flex-row mt-[2rem]">
+                    {index!=0 && <button className="" onClick={prev}>Previous</button>}
+                    <button className="ml-[18rem] " onClick={resetChoice}>Next</button>
+                </div>
+                
             </div>
         </>
     );
