@@ -9,7 +9,6 @@ class Quiz(Base):
     course = Column(String, index=True)
     level = Column(Integer, index=True)
 
-    user = relationship("User", backref=backref("quizs", lazy="dynamic"))
     
 
 

@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException, Request, Response, Cookie
+from fastapi import APIRouter, HTTPException, Request, Response, Cookie, FastAPI, Depends, Header, status
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from services.auth import *
+from fastapi.security import OAuth2PasswordBearer
+
 from schemas.auth import *
 from .limiter import limiter
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-
 router = APIRouter(
     prefix="/auth",
 )
@@ -18,28 +19,32 @@ def login_for_access_token(username: str, password: str):
     token = access_token_service(username, password)
     return ({'access_token': token, 'token_type': 'bearer'})"""
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("/refresh")
 @limiter.limit("3/second")
 async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
-        cookies = request.cookies
-        refresh = cookies.get("refresh_token")
-        tokens = await refresh_token_service(refresh, db)
+        refresh_token = request.cookies.get("refresh_token")
+        access_token = request.cookies.get("access_token")
+        if refresh_token is None or access_token is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No token found")
+        access_token = request.cookies.get("access_token")
+        tokens = await refresh_token_service(refresh_token, access_token, db)
         response = Response()
         response = JSONResponse(content={"message": "New tokens successfully returned"})
         response.set_cookie(
             key="access_token",
             value=tokens["access_token"],
             httponly=True,  # Prevents access via JavaScript
-            secure=True,    # Ensure the cookie is sent only over HTTPS (production)
-            samesite="Lax", # Controls cross-site request handling
+                # Ensure the cookie is sent only over HTTPS (production)
+            samesite="None", # Controls cross-site request handling
         )
         response.set_cookie(
             key="refresh_token",
             value=tokens["refresh_token"],
             httponly=True,  # Prevents access via JavaScript
-            secure=True,    # Ensure the cookie is sent only over HTTPS (production)
-            samesite="Lax", # Controls cross-site request handling
+             # Ensure the cookie is sent only over HTTPS (production)
+            samesite="None", # Controls cross-site request handling
         )
         return response
 

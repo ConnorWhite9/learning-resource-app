@@ -31,3 +31,13 @@ def coursePage(request: Request, course: Course, db: AsyncSession = Depends(get_
 async def getQuiz (request: Request, quiz: QuizSchema, db: AsyncSession=Depends(get_db)):
     questions, quiz_id = await getQuiz_service(quiz.course, quiz.level, db)
     return {"questions": questions, "quiz_id": quiz_id}
+
+
+@router.post("/grade")
+@limiter.limit("1/second")
+async def grade (request: Request, userAnswers: userAnswers, db: AsyncSession=Depends(get_db)):
+    await grade_service(userAnswers, db)
+    return  {"message": "new grade added"}
+
+
+

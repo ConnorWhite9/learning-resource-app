@@ -74,9 +74,9 @@ async def rebuild_database(async_engine: AsyncEngine):
         # Drop all tables and recreate them asynchronously
         await conn.run_sync(Base.metadata.drop_all)  # Drops all tables
         await conn.run_sync(Base.metadata.create_all)  # Recreates all tables
-@app.on_event("startup")
+"""@app.on_event("startup")
 async def startup_event():
-    await rebuild_database(engine)
+    await rebuild_database(engine)"""
 
 @app.get("/")
 def read_root():

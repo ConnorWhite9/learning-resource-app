@@ -77,7 +77,7 @@ function LoginForm() {
             <div className="flex items-center gap-3 mt-[3rem] ">
                 <button type="submit" className="h-[50px] text-center border-0 outline-none rounded-full  text-[#626262] bg-[#ebfffc] text-[18px] w-[14rem] " ><p>Log In</p></button>
             </div>
-            <p className="text-[12px] text-center mt-[0.5rem]">Don't Have An Account? <a href="">Sign Up</a></p>
+                <p className="text-[12px] text-center mt-[0.5rem]">Don't Have An Account? Sign Up</p>
             </div>
         </form>
     );

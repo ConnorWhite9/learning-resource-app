@@ -38,3 +38,19 @@ async def get_questions(db: AsyncSession, id: int):
     
 
 
+async def getAnswers(quiz_id, db: AsyncSession):
+    try:
+        answers = await db.execute(select(Question)).where(Question.quiz_id == quiz_id)
+        return answers.scalars.all()
+    except:
+        raise ValueError
+    
+
+async def addGrade(user_id, grade, quiz_id, db: AsyncSession):
+    try:
+        newGrade = Grade(user_id=user_id, grade=grade, quiz_id=quiz_id)
+        db.add(newGrade)
+        await db.commit()
+        return True
+    except:
+        raise ValueError

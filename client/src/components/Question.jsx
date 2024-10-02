@@ -6,7 +6,7 @@ function setQuestion(props){
     const [questions, setQuestions] = useState(null);
     
 
-    /*axios.get(`http://localhost:8000/auth/getQuiz/${props.course}/${props.level}`, {
+    /*axios.get(`http://localhost:8000/course/getQuiz/${props.course}/${props.level}`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                
@@ -99,6 +99,32 @@ function setQuestion(props){
         setChoice(0);
         setIndex(prevIndex => prevIndex - 1)
     }
+    
+    const submit = () => {
+        const postData = {
+            "answers": answers,
+            "user_id": 1,
+            "quiz_id": quiz_id
+
+        }
+        axios.post(`http://localhost:8000/course/grade`, postData, {
+            headers: {
+                'Content-Type': 'application/json'  // Ensure the server expects JSON
+                   
+            },
+            withCredentials: true  // This ensures that cookies are sent and received
+        })
+            .then((response) => {
+                console.log(response.data);
+                
+                
+            })
+            .catch((error) => {
+                console.error("Error:", error)
+            })
+    }
+
+
 
     return (
         <>

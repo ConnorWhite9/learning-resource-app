@@ -12,3 +12,6 @@ class CreateUserSchema(BaseModel):
 class LoginSchema(BaseModel):
     email: EmailStr
     password: str
+
+class tokenSchema(BaseModel):
+    token: str
