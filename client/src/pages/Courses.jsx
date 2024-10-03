@@ -25,8 +25,28 @@ function Courses() {
           navigate("/login");
         }
   }
+
+
+  const grabInfo = async () => {
+
+    try {
+      const response = await axios.get(`http://localhost:8000/user/userInfo`, {
+        headers: {
+            'Content-Type': 'application/json'  // Ensure the server expects JSON
+               
+        },
+        withCredentials: true  // This ensures that cookies are sent and received
+    })
+    } catch (error){
+      console.error("Error:", error)
+    }
+    console.log(response.data)
+  }
+
+
   useEffect(() => {
     loginCheck();
+    grabInfo();
   }, []);  //
 
 

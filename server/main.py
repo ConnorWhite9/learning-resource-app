@@ -12,6 +12,7 @@ from db.database import Base, engine, init_db
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncEngine
 from db.database import engine
+from routers.users import router as user
 
 # @asynccontextmanager
 # async def lifespan(_: FastAPI):
@@ -85,6 +86,7 @@ def read_root():
 
 app.include_router(auth)
 app.include_router(course)
+app.include_router(user)
 
 app.state.limiter = limiter
 

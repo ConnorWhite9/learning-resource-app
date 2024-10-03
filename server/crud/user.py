@@ -16,7 +16,7 @@ async def get_user(db: Session, user_id: int):
 
 async def grab_enrollment_crud(user_id, db: AsyncSession):
     try:
-        raw = await db.execute(select(Enroll)).where(user_id=user_id)
+        raw = await db.execute(select(Enroll).where(Enroll.user_id == user_id))
         enrollment = raw.scalars().all()
         list = []
         for enroll in enrollment:
@@ -28,7 +28,7 @@ async def grab_enrollment_crud(user_id, db: AsyncSession):
 
 async def grab_grades_crud(user_id, db: AsyncSession):
     try: 
-        raw = await db.execute(select(Grade)).where(user_id=user_id)
+        raw = await db.execute(select(Grade)).where(Grade.user_id==user_id)
         grades = raw.scalars().all()
         return grades
     except:

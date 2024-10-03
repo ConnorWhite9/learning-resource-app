@@ -22,8 +22,10 @@ def get_user(request: Request, id: int):
     return "Hello"
 
 @router.get("/userInfo")
-@limiter.limit("1/second")
-async def userInfo (request: Request, user_id: int, db: AsyncSession=Depends(get_db)):
-    enroll_list, grades, mastery = await userInfo_service(user_id ,db)
+@limiter.limit("10/second")
+async def userInfo (request: Request, db: AsyncSession=Depends(get_db)):
+    access_token = request.cookies.get("access_token")
+    #Reformat function so it grabs user_id from cookies will need to change function parameters and decode the token in teh userInfo service.
+    enroll_list, grades, mastery = await userInfo_service(access_token ,db)
 
     return {"enrollment": enroll_list, "grades": grades, "mastery": mastery}

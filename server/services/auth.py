@@ -64,7 +64,6 @@ async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
 
     # Extract user info from the payload
     user_id = payload2.get("id")
-    print(payload2)
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar()
     
