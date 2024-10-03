@@ -9,6 +9,7 @@ from models.user import *
 from models.auth import *
 from schemas import *
 from schemas.auth import *
+from crud.course import *
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -54,3 +55,21 @@ async def addGrade(user_id, grade, quiz_id, db: AsyncSession):
         return True
     except:
         raise ValueError
+    
+
+async def grab_all_quizzes(db: AsyncSession):
+    try:
+        formatted_quizzes = {}
+        languages = await get_courses(db)
+        for language in languages:
+            formatted_quizzes[language["name"]] = {}
+
+        for key in formatted_quizzes:
+            quizzes = await db.execute(select(Quiz)).where(Quiz.course == key)
+            for quiz in quizzes:
+                formatted_quizzes[key][quiz["number"]] = quiz
+
+        return formatted_quizzes
+
+    except Exception as e:
+        raise ValueError from e 

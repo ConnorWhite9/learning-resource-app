@@ -37,3 +37,10 @@ def grade_service(userAnswers, db: AsyncSession):
         grade = sum(correct)/len(correct) * 100 
         check = addGrade(userAnswers.user_id, grade, userAnswers.quiz_id, db)
     return 
+
+
+
+
+async def getAllQuiz_service(db: AsyncSession):
+    quizzes = await grab_all_quizzes(db)
+    return quizzes

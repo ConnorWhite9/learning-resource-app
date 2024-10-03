@@ -40,4 +40,9 @@ async def grade (request: Request, userAnswers: userAnswers, db: AsyncSession=De
     return  {"message": "new grade added"}
 
 
+@router.get("/getAllQuiz")
+@limiter.limit('2/second')
+async def getAllQuiz (request: Request, db: AsyncSession=Depends(get_db)):
+    quizzes = await getAllQuiz_service(db)
 
+    return quizzes 
