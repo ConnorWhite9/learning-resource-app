@@ -1,34 +1,35 @@
-import react, {useState} from "react";
+import react, {useState, useEffect} from "react";
 import axios from 'axios';
 
 function setQuestion(props){
 
+    const [loading, setLoading] = useState(true);  // Loading state
+    const [error, setError] = useState(null);  // Error state
+
     const [questions, setQuestions] = useState(null);
     
+    const grabQuestions = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/course/getQuiz/?course=${props.course}&level=${props.level}`, {
+                headers: {
+                    'Content-Type': 'application/json'  // Ensure the server expects JSON
+                    
+                },
+                withCredentials: true  // This ensures that cookies are sent and received
+            })
 
-    /*axios.get(`http://localhost:8000/course/getQuiz/${props.course}/${props.level}`, {
-        headers: {
-            'Content-Type': 'application/json'  // Ensure the server expects JSON
-               
-        },
-        withCredentials: true  // This ensures that cookies are sent and received
-    })
-        .then((response) => {
             console.log(response.data);
             setQuestions(response.data.questions);
-            
-        })
-        .catch((error) => {
-            console.error("Error:", error)
-        })*/
-    
+        } catch(error) {
+            console.log(error);
+        }
+    }
     
 
 
 
 
     const [answers, setAnswers] = useState({
-        0: 0,
         1: 0,
         2: 0, 
         3: 0, 
@@ -38,58 +39,30 @@ function setQuestion(props){
         7: 0, 
         8: 0,
         9: 0,
+        10: 0,
 
     })
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(1);
     //const [question, setQuestion] = useState(index);
     const [choice, setChoice] = useState(0);
 
     const updateAnswer = (newAnswer) => {
-        setAnswer((prevAnswer) => ({
+        setAnswers((prevAnswer) => ({
           ...prevAnswer,  // Copy the previous state
-          index: newAnswer // Update only the name property
+          [index]: newAnswer // Update only the name property
         }));
       };
 
     const updateChoice = (newChoice) => {
         setChoice(newChoice);
-        setAnswer((prevAnswer) => ({
+        setAnswers((prevAnswer) => ({
             ...prevAnswer,
-            index: newChoice,
+            [index]: newChoice,
         }))
+        console.log(answers);
     };
 
-    const [question] = useState({
-        0: { "question": "What is the right text?",
-        options: [
-            [1, "Hello There"],
-            [
-                2, "What is going on"
-            ],
-            [
-                3, "Why me"
-            ],
-            [
-               4, "How you doing"
-            ]
-            
-        ]},
-        1: { "question": "What is the right text?",
-            options: [
-                [1, "Fortnite"],
-                [
-                    2, "Freaky"
-                ],
-                [
-                    3, "Friday"
-                ],
-                [
-                   4, "Free"
-                ]
-                
-            ]}
-    })
-
+    
     const resetChoice = () => {
         setChoice(0);
         setIndex(prevIndex => prevIndex + 1);
@@ -124,20 +97,34 @@ function setQuestion(props){
             })
     }
 
+    useEffect(() => {
+        // Async function inside useEffect
+        const fetchData = async () => {
+          await grabQuestions();  // Assuming grabInfo is an async function 
+          setLoading(false);
+        };
+    
+        fetchData();  // Call async function
+    
+      }, []); 
+
+    if (loading) {
+        return <p>Loading ... </p>
+    }
 
 
     return (
         <>
-            <div className="ml-auto mr-auto mt-[10rem] bg-[white] w-[30rem] h-[30rem] p-[3rem]  flex-column rounded-[10%]">
+            <div className="ml-auto mr-auto mt-[10rem] bg-[white] w-[30rem] h-[35rem] p-[3rem]  flex-column rounded-[10%]">
                 <ul className="ml-auto mr-auto flex-column">
-                    <p className="text-[1.5rem]">{index + 1}: {question[index]["question"]} </p>
-                    {question[index].options.map(option => (
+                    <p className="text-[1.2rem]">{index}: {questions[index]["question"]} </p>
+                    {questions[index].options.map(option => (
                     <li key={option[0]}>
                         <label>
                         <button
                             style={{ 
-                                backgroundColor: choice === option[0] ? 'blue' : 'white',
-                                border: choice === option[0] ? '4px solid blue' : '1px solid gray',
+                                backgroundColor: answers[index] === option[0] ? 'blue' : 'white',
+                                border: answers[index] === option[0] ? '4px solid blue' : '1px solid gray',
 
 
                             }}
@@ -152,9 +139,11 @@ function setQuestion(props){
                     </li>
                     ))}
                 </ul>
-                <div className="flex-row mt-[2rem]">
+                <div className="flex-row mt-[4rem]">
                     {index!=0 && <button className="" onClick={prev}>Previous</button>}
-                    <button className="ml-[18rem] " onClick={resetChoice}>Next</button>
+                    {index<10 && <button className="ml-[18rem] " onClick={resetChoice}>Next</button>}
+                    {index==10 && <button className="ml-[16rem]" onClick={submit}>Submit</button>}
+                
                 </div>
                 
             </div>

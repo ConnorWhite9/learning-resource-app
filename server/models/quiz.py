@@ -8,6 +8,7 @@ class Quiz(Base):
     id = Column(Integer, primary_key=True)
     course = Column(String, index=True)
     level = Column(Integer, index=True)
+    topic = Column(String, index=True)
 
     
 

@@ -3,11 +3,11 @@ from models.course import Course
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-def get_courses(db: AsyncSession):
+async def get_courses(db: AsyncSession):
     try:
-        courses = db.execute(select(Course)).all()
-        return courses
+        courses = await db.execute(select(Course))
+        return courses.scalars().all()
     except:
-        return ValueError
+        raise ValueError
     
 

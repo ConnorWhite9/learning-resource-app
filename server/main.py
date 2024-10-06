@@ -12,6 +12,7 @@ from db.database import Base, engine, init_db
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncEngine
 from db.database import engine
+from models.quiz import Quiz
 from routers.users import router as user
 
 # @asynccontextmanager
@@ -75,9 +76,14 @@ async def rebuild_database(async_engine: AsyncEngine):
         # Drop all tables and recreate them asynchronously
         await conn.run_sync(Base.metadata.drop_all)  # Drops all tables
         await conn.run_sync(Base.metadata.create_all)  # Recreates all tables
+
 """@app.on_event("startup")
 async def startup_event():
-    await rebuild_database(engine)"""
+    # async with engine.begin() as conn:
+        # Drop the table asynchronously
+        #await conn.run_sync(Quiz.__table__.drop)
+        # Recreate the table asynchronously
+        #await conn.run_sync(Quiz.__table__.create)"""
 
 @app.get("/")
 def read_root():

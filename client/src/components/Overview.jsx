@@ -9,9 +9,6 @@ function Overview({ title }) {
           <h2>Mastery: 0%</h2>
           <img src="masterybar.png" alt="mastery bar" className="w-[80%]" />
         </div>
-        <button className="bg-gray-400 px-2 py-1 border-2 border-black rounded-lg mt-4">
-          Enroll
-        </button>
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Lesson from "./Lesson";
+import axios from "axios";
+//import Circle from "./Circle";
 
 const htmlQuizzes = [
   ["Introduction to HTML", 1],
@@ -55,36 +57,102 @@ const htmlVideo = "https://www.youtube.com/embed/HD13eq_Pmp8";
 const cssVideo = "https://www.youtube.com/embed/wRNinF7YQqQ";
 const pythonVideo = "https://www.youtube.com/embed/VchuKL44s6E"
 
+
+
+
+
 function Lessons() {
 
-    return (
-      <div>
-        <Lesson
-          language="HTML"
-          quizzes={htmlQuizzes}
-          documentation={htmlDocumentation}
-          title="Introduction to HTML"
-          color="#B2DF8A"
-          video={htmlVideo}
-        />
-        <Lesson
-          language="CSS"
-          quizzes={cssQuizzes}
-          documentation={cssDocumentation}
-          title="Introduction to CSS"
-          color="#FFA76C"
-          video={cssVideo}
-        />
-        <Lesson
-          language="Python"
-          quizzes={pythonQuizzes}
-          documentation={pythonDocumentation}
-          title="Introduction to Python"
-          color="#A6DBFF"
-          video={pythonVideo}
-        />
-      </div>
-    );
+
+  const [loading, setLoading] = useState(true);  // Loading state
+  const [error, setError] = useState(null);  // Error state
+
+  const grabInfo = async () => {
+
+    try {
+      const response = await axios.get(`http://localhost:8000/user/userInfo`, {
+        headers: {
+            'Content-Type': 'application/json'  // Ensure the server expects JSON
+               
+        },
+        withCredentials: true  // This ensures that cookies are sent and received
+    });
+    console.log(response.data)
+    } catch (error){
+      console.error("Error:", error)
+    }
+  }
+  
+  const [testQuizzes, setTestQuizzes] = useState({});
+
+
+  const quizzes = async () => {
+
+    try {
+      const response = await axios.get(`http://localhost:8000/course/getAllQuiz`, {
+        headers: {
+            'Content-Type': 'application/json'  // Ensure the server expects JSON
+               
+        },
+        withCredentials: true  // This ensures that cookies are sent and received
+    });
+    console.log(response.data)
+    setTestQuizzes(response.data);
+    } catch (error){
+      console.error("Error:", error)
+    }
+  }
+
+
+  
+
+
+  useEffect(() => {
+    // Async function inside useEffect
+    const fetchData = async () => {
+      await grabInfo();  // Assuming grabInfo is an async function
+      await quizzes();    // Fetch quizzes
+      setLoading(false);
+    };
+
+    fetchData();  // Call async function
+
+  }, []); 
+
+    if (loading) {
+      return  <p>Loading ... </p> 
+      {/*<Circle />*/}
+    }
+    else {
+      return (
+        <div>
+          {/*<Lesson
+            language="HTML"
+            quizzes={htmlQuizzes}
+            documentation={htmlDocumentation}
+            title="Introduction to HTML"
+            color="#B2DF8A"
+            video={htmlVideo}
+          />
+          <Lesson
+            language="CSS"
+            quizzes={cssQuizzes}
+            documentation={cssDocumentation}
+            title="Introduction to CSS"
+            color="#FFA76C"
+            video={cssVideo}
+          />*/}
+          <Lesson
+            language="Python"
+            quizzes={testQuizzes["Python"]}
+            documentation={pythonDocumentation}
+            title="Introduction to Python"
+            color="#A6DBFF"
+            video={pythonVideo}
+          />
+        </div>
+      );
+    }
 }
 
 

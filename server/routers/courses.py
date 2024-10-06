@@ -27,9 +27,9 @@ def coursePage(request: Request, course: Course, db: AsyncSession = Depends(get_
 
 
 @router.get("/getQuiz")
-@limiter.limit("1/second")
-async def getQuiz (request: Request, quiz: QuizSchema, db: AsyncSession=Depends(get_db)):
-    questions, quiz_id = await getQuiz_service(quiz.course, quiz.level, db)
+@limiter.limit("3/second")
+async def getQuiz (request: Request, course: str, level: int, db: AsyncSession=Depends(get_db)):
+    questions, quiz_id = await getQuiz_service(course, level, db)
     return {"questions": questions, "quiz_id": quiz_id}
 
 

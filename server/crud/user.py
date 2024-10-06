@@ -29,7 +29,7 @@ async def grab_enrollment_crud(user_id, db: AsyncSession):
 async def grab_grades_crud(user_id, db: AsyncSession):
     try: 
         raw = await db.execute(select(Grade)).where(Grade.user_id==user_id)
-        grades = raw.scalars().all()
+        grades = raw.scalar()
         return grades
     except:
         raise ValueError("hello")

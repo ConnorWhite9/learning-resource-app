@@ -37,10 +37,11 @@ function Courses() {
         },
         withCredentials: true  // This ensures that cookies are sent and received
     })
+      console.log(response.data);
     } catch (error){
       console.error("Error:", error)
     }
-    console.log(response.data)
+    
   }
 
 
