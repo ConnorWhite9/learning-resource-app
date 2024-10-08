@@ -1,12 +1,17 @@
 import react, {useState, useEffect} from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+
+
 
 function setQuestion(props){
 
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);  // Loading state
     const [error, setError] = useState(null);  // Error state
 
     const [questions, setQuestions] = useState(null);
+    const [quiz_id, setQuiz_id] = useState(null);
     
     const grabQuestions = async () => {
         try {
@@ -20,6 +25,7 @@ function setQuestion(props){
 
             console.log(response.data);
             setQuestions(response.data.questions);
+            setQuiz_id(response.data.quiz_id);
         } catch(error) {
             console.log(error);
         }
@@ -76,7 +82,6 @@ function setQuestion(props){
     const submit = () => {
         const postData = {
             "answers": answers,
-            "user_id": 1,
             "quiz_id": quiz_id
 
         }
@@ -89,7 +94,7 @@ function setQuestion(props){
         })
             .then((response) => {
                 console.log(response.data);
-                
+                navigate("/courses");
                 
             })
             .catch((error) => {

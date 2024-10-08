@@ -9,7 +9,7 @@ function Quizzes({ language, quizzes }) {
           <a href={`http://localhost:5173/quiz/${language}/${quizzes[key]["level"]}`} key={index}>
             <li className="flex items-center mb-2" >
               <img src="quiz.png" alt="quiz" className="w-[30px] ml-4 mr-2" />
-              <p className="hover:underline">{quizzes[key]["topic"]}</p>
+              <p className="hover:underline">{quizzes[key]["topic"]}        </p>
             </li>
           </a>
         ))}

@@ -3,11 +3,12 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from services.auth import *
 from fastapi.security import OAuth2PasswordBearer
-
+from fastapi_csrf_protect import CsrfProtect
 from schemas.auth import *
 from .limiter import limiter
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from server.main import csrf_protect
 router = APIRouter(
     prefix="/auth",
 )
@@ -32,6 +33,8 @@ async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
         tokens = await refresh_token_service(refresh_token, access_token, db)
         response = Response()
         response = JSONResponse(content={"message": "New tokens successfully returned"})
+        response.delete_cookie(key="access_token")
+        response.delete_cookie(key="refresh_token")        
         response.set_cookie(
             key="access_token",
             value=tokens["access_token"],
@@ -92,7 +95,31 @@ async def logout(request: Request, response: Response, db: AsyncSession = Depend
         message = "Logged out successfully"
     else:
         message = "Tokens were not able to be blacklisted and removed from data tables"
+    response = Response()
     response.delete_cookie(key="access_token")
     response.delete_cookie(key="refresh_token")
 
     return {"message": message}
+
+
+
+
+
+
+@router.get("/get_csrf_token")
+def get_csrf_token(csrf_protect: CsrfProtect = Depends()):
+    csrf_token = csrf_protect.generate_csrf()
+    response = JSONResponse(content={"message": "CSRF token generated"})
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=True)
+    return response
+
+@router.post("/submit_form")
+def submit_form(data: dict, csrf_protect: CsrfProtect = Depends(), request: Request = None):
+    csrf_token = request.cookies.get("csrf_token")
+    try:
+        csrf_protect.validate_csrf(csrf_token)
+    except:
+        raise HTTPException(status_code=403, detail="CSRF token invalid")
+
+    # Process form data here
+    return {"message": "Form submitted successfully"}

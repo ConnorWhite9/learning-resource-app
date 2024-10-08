@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from crud.quiz import *
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from helpers.auth import *
+from fastapi import Depends, HTTPException, status
 
 def coursePage_service(name: str, db: Session):
     quizs = get_course_quizs(name, db)
@@ -35,25 +36,32 @@ async def getQuiz_service(course, level, db: AsyncSession):
 
 
 
-def grade_service(userAnswers, db: AsyncSession):
-    answer_key = getAnswers(db)
+async def grade_service(access_token, userAnswers, db: AsyncSession):
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+
+    # Extract user info from the payload
+    user_id = payload.get("id")
+    answer_key = await getAnswers(userAnswers.quiz_id, db)
     correlation = {
+        0: 'NA',
         1: 'a',
         2: 'b',
         3: 'c',
         4: 'd',
     }
 
-    correct = []
-    for i in range(len(userAnswers)):
-        if correlation[userAnswers[i]] == answer_key[i]["answer"]:
-            correct[i] = 1
+    correct = {}
+    for answer in answer_key:
+        if correlation[userAnswers.answers[answer.number]] == answer.answer:
+            correct[answer.number] = 1
         else:
-            correct[i] = 0 
+            correct[answer.number] = 0 
 
         grade = sum(correct)/len(correct) * 100 
-        check = addGrade(userAnswers.user_id, grade, userAnswers.quiz_id, db)
-    return 
+        check = await addGrade(user_id, grade, userAnswers.quiz_id, db)
+    return True
 
 
 

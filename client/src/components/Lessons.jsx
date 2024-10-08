@@ -66,7 +66,7 @@ function Lessons() {
 
   const [loading, setLoading] = useState(true);  // Loading state
   const [error, setError] = useState(null);  // Error state
-
+  const [userInfo, setUserInfo] = useState(null);
   const grabInfo = async () => {
 
     try {
@@ -77,7 +77,8 @@ function Lessons() {
         },
         withCredentials: true  // This ensures that cookies are sent and received
     });
-    console.log(response.data)
+    console.log(response.data);
+    setUserInfo(response.data);
     } catch (error){
       console.error("Error:", error)
     }
@@ -126,7 +127,7 @@ function Lessons() {
     else {
       return (
         <div>
-          {/*<Lesson
+          <Lesson
             language="HTML"
             quizzes={htmlQuizzes}
             documentation={htmlDocumentation}
@@ -141,7 +142,7 @@ function Lessons() {
             title="Introduction to CSS"
             color="#FFA76C"
             video={cssVideo}
-          />*/}
+          />
           <Lesson
             language="Python"
             quizzes={testQuizzes["Python"]}

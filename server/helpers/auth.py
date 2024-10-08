@@ -18,7 +18,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
 REFRESH_TOKEN_EXPIRY = os.getenv("REFRESH_TOKEN_EXPIRY")
-ACCESS_TOKEN_EXPIRY = os.getenv("REFRESH_ACCESS_EXPIRY")
+ACCESS_TOKEN_EXPIRY = os.getenv("ACCESS_TOKEN_EXPIRY")
 
 
 def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=5)):
@@ -60,9 +60,10 @@ def verify_token(token: str, credentials_exception):
 def decode_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print(payload)
         return payload
-    except JWTError:
-        return None
+    except JWTError as e:
+        raise ValueError(e)
     
 def verify_access(token: str):
     payload = decode_token(token)

@@ -43,7 +43,7 @@ async def get_questions(db: AsyncSession, id: int):
 
 async def getAnswers(quiz_id, db: AsyncSession):
     try:
-        answers = await db.execute(select(Question)).where(Question.quiz_id == quiz_id)
+        answers = await db.execute(select(Question).where(Question.quiz_id == quiz_id))
         return answers.scalars().all()
     except:
         raise ValueError
@@ -51,13 +51,20 @@ async def getAnswers(quiz_id, db: AsyncSession):
 
 async def addGrade(user_id, grade, quiz_id, db: AsyncSession):
     try:
-        newGrade = Grade(user_id=user_id, grade=grade, quiz_id=quiz_id)
-        db.add(newGrade)
+        result = await db.execute(select(Grade).where(Grade.user_id==user_id, Grade.quiz_id==quiz_id))
+        exists = result.scalar_one_or_none()
+        if exists:
+            exists.grade = grade
+        else:
+            newGrade = Grade(user_id=user_id, grade=grade, quiz_id=quiz_id)
+            db.add(newGrade)
         await db.commit()
         return True
-    except:
-        raise ValueError
+    except SQLAlchemyError as e:
+        await db.rollback()  # Roll back the session on error
+        raise ValueError(f"Failed to add grade: {str(e)}")
     
+
 
 async def grab_all_quizzes(db: AsyncSession):
     try:

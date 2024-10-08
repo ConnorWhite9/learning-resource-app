@@ -8,8 +8,10 @@ from helpers.auth import *
 async def userInfo_service(access_token, db: AsyncSession):
     #Need to grab enrollment 
     payload = decode_token(access_token)
+    print(1)
+    print(payload)
     if payload is None: 
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=access_token)
 
     user_id = payload.get("id")
 

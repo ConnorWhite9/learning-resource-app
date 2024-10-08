@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import List
+from typing import List, Dict
 
 
 class Course(BaseModel):
@@ -11,6 +11,5 @@ class QuizSchema(BaseModel):
 
 
 class userAnswers(BaseModel):
-    user_id: int
     quiz_id: int 
-    answers: List[str]
+    answers: Dict[int, int]

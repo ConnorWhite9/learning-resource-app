@@ -45,10 +45,7 @@ function Courses() {
   }
 
 
-  useEffect(() => {
-    loginCheck();
-    grabInfo();
-  }, []);  //
+  
 
 
 
