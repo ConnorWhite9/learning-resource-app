@@ -14,24 +14,20 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from db.database import engine
 from models.quiz import Quiz
 from routers.users import router as user
-from fastapi_csrf_protect import CsrfProtect
-from db.config import CsrfSettings
+from routers.dependencies import csrf_protect
 # @asynccontextmanager
 # async def lifespan(_: FastAPI):
 #     yield
 
 #uvicorn main:app --reload
 
-csrf_protect = CsrfProtect()
-
-@csrf_protect.load_config
-def get_csrf_config():
-    return CsrfSettings()
 
 
 test_router = APIRouter()
 
 app = FastAPI()
+
+
 
 origins = [
     "http://localhost",  # for local testing
@@ -104,7 +100,7 @@ app.include_router(user)
 
 app.state.limiter = limiter
 
-csrf_protect.init_app(app)
+
 
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

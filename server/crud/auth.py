@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import delete
 import datetime
 from passlib.context import CryptContext
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from db.database import get_db
 from models.user import *
 from models.auth import *
@@ -10,6 +10,7 @@ from schemas import *
 from schemas.auth import *
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
 
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -22,20 +23,24 @@ async def login(db: Session, email: str, password: str):
         if not bcrypt_context.verify(password, user.password):
             return False
         return user
-    except:
-        raise ValueError("Could not properly grab user from database in login function")
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User could not be grabbed: {str(e)}")
     
 
 
 async def create_user_instance(create_user_request: CreateUserSchema, db: Session):
-    create_user_model = User(
-        username=create_user_request.username,
-        email=create_user_request.email,
-        password=bcrypt_context.hash(create_user_request.password),
-    )
-    db.add(create_user_model)
-    await db.commit()
-    return "User Created"
+    try: 
+        create_user_model = User(
+            username=create_user_request.username,
+            email=create_user_request.email,
+            password=bcrypt_context.hash(create_user_request.password),
+        )
+        db.add(create_user_model)
+        await db.commit()
+        return "User Created"
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User could not be created successfully: {str(e)}")
 
 async def authenticate_user(db: AsyncSession, email: str, password: str):
     try: 
@@ -46,9 +51,9 @@ async def authenticate_user(db: AsyncSession, email: str, password: str):
         if not bcrypt_context.verify(password, user.password):
             return False
         return user
-    except Exception as e: 
+    except SQLAlchemyError as e: 
         print(f"Error during authentication: {e} ")
-        raise ValueError("Authentication failed")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User could not be grabbed for authentication: {str(e)}")
 
 async def isBlacklisted(token: str, db: Session = Depends(get_db)):
     try: 
@@ -57,8 +62,8 @@ async def isBlacklisted(token: str, db: Session = Depends(get_db)):
         if check:
             return False
         return True
-    except:
-        raise ValueError
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Token could not be grabbed: {str(e)}")
     
 
 async def logout_crud(token, db: AsyncSession):
@@ -80,9 +85,11 @@ async def logout_crud(token, db: AsyncSession):
         await db.commit()
         return True
         
-    except Exception as e:
+    except SQLAlchemyError as e:
+        await db.rollback()
         print(f"Could not delete tokens: {e}")
-        return False
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"New token could not be created or token could not be grabbed: {str(e)}")
+    
     
 
 
@@ -93,5 +100,6 @@ async def save_refresh(token, expire, user_id, db: AsyncSession):
         await db.commit()
         return True
     except Exception as e:
+        await db.rollback()
         print(f"Problem in saving new refresh token: {e}")
-        raise ValueError
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"New refresh token could not be succesfully added: {str(e)}")

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import delete
 import datetime
 from passlib.context import CryptContext
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from db.database import get_db
 from models.user import *
 from models.auth import *
@@ -21,23 +21,22 @@ async def get_quiz_crud(db: AsyncSession, course: str, level: int ):
         quiz = result.scalar_one_or_none()  # This will return None if no results found
         return quiz
     except SQLAlchemyError as e:
-        print(f"Database error occurred: {e}")
-        return None
-
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Could not grab quiz: {str(e)}")
+    
 async def get_course_quizs(course: str, db: Session):
     try: 
         quizs = await db.execute(select(Quiz)).where(Quiz.course == course).all()
         return quizs
-    except:
-        raise ValueError
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Could not grab quizzes for course: {str(e)}")
     
 
 async def get_questions(db: AsyncSession, id: int):
     try:
         questions = await db.execute(select(Question).where(Question.quiz_id == id))
         return questions.scalars().all()
-    except:
-        raise ValueError
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Could not grab questions: {str(e)}")
     
 
 
@@ -45,8 +44,8 @@ async def getAnswers(quiz_id, db: AsyncSession):
     try:
         answers = await db.execute(select(Question).where(Question.quiz_id == quiz_id))
         return answers.scalars().all()
-    except:
-        raise ValueError
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Could not grab answers for quiz: {str(e)}")
     
 
 async def addGrade(user_id, grade, quiz_id, db: AsyncSession):
@@ -62,7 +61,7 @@ async def addGrade(user_id, grade, quiz_id, db: AsyncSession):
         return True
     except SQLAlchemyError as e:
         await db.rollback()  # Roll back the session on error
-        raise ValueError(f"Failed to add grade: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Grade could not be added properly: {str(e)}")
     
 
 
@@ -82,6 +81,5 @@ async def grab_all_quizzes(db: AsyncSession):
 
         return formatted_quizzes
 
-    except Exception as e:
-        print(e)
-        raise ValueError 
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Quizzes could not be grabbed successfully: {str(e)}")

@@ -5,7 +5,7 @@ from db.database import get_db
 from crud.course import get_courses
 from schemas.course import *
 from services.course import *
-
+from services.user import *
 from .limiter import limiter
 
 router = APIRouter(
@@ -38,6 +38,7 @@ async def getQuiz (request: Request, course: str, level: int, db: AsyncSession=D
 async def grade (request: Request, userAnswers: userAnswers, db: AsyncSession=Depends(get_db)):
     access_token = request.cookies.get("access_token")
     await grade_service(access_token, userAnswers, db)
+    await streak_service(access_token, db)
     return  {"message": "new grade added"}
 
 

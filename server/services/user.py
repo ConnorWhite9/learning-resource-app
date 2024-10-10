@@ -4,6 +4,7 @@ from crud.quiz import *
 from crud.user import *
 from sqlalchemy.ext.asyncio import AsyncSession
 from helpers.auth import *
+import datetime
 
 async def userInfo_service(access_token, db: AsyncSession):
     #Need to grab enrollment 
@@ -36,3 +37,26 @@ async def userInfo_service(access_token, db: AsyncSession):
         mastery[course] = int((len(reformat[key])/len(total)) * 100)
     #return all information
     return enroll_list, reformat, mastery 
+
+
+
+async def streak_service(token, db: AsyncSession):
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+
+    # Extract user info from the payload
+    user_id = payload.get("id")
+
+    streak = await get_last_streak(user_id, db)
+
+    difference = datetime.now(timezone.utc) - streak.lastActivity
+
+    if difference < timedelta(days=1):
+        return {"message": "Streak already set for today"}
+    elif difference > timedelta(days=1):
+        await resetStreak(user_id, streak, db)
+        return {"message": "Streak reset to 0"}
+    else:
+        await setCurrentStreak(user_id, streak, db)
+        return {"message": "Streak increased"}

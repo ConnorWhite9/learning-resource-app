@@ -8,7 +8,8 @@ from schemas.auth import *
 from .limiter import limiter
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from server.main import csrf_protect
+from fastapi_csrf_protect import CsrfProtect
+from .dependencies import csrf_protect
 router = APIRouter(
     prefix="/auth",
 )

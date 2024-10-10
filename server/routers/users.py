@@ -29,3 +29,5 @@ async def userInfo (request: Request, db: AsyncSession=Depends(get_db)):
     enroll_list, grades, mastery = await userInfo_service(access_token ,db)
 
     return {"enrollment": enroll_list, "grades": grades, "mastery": mastery}
+
+
