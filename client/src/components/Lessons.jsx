@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import Lesson from "./Lesson";
 import axios from "axios";
+import Cookies from 'js-cookie';
 //import Circle from "./Circle";
 
 const htmlQuizzes = [
@@ -108,12 +109,29 @@ function Lessons() {
 
       const loginCheck = async () => {
           
-
+        const response = await axios.get("http://localhost:8000/auth/get_csrf_token", {
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          withCredentials: true  // Important to include cookies
+        });
+      
+        // Log the response to check if the token is retrieved
+          console.log(response.data);
+        
+        
+        // Retrieve the CSRF token from the cookie
+        const csrf_token = Cookies.get('csrf_token');
+        if (!csrf_token) {
+            console.error("CSRF token is not set or could not be retrieved.");
+            return; // Early exit if the CSRF token is not found
+        }
         try {
           const response = await axios.post("http://localhost:8000/auth/refresh", {},
           {
             headers: {
                 'Content-Type': 'application/json',  // Ensure the server expects JSON
+                'X-CSRF-Token': csrf_token,
             },
             withCredentials: true  // This ensures that cookies are sent and received
           })

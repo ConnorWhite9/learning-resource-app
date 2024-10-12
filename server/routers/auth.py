@@ -24,7 +24,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("/refresh")
 @limiter.limit("3/second")
-async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
+async def refresh(request: Request, csrf: str = Depends(validate_csrf), db: AsyncSession=Depends(get_db)):
         refresh_token = request.cookies.get("refresh_token")
         access_token = request.cookies.get("access_token")
         if refresh_token is None or access_token is None:
@@ -52,8 +52,7 @@ async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
 
 @router.post("/login")
 @limiter.limit("2/second")
-async def login(request: Request, info: LoginSchema, db: AsyncSession = Depends(get_db) ):
-    #await validate_csrf(request)
+async def login(request: Request, info: LoginSchema, csrf: str = Depends(validate_csrf),  db: AsyncSession = Depends(get_db) ):
     access_token, refresh_token = await login_service(info.email, info.password, db)
     response = Response()
     response = JSONResponse(content={"message": "Login Successful"})
@@ -78,7 +77,7 @@ async def login(request: Request, info: LoginSchema, db: AsyncSession = Depends(
 
 @router.post("/register")
 @limiter.limit("1/second")
-async def create_user(request: Request, user: CreateUserSchema, db: AsyncSession=Depends(get_db)):
+async def create_user(request: Request, user: CreateUserSchema, csrf: str = Depends(validate_csrf), db: AsyncSession=Depends(get_db)):
     await validate_csrf(request)
     dict = await create_user_service(user, db)
     return dict
@@ -116,7 +115,7 @@ def get_csrf_token(request: Request, csrf_protect: CsrfProtect = Depends()):
         key="csrf_token", 
         value=csrf_token, 
         httponly=False, 
-        samesite="None", 
-        secure=False)
+        samesite="Lax", 
+        )
     return response
 

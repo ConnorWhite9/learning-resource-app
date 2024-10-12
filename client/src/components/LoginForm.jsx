@@ -33,18 +33,18 @@ function LoginForm() {
         };
         
         // Retrieve the CSRF token from the cookie
-        /*const csrf_token = Cookies.get('csrf_token');
+        const csrf_token = Cookies.get('csrf_token');
         if (!csrf_token) {
             console.error("CSRF token is not set or could not be retrieved.");
             return; // Early exit if the CSRF token is not found
-        }*/
+        }
         
         // Perform the login POST request
         try {
             const postResponse = await axios.post("http://localhost:8000/auth/login", postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
-                    //'X-CSRF-Token': csrf_token,  // Include the CSRF token in the header
+                    'X-CSRF-Token': csrf_token,  // Include the CSRF token in the header
                 },
                 withCredentials: true  // This ensures that cookies are sent and received
             });
