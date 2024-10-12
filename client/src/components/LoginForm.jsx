@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Cookies from 'js-cookie';
+
 
 function LoginForm() {
 
@@ -97,7 +98,9 @@ function LoginForm() {
             <div className="flex items-center gap-3 mt-[3rem] ">
                 <button type="submit" className="h-[50px] text-center border-0 outline-none rounded-full  text-[#626262] bg-[#ebfffc] text-[18px] w-[14rem] " ><p>Log In</p></button>
             </div>
-                <p className="text-[12px] text-center mt-[0.5rem]">Don't Have An Account? Sign Up</p>
+                <p className="text-[12px] text-center mt-[0.5rem]">
+                    Don't Have An Account? <Link to="/register" className=" hover:underline">Sign Up</Link>
+                </p>
             </div>
         </form>
     );
