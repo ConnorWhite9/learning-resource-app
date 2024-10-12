@@ -67,6 +67,7 @@ function Lessons() {
   const [loading, setLoading] = useState(true);  // Loading state
   const [error, setError] = useState(null);  // Error state
   const [userInfo, setUserInfo] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const grabInfo = async () => {
 
     try {
@@ -105,15 +106,39 @@ function Lessons() {
   }
 
 
+      const loginCheck = async () => {
+          
+
+        try {
+          const response = await axios.post("http://localhost:8000/auth/refresh", {},
+          {
+            headers: {
+                'Content-Type': 'application/json',  // Ensure the server expects JSON
+            },
+            withCredentials: true  // This ensures that cookies are sent and received
+          })
+        } catch(error) {
+            console.error("Error:", error)
+            navigate("/login");
+          }
+    }
+
+
+    
+
+
   
 
 
   useEffect(() => {
     // Async function inside useEffect
     const fetchData = async () => {
-      await grabInfo();  // Assuming grabInfo is an async function
-      await quizzes();    // Fetch quizzes
-      setLoading(false);
+      if (!isRefreshing) {
+        await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
+        await grabInfo();  // Assuming grabInfo is an async function
+        await quizzes();    // Fetch quizzes
+        setLoading(false);
+      }
     };
 
     fetchData();  // Call async function
@@ -134,6 +159,7 @@ function Lessons() {
             title="Introduction to HTML"
             color="#B2DF8A"
             video={htmlVideo}
+            userInfo={userInfo}
           />
           <Lesson
             language="CSS"
@@ -142,6 +168,7 @@ function Lessons() {
             title="Introduction to CSS"
             color="#FFA76C"
             video={cssVideo}
+            userInfo={userInfo}
           />
           <Lesson
             language="Python"
@@ -150,6 +177,7 @@ function Lessons() {
             title="Introduction to Python"
             color="#A6DBFF"
             video={pythonVideo}
+            userInfo={userInfo}
           />
         </div>
       );

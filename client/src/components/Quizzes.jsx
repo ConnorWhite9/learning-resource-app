@@ -1,6 +1,6 @@
 import React from "react";
 
-function Quizzes({ language, quizzes }) {
+function Quizzes({ language, quizzes, userInfo }) {
   return (
     <div className="border-r-2 border-black h-full flex-1">
       <h2 className="font-semibold text-2xl ml-4 my-4">Quizzes</h2>
@@ -9,7 +9,10 @@ function Quizzes({ language, quizzes }) {
           <a href={`http://localhost:5173/quiz/${language}/${quizzes[key]["level"]}`} key={index}>
             <li className="flex items-center mb-2" >
               <img src="quiz.png" alt="quiz" className="w-[30px] ml-4 mr-2" />
-              <p className="hover:underline">{quizzes[key]["topic"]}        </p>
+              <p className="hover:underline">
+                {quizzes[key]["topic"]}   
+                {userInfo?.[language]?.[key]?.["grade"] === null ? <></> : <>{userInfo?.[language]?.[key]?.["grade"]}</>}
+              </p>
             </li>
           </a>
         ))}

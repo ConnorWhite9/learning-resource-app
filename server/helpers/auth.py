@@ -39,8 +39,8 @@ def decode_access_token(token):
             return ValueError
         
         return {'username': username, 'id': user_id}
-    except JWTError:
-        return ValueError
+    except JWTError as e:
+        raise ValueError
     
 
 def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):

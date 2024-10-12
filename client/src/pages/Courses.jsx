@@ -9,49 +9,7 @@ function Courses() {
 
   const navigate = useNavigate();
 
-  const loginCheck = async () => {
-      
-
-      try {
-        const response = await axios.post("http://localhost:8000/auth/refresh", {},
-        {
-          headers: {
-              'Content-Type': 'application/json',  // Ensure the server expects JSON
-          },
-          withCredentials: true  // This ensures that cookies are sent and received
-        })
-      } catch(error) {
-          console.error("Error:", error)
-          navigate("/login");
-        }
-  }
-
-
-  const grabInfo = async () => {
-
-    try {
-      const response = await axios.get(`http://localhost:8000/user/userInfo`, {
-        headers: {
-            'Content-Type': 'application/json'  // Ensure the server expects JSON
-               
-        },
-        withCredentials: true  // This ensures that cookies are sent and received
-    })
-      console.log(response.data);
-    } catch (error){
-      console.error("Error:", error)
-    }
-    
-  }
-
-
-  useEffect(() => {
-    // Async function inside useEffect
-    const fetchData = async () => {
-      await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
-      setLoading(false);
-  }
-  });
+  
 
 
 

@@ -32,7 +32,6 @@ async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
         access_token = request.cookies.get("access_token")
         tokens = await refresh_token_service(refresh_token, access_token, db)
         response = Response()
-        response = JSONResponse(content={"message": "New tokens successfully returned"})
         response.delete_cookie(key="access_token")
         response.delete_cookie(key="refresh_token")        
         response.set_cookie(
@@ -40,14 +39,14 @@ async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
             value=tokens["access_token"],
             httponly=True,  # Prevents access via JavaScript
                 # Ensure the cookie is sent only over HTTPS (production)
-            samesite="None", # Controls cross-site request handling
+            samesite="Lax", # Controls cross-site request handling
         )
         response.set_cookie(
             key="refresh_token",
             value=tokens["refresh_token"],
             httponly=True,  # Prevents access via JavaScript
              # Ensure the cookie is sent only over HTTPS (production)
-            samesite="None", # Controls cross-site request handling
+            samesite="Lax", # Controls cross-site request handling
         )
         return response
 
