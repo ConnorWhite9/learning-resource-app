@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 function LoginForm() {
 
@@ -11,37 +12,56 @@ function LoginForm() {
         password: ''
       });
     
-
-    const handleSubmit = (event) => {
+    
+    const handleSubmit = async (event) => {
         event.preventDefault();
+
+        const response = await axios.get("http://localhost:8000/auth/get_csrf_token", {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true  // Important to include cookies
+        });
         
-        //React query Api call
+        // Log the response to check if the token is retrieved
+        console.log(response.data);
+        
+        // Prepare the data for the POST request
         const postData = {
             email: formData.email,
             password: formData.password, 
+        };
+        
+        // Retrieve the CSRF token from the cookie
+        /*const csrf_token = Cookies.get('csrf_token');
+        if (!csrf_token) {
+            console.error("CSRF token is not set or could not be retrieved.");
+            return; // Early exit if the CSRF token is not found
+        }*/
+        
+        // Perform the login POST request
+        try {
+            const postResponse = await axios.post("http://localhost:8000/auth/login", postData, {
+                headers: {
+                    'Content-Type': 'application/json',  // Ensure the server expects JSON
+                    //'X-CSRF-Token': csrf_token,  // Include the CSRF token in the header
+                },
+                withCredentials: true  // This ensures that cookies are sent and received
+            });
+        
+            console.log(postResponse.data); // Log the login response
+            console.log(document.cookie); // Check all cookies in the browser
+            navigate("/courses"); // Navigate to the courses page after successful login
+        
+        } catch (error) {
+            console.error("Error:", error); // Log any errors
         }
-        axios.post("http://localhost:8000/auth/login", postData, {
-            headers: {
-                'Content-Type': 'application/json'  // Ensure the server expects JSON
-                   
-            },
-            withCredentials: true  // This ensures that cookies are sent and received
-        })
-            .then((response) => {
-                console.log(response.data);
-
-                console.log(document.cookie);
-                navigate("/courses");
-            })
-            .catch((error) => {
-                console.error("Error:", error)
-            })
-        //Reset form data
+        
+        // Reset form data
         setFormData({
             email: '',
             password: '',
-
-        })
+        });
     }
     const handleChange = (event) => {
         const { name, value } = event.target;

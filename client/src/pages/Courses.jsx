@@ -45,7 +45,13 @@ function Courses() {
   }
 
 
-  
+  useEffect(() => {
+    // Async function inside useEffect
+    const fetchData = async () => {
+      await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
+      setLoading(false);
+  }
+  });
 
 
 

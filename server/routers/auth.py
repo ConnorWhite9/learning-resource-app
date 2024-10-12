@@ -9,7 +9,6 @@ from .limiter import limiter
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_csrf_protect import CsrfProtect
-from .dependencies import csrf_protect
 router = APIRouter(
     prefix="/auth",
 )
@@ -55,6 +54,7 @@ async def refresh(request: Request, db: AsyncSession=Depends(get_db)):
 @router.post("/login")
 @limiter.limit("2/second")
 async def login(request: Request, info: LoginSchema, db: AsyncSession = Depends(get_db) ):
+    #await validate_csrf(request)
     access_token, refresh_token = await login_service(info.email, info.password, db)
     response = Response()
     response = JSONResponse(content={"message": "Login Successful"})
@@ -80,6 +80,7 @@ async def login(request: Request, info: LoginSchema, db: AsyncSession = Depends(
 @router.post("/register")
 @limiter.limit("1/second")
 async def create_user(request: Request, user: CreateUserSchema, db: AsyncSession=Depends(get_db)):
+    await validate_csrf(request)
     dict = await create_user_service(user, db)
     return dict
 
@@ -108,19 +109,15 @@ async def logout(request: Request, response: Response, db: AsyncSession = Depend
 
 
 @router.get("/get_csrf_token")
-def get_csrf_token(csrf_protect: CsrfProtect = Depends()):
+@limiter.limit("10/second")
+def get_csrf_token(request: Request, csrf_protect: CsrfProtect = Depends()):
     csrf_token = csrf_protect.generate_csrf()
     response = JSONResponse(content={"message": "CSRF token generated"})
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=True)
+    response.set_cookie(
+        key="csrf_token", 
+        value=csrf_token, 
+        httponly=False, 
+        samesite="None", 
+        secure=False)
     return response
 
-@router.post("/submit_form")
-def submit_form(data: dict, csrf_protect: CsrfProtect = Depends(), request: Request = None):
-    csrf_token = request.cookies.get("csrf_token")
-    try:
-        csrf_protect.validate_csrf(csrf_token)
-    except:
-        raise HTTPException(status_code=403, detail="CSRF token invalid")
-
-    # Process form data here
-    return {"message": "Form submitted successfully"}

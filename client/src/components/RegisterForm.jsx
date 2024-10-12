@@ -16,6 +16,20 @@ function RegisterForm() {
     const handleSubmit = (event) => {
         event.preventDefault();
         
+
+        try {
+            const response = axios.get("http://localhost:8000/auth/get_csrf_token", {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+
+
+        } catch (error) {
+            console.log(error);
+        }
+        
         //React query Api call
         const postData = {
             email: formData.email,
@@ -25,7 +39,8 @@ function RegisterForm() {
         axios.post("http://localhost:8000/auth/register", postData, {
             headers: {
                 'Content-Type': 'application/json'  // Ensure the server expects JSON
-            }
+            },
+            withCredentials: true
         })
             .then((response) => {
                 console.log(response.data);

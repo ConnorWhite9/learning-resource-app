@@ -8,6 +8,8 @@ import datetime
 
 async def userInfo_service(access_token, db: AsyncSession):
     #Need to grab enrollment 
+    print(1)
+    print(access_token)
     payload = decode_token(access_token)
     print(1)
     print(payload)
