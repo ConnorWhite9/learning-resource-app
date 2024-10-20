@@ -8,14 +8,14 @@ function LogOut() {
     const [isRefreshed, setIsRefreshed] = useState(false);
     const removeCookies = async () => {
         try {
-            const response = axios.post("http://localhost:8000/auth/logout",  {
+            const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/logout", {},  {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     
                 },
                 withCredentials: true  // This ensures that cookies are sent and receive
 
-        })
+            })
             console.log(response.data)
             navigate("/");
         } catch(error)  {
@@ -35,8 +35,11 @@ function LogOut() {
         
     
         fetchData();  // Call async function
+        return () => {
+            setIsRefreshed(false);
+        };
+    }, [isRefreshed]); 
     
-    }, []); 
 }
 
 export default LogOut;

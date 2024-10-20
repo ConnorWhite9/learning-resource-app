@@ -1,21 +1,26 @@
 import react, {useState, useEffect} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
+import ErrorModal from "./ErrorModal";
 
 
 function setQuestion(props){
 
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);  // Loading state
-    const [error, setError] = useState(null);  // Error state
+    const [isError, setIsError] = useState(null);  // Error state
+    const [isOpen, setIsOpen]  = useState(false);
+    const closeModal = () => {
+        setIsOpen(false);
+    };
+
 
     const [questions, setQuestions] = useState(null);
     const [quiz_id, setQuiz_id] = useState(null);
     
     const grabQuestions = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/course/getQuiz/?course=${props.course}&level=${props.level}`, {
+            const response = await axios.get(`https://2ae8-67-250-141-193.ngrok-free.app/course/getQuiz/?course=${props.course}&level=${props.level}`, {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     
@@ -28,9 +33,39 @@ function setQuestion(props){
             setQuiz_id(response.data.quiz_id);
         } catch(error) {
             console.log(error);
+            setIsOpen(true);
+            setIsError("There was an error in grabbing the questions for the quiz");
         }
     }
     
+    const loginCheck = async () => {
+          
+        const response = await axios.get("https://2ae8-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          withCredentials: true  // Important to include cookies
+        });
+      
+        // Log the response to check if the token is retrieved
+        const csrf_token = response.data.csrf_token
+        
+        // Retrieve the CSRF token from the cookie
+        
+        try {
+          const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/refresh", {},
+          {
+            headers: {
+                'Content-Type': 'application/json',  // Ensure the server expects JSON
+                'X-CSRF-Token': csrf_token,
+            },
+            withCredentials: true  // This ensures that cookies are sent and received
+          })
+        } catch(error) {
+            console.error("Error:", error)
+            navigate("/login");
+          }
+    }
 
 
 
@@ -79,34 +114,39 @@ function setQuestion(props){
         setIndex(prevIndex => prevIndex - 1)
     }
     
-    const submit = () => {
+    const submit = async () => {
+        await loginCheck();
         const postData = {
             "answers": answers,
             "quiz_id": quiz_id
 
         }
-        axios.post(`http://localhost:8000/course/grade`, postData, {
-            headers: {
-                'Content-Type': 'application/json'  // Ensure the server expects JSON
-                   
-            },
-            withCredentials: true  // This ensures that cookies are sent and received
-        })
-            .then((response) => {
-                console.log(response.data);
-                navigate("/courses");
+        try { 
+            const response = await axios.post(`https://2ae8-67-250-141-193.ngrok-free.app/course/grade`, postData, {
+                headers: {
+                    'Content-Type': 'application/json'  // Ensure the server expects JSON
+                    
+                },
+                withCredentials: true  // This ensures that cookies are sent and received
+            })
+            console.log(response.data);
+            navigate("/courses");
+        } catch (error){
+            console.error("error", error);
+            setIsOpen(true);
+            setIsError("There was an error in grading your assignment");
+        }
                 
-            })
-            .catch((error) => {
-                console.error("Error:", error)
-            })
+            
+        
     }
 
     useEffect(() => {
         // Async function inside useEffect
         const fetchData = async () => {
-          await grabQuestions();  // Assuming grabInfo is an async function 
-          setLoading(false);
+            await loginCheck();
+            await grabQuestions();  // Assuming grabInfo is an async function 
+            setLoading(false);
         };
     
         fetchData();  // Call async function
@@ -152,6 +192,7 @@ function setQuestion(props){
                 </div>
                 
             </div>
+            <ErrorModal open={isOpen} message={isError} onClose={closeModal} />
         </>
     );
 }

@@ -43,7 +43,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 async def login_service(email, password, db: Session):   
-    user = await authenticate_user(db, email, password)
+    user, message = await authenticate_user(db, email, password)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=message)
     access_token = create_access_token(user.username, user.id)
     refresh_token, expire = create_refresh_token(user.username, user.id)
     #Delete any previous refresh tokens
@@ -87,7 +89,7 @@ async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
             await db.commit()
         except Exception as e:
             db.rollback()
-            raise ValueError from e
+            raise ValueError(e)
     # Return the new tokens
     cookies = {"access_token": new_access_token, "refresh_token": new_refresh_token}
     return cookies
@@ -95,9 +97,9 @@ async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
 
 
 async def create_user_service(newUser: CreateUserSchema, db: Session):
-    
+    bool =  await check_users(newUser, db)
     message = await create_user_instance(newUser, db)
-    
+   
     return {"message": message}
 
 

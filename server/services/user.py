@@ -4,41 +4,55 @@ from crud.quiz import *
 from crud.user import *
 from sqlalchemy.ext.asyncio import AsyncSession
 from helpers.auth import *
-import datetime
+from datetime import timedelta, datetime, timezone
 
 async def userInfo_service(access_token, db: AsyncSession):
     #Need to grab enrollment 
-    print(1)
-    print(access_token)
     payload = decode_token(access_token)
-    print(1)
-    print(payload)
     if payload is None: 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=access_token)
 
     user_id = payload.get("id")
 
-    enroll_list = await grab_enrollment_crud(user_id, db)
+    courses = await get_courses(db)
 
     #Need to grab grades
-    grades = grab_grades_crud(user_id, db)
-    reformat = {}
-    for course in enroll_list: 
-        reformat[enroll_list[course]["course"]] = []
-
-    for key in reformat.keys():
-        for grade in grades:
-            if grade["course"] == key:
-                reformat[key].append(grade)
+    grades = await grab_grades_crud(user_id, db)
+    newGrades = {}
+    for course in courses: 
+        newGrades[course.name] = {}
+   
+    selects = []
     
+    for grade in grades:
+        selects.append(grade.quiz_id)
+    converted = await grade_quiz_conversion(selects, db)
+
+    for convert in converted: 
+        
+        for grade in grades:
+            if convert.id == grade.quiz_id:
+                newGrades[convert.course][grade.quiz_id] = grade
     
     #Need to calculate mastery for each course
     mastery = {}
-    for key in reformat.keys():
-        total = await get_course_quizs(course, db)
-        mastery[course] = int((len(reformat[key])/len(total)) * 100)
+    for key in newGrades.keys():
+        print(f"New Grades: {newGrades[key].keys()}")
+        print(f"Reformat: {newGrades.keys()}")
+        total = await get_course_quizs(key, db)
+        print(len(newGrades[key].keys()))
+        print(len(total))
+        mastery[key] = int((len(newGrades[key].keys())/len(total)) * 100)
+    
     #return all information
-    return enroll_list, reformat, mastery 
+    streak = await get_last_streak(user_id, db)
+    if streak is not None:
+        difference = datetime.now() - streak.lastActivity
+        
+        if difference > timedelta(days=1):
+            await resetStreak(user_id, streak, db)
+
+    return courses, newGrades, mastery, streak
 
 
 
@@ -51,14 +65,16 @@ async def streak_service(token, db: AsyncSession):
     user_id = payload.get("id")
 
     streak = await get_last_streak(user_id, db)
-
-    difference = datetime.now(timezone.utc) - streak.lastActivity
-
-    if difference < timedelta(days=1):
-        return {"message": "Streak already set for today"}
-    elif difference > timedelta(days=1):
-        await resetStreak(user_id, streak, db)
-        return {"message": "Streak reset to 0"}
+    if streak is None:
+        await addStreak(user_id, db)
     else:
-        await setCurrentStreak(user_id, streak, db)
-        return {"message": "Streak increased"}
+        difference = datetime.now() - streak.lastActivity
+
+        if difference < timedelta(days=1):
+            return {"message": "Streak already set for today"}
+        elif difference > timedelta(days=1):
+            await resetStreak(user_id, streak, db)
+            return {"message": "Streak reset to 0"}
+        else:
+            await setCurrentStreak(user_id, streak, db)
+            return {"message": "Streak increased"}

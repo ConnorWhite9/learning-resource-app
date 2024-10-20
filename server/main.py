@@ -30,9 +30,8 @@ app = FastAPI()
 
 
 origins = [
-    "http://localhost",  # for local testing
-    "http://localhost:5173",  # if you are using React or another frontend on port 3000
-    # Add other allowed origins as necessary
+    "http://localhost:5173",  # Your frontend origin
+    "https://13a1-67-250-141-193.ngrok-free.app"  # Your ngrok URL
 ]
 
 app.add_middleware(

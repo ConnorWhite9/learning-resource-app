@@ -28,7 +28,7 @@ async def login(db: Session, email: str, password: str):
     
 
 
-async def create_user_instance(create_user_request: CreateUserSchema, db: Session):
+async def create_user_instance(create_user_request: CreateUserSchema, db: AsyncSession):
     try: 
         create_user_model = User(
             username=create_user_request.username,
@@ -41,16 +41,27 @@ async def create_user_instance(create_user_request: CreateUserSchema, db: Sessio
     except SQLAlchemyError as e:
         await db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User could not be created successfully: {str(e)}")
+    
+
+async def check_users(create_user_request: CreateUserSchema, db: AsyncSession):
+    try:
+        result = await db.execute(select(User).where(User.email == create_user_request.email))
+        user = result.scalar_one_or_none()
+        if user is not None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Account already exists with this email.")
+    except SQLAlchemyError as e: 
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User could not be grabbed for authentication: {str(e)}")
+
 
 async def authenticate_user(db: AsyncSession, email: str, password: str):
     try: 
         result = await db.execute(select(User).where(User.email == email))
         user = result.scalar()
         if not user:
-            return False
+            return False, "There is no user with this email."
         if not bcrypt_context.verify(password, user.password):
-            return False
-        return user
+            return False, "Incorrect password."
+        return user, "Correctly grabbed everything"
     except SQLAlchemyError as e: 
         print(f"Error during authentication: {e} ")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"User could not be grabbed for authentication: {str(e)}")

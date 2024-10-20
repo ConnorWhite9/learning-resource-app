@@ -25,7 +25,8 @@ async def get_quiz_crud(db: AsyncSession, course: str, level: int ):
     
 async def get_course_quizs(course: str, db: Session):
     try: 
-        quizs = await db.execute(select(Quiz)).where(Quiz.course == course).all()
+        raw = await db.execute(select(Quiz).where(Quiz.course == course))
+        quizs = raw.scalars().all()
         return quizs
     except SQLAlchemyError as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Could not grab quizzes for course: {str(e)}")
@@ -83,3 +84,9 @@ async def grab_all_quizzes(db: AsyncSession):
 
     except SQLAlchemyError as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Quizzes could not be grabbed successfully: {str(e)}")
+
+
+async def grade_quiz_conversion(selects, db: AsyncSession):
+        raw = await db.execute(select(Quiz).where(Quiz.id.in_(selects)))
+        converted = raw.scalars().all()
+        return converted

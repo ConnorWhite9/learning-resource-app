@@ -6,7 +6,7 @@ import GetStarted from "./pages/GetStarted";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import LogOut from './components/Logout';
+import LogOut from './pages/LogOut';
 import Quiz from './pages/Quiz';
 
 function App() {

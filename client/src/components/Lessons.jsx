@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import Lesson from "./Lesson";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
+import ErrorModal from "./ErrorModal";
 //import Circle from "./Circle";
 
 const htmlQuizzes = [
@@ -69,10 +71,57 @@ function Lessons() {
   const [error, setError] = useState(null);  // Error state
   const [userInfo, setUserInfo] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const navigate = useNavigate();
+
+  const loginCheck = async () => {
+         
+    
+    const response = await axios.get("https://2ae8-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      withCredentials: true,  // Important to include cookies
+    });
+    
+    console.log(response.status);
+    console.log(response.data);
+  
+    // Log the response to check if the token is retrieved
+    const csrf_token = response.data.csrf_token;
+    
+    // Retrieve the CSRF token from the cookie
+    
+    try {
+      const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/refresh", {},
+      {
+        headers: {
+            'Content-Type': 'application/json',  // Ensure the server expects JSON
+            'X-CSRF-Token': csrf_token,
+        },
+        withCredentials: true,  // This ensures that cookies are sent and received
+      })
+      console.log("This is right before the modal");
+      if (response.status !== 200) {
+        navigate("/login");
+      }
+      
+    } catch(error) {
+        console.error("Error:", error)
+        navigate("/login");
+      }
+}
+
+
   const grabInfo = async () => {
 
     try {
-      const response = await axios.get(`http://localhost:8000/user/userInfo`, {
+      const response = await axios.get(`https://2ae8-67-250-141-193.ngrok-free.app/user/userInfo`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                
@@ -83,6 +132,8 @@ function Lessons() {
     setUserInfo(response.data);
     } catch (error){
       console.error("Error:", error)
+      setIsOpen(true);
+      setError("There was an issue grabbing your account information. Reload the page and make sure you are logged in.");
     }
   }
   
@@ -92,7 +143,7 @@ function Lessons() {
   const quizzes = async () => {
 
     try {
-      const response = await axios.get(`http://localhost:8000/course/getAllQuiz`, {
+      const response = await axios.get(`https://2ae8-67-250-141-193.ngrok-free.app/course/getAllQuiz`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                
@@ -103,43 +154,13 @@ function Lessons() {
     setTestQuizzes(response.data);
     } catch (error){
       console.error("Error:", error)
+      setIsOpen(true);
+      setError("There was an issue grabbing the quizzes.");
     }
   }
 
 
-      const loginCheck = async () => {
-          
-        const response = await axios.get("http://localhost:8000/auth/get_csrf_token", {
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          withCredentials: true  // Important to include cookies
-        });
       
-        // Log the response to check if the token is retrieved
-          console.log(response.data);
-        
-        
-        // Retrieve the CSRF token from the cookie
-        const csrf_token = Cookies.get('csrf_token');
-        if (!csrf_token) {
-            console.error("CSRF token is not set or could not be retrieved.");
-            return; // Early exit if the CSRF token is not found
-        }
-        try {
-          const response = await axios.post("http://localhost:8000/auth/refresh", {},
-          {
-            headers: {
-                'Content-Type': 'application/json',  // Ensure the server expects JSON
-                'X-CSRF-Token': csrf_token,
-            },
-            withCredentials: true  // This ensures that cookies are sent and received
-          })
-        } catch(error) {
-            console.error("Error:", error)
-            navigate("/login");
-          }
-    }
 
 
     
@@ -172,7 +193,7 @@ function Lessons() {
         <div>
           <Lesson
             language="HTML"
-            quizzes={htmlQuizzes}
+            quizzes={testQuizzes["HTML"]}
             documentation={htmlDocumentation}
             title="Introduction to HTML"
             color="#B2DF8A"
@@ -181,7 +202,7 @@ function Lessons() {
           />
           <Lesson
             language="CSS"
-            quizzes={cssQuizzes}
+            quizzes={testQuizzes["CSS"]}
             documentation={cssDocumentation}
             title="Introduction to CSS"
             color="#FFA76C"
@@ -197,6 +218,7 @@ function Lessons() {
             video={pythonVideo}
             userInfo={userInfo}
           />
+          <ErrorModal open={isOpen} message={error} onClose={closeModal} />
         </div>
       );
     }
