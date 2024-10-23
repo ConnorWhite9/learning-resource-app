@@ -7,9 +7,7 @@ from db.database import Base
 class Course(Base):
     __tablename__ = "courses"
 
-    level = Column(Integer)
     name = Column(String, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
 
     class Config:
         json_schema_extra = {
@@ -19,5 +17,13 @@ class Course(Base):
                 "user_id": 50
             }
         }
-    user = relationship("User", backref=backref("courses", lazy="dynamic"))
+    
+class Enroll(Base):
+    __tablename__ = "enroll"
+
+    course = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True )
+    level = Column(Integer, default=0)
+
+    user = relationship("User", backref=backref("enroll", lazy="dynamic"))
     

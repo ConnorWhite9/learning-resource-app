@@ -1,3 +1,4 @@
+from openai import OpenAI
 from typing import Union
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, Request, Response
@@ -6,24 +7,31 @@ from routers.limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from routers.auth import router as auth
+from routers.courses import router as course
 from db.database import Base, engine, init_db
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from sqlalchemy.ext.asyncio import AsyncEngine
+from db.database import engine
+from models.quiz import Quiz
+from routers.users import router as user
+from routers.dependencies import csrf_protect
 # @asynccontextmanager
 # async def lifespan(_: FastAPI):
 #     yield
 
 #uvicorn main:app --reload
 
+
+
 test_router = APIRouter()
 
 app = FastAPI()
 
+
+
 origins = [
-    "http://localhost",  # for local testing
-    "http://localhost:5173",  # if you are using React or another frontend on port 3000
-    # Add other allowed origins as necessary
+    "http://localhost:5173",  # Your frontend origin
+    "https://13a1-67-250-141-193.ngrok-free.app"  # Your ngrok URL
 ]
 
 app.add_middleware(
@@ -66,7 +74,21 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=status_code,
         content={"error": custom_message},
     )
+async def rebuild_database(async_engine: AsyncEngine):
+    async with async_engine.begin() as conn:
+        # Drop all tables and recreate them asynchronously
+        await conn.run_sync(Base.metadata.drop_all)  # Drops all tables
+        await conn.run_sync(Base.metadata.create_all)  # Recreates all tables
 
+
+@app.on_event("startup")
+async def startup_event():
+    # async with engine.begin() as conn:
+        # Drop the table asynchronously
+        #await conn.run_sync(Quiz.__table__.drop)
+        # Recreate the table asynchronously
+        #await conn.run_sync(Quiz.__table__.create)
+        await rebuild_database(engine)
 
 @app.get("/")
 def read_root():
@@ -74,8 +96,12 @@ def read_root():
 
 
 app.include_router(auth)
+app.include_router(course)
+app.include_router(user)
 
 app.state.limiter = limiter
+
+
 
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

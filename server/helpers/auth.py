@@ -4,10 +4,12 @@ from datetime import timedelta, datetime, timezone
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from typing import Annotated
-from fastapi import Depends, HTTPException, status
+from routers.dependencies import csrf_protect
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from db.database import get_db
 from crud.user import *
+from fastapi import APIRouter, HTTPException, Request, Response, Cookie, FastAPI, Depends, Header, status
+from fastapi_csrf_protect import CsrfProtect
 import os
 # importing necessary functions from dotenv library
 from dotenv import load_dotenv, dotenv_values 
@@ -18,7 +20,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
 REFRESH_TOKEN_EXPIRY = os.getenv("REFRESH_TOKEN_EXPIRY")
-ACCESS_TOKEN_EXPIRY = os.getenv("REFRESH_ACCESS_EXPIRY")
+ACCESS_TOKEN_EXPIRY = os.getenv("ACCESS_TOKEN_EXPIRY")
 
 
 def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=5)):
@@ -37,8 +39,8 @@ def decode_access_token(token):
             return ValueError
         
         return {'username': username, 'id': user_id}
-    except JWTError:
-        return ValueError
+    except JWTError as e:
+        raise ValueError
     
 
 def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):
@@ -61,8 +63,8 @@ def decode_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
-        return None
+    except JWTError as e:
+        raise ValueError(e)
     
 def verify_access(token: str):
     payload = decode_token(token)
@@ -78,3 +80,19 @@ def verify_access(token: str):
     #Add expiration check
 
     return True
+
+async def validate_csrf(request: Request, csrf_protect: CsrfProtect = Depends()):
+    csrf_token = request.headers.get("X-CSRF-Token")
+
+    if not csrf_token:
+        # If the token is missing, raise an exception
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="CSRF token missing from headers"
+        )
+    try:
+
+        csrf_protect.validate_csrf(request.headers.get("X-CSRF-Token"))
+        return {"message": "Form submitted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid CSRF token {str(e)}")

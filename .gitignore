@@ -7,5 +7,7 @@ server/todo.txt
 __pycache__/
 testing.db
 server/db/database.py
-
+quizGenerator/
 learning.db
+generator.py
+output.csv

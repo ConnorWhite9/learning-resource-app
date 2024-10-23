@@ -1,41 +1,46 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Lesson from "./Lesson";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
+import ErrorModal from "./ErrorModal";
+//import Circle from "./Circle";
 
 const htmlQuizzes = [
-  "Introduction to HTML",
-  "HTML Document Standards",
-  "Hyperlinks",
-  "Images",
-  "Text Formatting",
-  "Lists",
-  "Tables",
-  "Span/Div",
-  "Buttons",
-  "Forms",
+  ["Introduction to HTML", 1],
+  ["HTML Document Standards", 2],
+  ["Hyperlinks", 3],
+  ["Images", 4],
+  ["Text Formatting", 5],
+  ["Lists", 6],
+  ["Tables", 7],
+  ["Span/Div", 8],
+  ["Buttons", 9],
+  ["Forms", 10]
 ];
 const cssQuizzes = [
-  "Introduction to CSS",
-  "In-line, Internal, and External CSS",
-  "Box Model",
-  "Fonts",
-  "Borders",
-  "Background",
-  "Margins",
-  "Position",
-  "Pseudo Classes",
-  "Shadows",
-  "Icons",
+  ["Introduction to CSS", 1],
+  ["In-line, Internal, and External CSS", 2],
+  ["Box Model", 3],
+  ["Fonts", 4],
+  ["Borders", 5],
+  ["Background", 6],
+  ["Margins", 7],
+  ["Position", 8],
+  ["Pseudo Classes", 9],
+  ["Shadows", 10], 
+  ["Icons", 11]
 ];
 const pythonQuizzes = [
-  "Introduction to Python",
-  "Variables and Data Types",
-  "Output/Printing",
-  "User Input",
-  "Lists",
-  "Loops",
-  "Functions",
-  "Classes",
-  "String Methods",
+  ["Introduction to Python", 1],
+  ["Variables and Data Types", 2],
+  ["Output/Printing", 3],
+  ["User Input", 4],
+  ["Lists", 5],
+  ["Loops", 6],
+  ["Functions", 7],
+  ["Classes", 8],
+  ["String Methods", 9]
 ];
 
 const htmlDocumentation = [
@@ -55,33 +60,168 @@ const htmlVideo = "https://www.youtube.com/embed/HD13eq_Pmp8";
 const cssVideo = "https://www.youtube.com/embed/wRNinF7YQqQ";
 const pythonVideo = "https://www.youtube.com/embed/VchuKL44s6E"
 
+
+
+
+
 function Lessons() {
 
-    return (
-      <div>
-        <Lesson
-          quizzes={htmlQuizzes}
-          documentation={htmlDocumentation}
-          title="Introduction to HTML"
-          color="#B2DF8A"
-          video={htmlVideo}
-        />
-        <Lesson
-          quizzes={cssQuizzes}
-          documentation={cssDocumentation}
-          title="Introduction to CSS"
-          color="#FFA76C"
-          video={cssVideo}
-        />
-        <Lesson
-          quizzes={pythonQuizzes}
-          documentation={pythonDocumentation}
-          title="Introduction to Python"
-          color="#A6DBFF"
-          video={pythonVideo}
-        />
-      </div>
-    );
+
+  const [loading, setLoading] = useState(true);  // Loading state
+  const [error, setError] = useState(null);  // Error state
+  const [userInfo, setUserInfo] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const navigate = useNavigate();
+
+  const loginCheck = async () => {
+         
+    
+    const response = await axios.get("https://6491-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      withCredentials: true,  // Important to include cookies
+    });
+    
+    console.log(response.status);
+    console.log(response.data);
+  
+    // Log the response to check if the token is retrieved
+    const csrf_token = response.data.csrf_token;
+    
+    // Retrieve the CSRF token from the cookie
+    
+    try {
+      const response = await axios.post("https://6491-67-250-141-193.ngrok-free.app/auth/refresh", {},
+      {
+        headers: {
+            'Content-Type': 'application/json',  // Ensure the server expects JSON
+            'X-CSRF-Token': csrf_token,
+        },
+        withCredentials: true,  // This ensures that cookies are sent and received
+      })
+      console.log("This is right before the modal");
+      if (response.status !== 200) {
+        navigate("/login");
+      }
+      
+    } catch(error) {
+        console.error("Error:", error)
+        navigate("/login");
+      }
+}
+
+
+  const grabInfo = async () => {
+
+    try {
+      const response = await axios.get(`https://6491-67-250-141-193.ngrok-free.app/user/userInfo`, {
+        headers: {
+            'Content-Type': 'application/json'  // Ensure the server expects JSON
+               
+        },
+        withCredentials: true  // This ensures that cookies are sent and received
+    });
+    console.log(response.data);
+    setUserInfo(response.data);
+    } catch (error){
+      console.error("Error:", error)
+      setIsOpen(true);
+      setError("There was an issue grabbing your account information. Reload the page and make sure you are logged in.");
+    }
+  }
+  
+  const [testQuizzes, setTestQuizzes] = useState({});
+
+
+  const quizzes = async () => {
+
+    try {
+      const response = await axios.get(`https://6491-67-250-141-193.ngrok-free.app/course/getAllQuiz`, {
+        headers: {
+            'Content-Type': 'application/json'  // Ensure the server expects JSON
+               
+        },
+        withCredentials: true  // This ensures that cookies are sent and received
+    });
+    console.log(response.data)
+    setTestQuizzes(response.data);
+    } catch (error){
+      console.error("Error:", error)
+      setIsOpen(true);
+      setError("There was an issue grabbing the quizzes.");
+    }
+  }
+
+
+      
+
+
+    
+
+
+  
+
+
+  useEffect(() => {
+    // Async function inside useEffect
+    const fetchData = async () => {
+      if (!isRefreshing) {
+        await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
+        await grabInfo();  // Assuming grabInfo is an async function
+        await quizzes();    // Fetch quizzes
+        setLoading(false);
+      }
+    };
+
+    fetchData();  // Call async function
+
+  }, []); 
+
+    if (loading) {
+      return  <p>Loading ... </p> 
+      {/*<Circle />*/}
+    }
+    else {
+      return (
+        <div>
+          <Lesson
+            language="HTML"
+            quizzes={testQuizzes["HTML"]}
+            documentation={htmlDocumentation}
+            title="Introduction to HTML"
+            color="#B2DF8A"
+            video={htmlVideo}
+            userInfo={userInfo}
+          />
+          <Lesson
+            language="CSS"
+            quizzes={testQuizzes["CSS"]}
+            documentation={cssDocumentation}
+            title="Introduction to CSS"
+            color="#FFA76C"
+            video={cssVideo}
+            userInfo={userInfo}
+          />
+          <Lesson
+            language="Python"
+            quizzes={testQuizzes["Python"]}
+            documentation={pythonDocumentation}
+            title="Introduction to Python"
+            color="#A6DBFF"
+            video={pythonVideo}
+            userInfo={userInfo}
+          />
+          <ErrorModal open={isOpen} message={error} onClose={closeModal} />
+        </div>
+      );
+    }
 }
 
 

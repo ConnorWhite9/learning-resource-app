@@ -11,6 +11,9 @@ DATABASE_URL = settings.DATABASE_URL
 # Create SQLAlchemy engine
 engine = create_async_engine(DATABASE_URL, echo=True)
 
+engine = create_async_engine(DATABASE_URL)
+#async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
 # Create the async session
 AsyncSessionLocal = sessionmaker(
     bind=engine,

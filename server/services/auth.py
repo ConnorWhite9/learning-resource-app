@@ -43,7 +43,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 async def login_service(email, password, db: Session):   
-    user = await authenticate_user(db, email, password)
+    user, message = await authenticate_user(db, email, password)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=message)
     access_token = create_access_token(user.username, user.id)
     refresh_token, expire = create_refresh_token(user.username, user.id)
     #Delete any previous refresh tokens
@@ -53,33 +55,41 @@ async def login_service(email, password, db: Session):
     return access_token, refresh_token
     
 
-async def refresh_token_service(token, db: AsyncSession):
+async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
     # Verify the refresh token
-    payload = decode_token(token)
-    if not payload:
+    payload2 = decode_token(refresh_token)
+    if not payload2:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
     # Extract user info from the payload
-    user_id = payload.get("id")
-    print(payload)
+    user_id = payload2.get("id")
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar()
-    print(user_id)
-    print(user)
-    print(1)
+    
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
-    print(user)
+    
     # Create new access token
     new_access_token = create_access_token(user.username, user_id)
     
     # Optionally create a new refresh token
     new_refresh_token, expire = create_refresh_token(user.username, user_id)
-
-    refresh_token_save = Token(token=new_refresh_token, type="refresh", expiry=expire, user_id=user_id )
-    db.add(refresh_token_save)
-    await db.commit()
-    
+    try:
+        refresh_token_save = Token(token=new_refresh_token, type="refresh", expiry=expire, user_id=user_id )
+        db.add(refresh_token_save)
+        await db.commit()
+    except Exception as e:
+        try: 
+            await db.rollback()
+            await db.execute(delete(Token).where(Token.token == new_refresh_token))
+            await db.commit()
+            
+            refresh_token_save = Token(token=new_refresh_token, type="refresh", expiry=expire, user_id=user_id )
+            db.add(refresh_token_save)
+            await db.commit()
+        except Exception as e:
+            db.rollback()
+            raise ValueError(e)
     # Return the new tokens
     cookies = {"access_token": new_access_token, "refresh_token": new_refresh_token}
     return cookies
@@ -87,9 +97,9 @@ async def refresh_token_service(token, db: AsyncSession):
 
 
 async def create_user_service(newUser: CreateUserSchema, db: Session):
-    
+    bool =  await check_users(newUser, db)
     message = await create_user_instance(newUser, db)
-    
+   
     return {"message": message}
 
 
