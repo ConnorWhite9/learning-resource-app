@@ -29,7 +29,7 @@ function RegisterForm() {
         
         
         try {
-            const response = await axios.get("https://2ae8-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
+            const response = await axios.get("https://6491-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -62,7 +62,7 @@ function RegisterForm() {
         }
 
         try { 
-            const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/register", postData, {
+            const response = await axios.post("https://6491-67-250-141-193.ngrok-free.app/auth/register", postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     'X-CSRF-Token': csrf_token,

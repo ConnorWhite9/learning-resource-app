@@ -37,11 +37,9 @@ async def userInfo_service(access_token, db: AsyncSession):
     #Need to calculate mastery for each course
     mastery = {}
     for key in newGrades.keys():
-        print(f"New Grades: {newGrades[key].keys()}")
-        print(f"Reformat: {newGrades.keys()}")
+        
         total = await get_course_quizs(key, db)
-        print(len(newGrades[key].keys()))
-        print(len(total))
+        
         mastery[key] = int((len(newGrades[key].keys())/len(total)) * 100)
     
     #return all information

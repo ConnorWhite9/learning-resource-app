@@ -82,7 +82,7 @@ function Lessons() {
   const loginCheck = async () => {
          
     
-    const response = await axios.get("https://2ae8-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
+    const response = await axios.get("https://6491-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
       headers: {
           'Content-Type': 'application/json'
       },
@@ -98,7 +98,7 @@ function Lessons() {
     // Retrieve the CSRF token from the cookie
     
     try {
-      const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/refresh", {},
+      const response = await axios.post("https://6491-67-250-141-193.ngrok-free.app/auth/refresh", {},
       {
         headers: {
             'Content-Type': 'application/json',  // Ensure the server expects JSON
@@ -121,7 +121,7 @@ function Lessons() {
   const grabInfo = async () => {
 
     try {
-      const response = await axios.get(`https://2ae8-67-250-141-193.ngrok-free.app/user/userInfo`, {
+      const response = await axios.get(`https://6491-67-250-141-193.ngrok-free.app/user/userInfo`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                
@@ -143,7 +143,7 @@ function Lessons() {
   const quizzes = async () => {
 
     try {
-      const response = await axios.get(`https://2ae8-67-250-141-193.ngrok-free.app/course/getAllQuiz`, {
+      const response = await axios.get(`https://6491-67-250-141-193.ngrok-free.app/course/getAllQuiz`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                

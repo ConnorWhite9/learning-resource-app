@@ -10,11 +10,11 @@ function Quizzes({ language, quizzes, userInfo }) {
             <li className="flex items-center mb-2" >
               <img src="quiz.png" alt="quiz" className="w-[30px] ml-4 mr-2" />
               <p className="hover:underline">
-                {quizzes[key]["topic"]}  
+                {quizzes[key].topic}  
                 
                 {/* Check if a grade exists for the quiz, and display it if it does */}
-                {userInfo?.grades?.[quizzes[key]["id"]] != null ? (
-                  <>:  {userInfo.grades[quizzes[key]["id"]].grade}%   ✔️</>
+                {userInfo?.grades?.[language]?.[quizzes[key]["id"]] != null ? (
+                  <>:  {userInfo.grades[language][quizzes[key]["id"]].grade}%   ✔️</>
                 ) : (
                   <></>
                 )}

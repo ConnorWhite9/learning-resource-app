@@ -10,6 +10,7 @@ function setQuestion(props){
     const [loading, setLoading] = useState(true);  // Loading state
     const [isError, setIsError] = useState(null);  // Error state
     const [isOpen, setIsOpen]  = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
     const closeModal = () => {
         setIsOpen(false);
     };
@@ -20,7 +21,7 @@ function setQuestion(props){
     
     const grabQuestions = async () => {
         try {
-            const response = await axios.get(`https://2ae8-67-250-141-193.ngrok-free.app/course/getQuiz/?course=${props.course}&level=${props.level}`, {
+            const response = await axios.get(`https://6491-67-250-141-193.ngrok-free.app/course/getQuiz/?course=${props.course}&level=${props.level}`, {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     
@@ -40,7 +41,7 @@ function setQuestion(props){
     
     const loginCheck = async () => {
           
-        const response = await axios.get("https://2ae8-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
+        const response = await axios.get("https://6491-67-250-141-193.ngrok-free.app/auth/get_csrf_token", {
           headers: {
               'Content-Type': 'application/json'
           },
@@ -53,7 +54,7 @@ function setQuestion(props){
         // Retrieve the CSRF token from the cookie
         
         try {
-          const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/refresh", {},
+          const response = await axios.post("https://6491-67-250-141-193.ngrok-free.app/auth/refresh", {},
           {
             headers: {
                 'Content-Type': 'application/json',  // Ensure the server expects JSON
@@ -63,6 +64,7 @@ function setQuestion(props){
           })
         } catch(error) {
             console.error("Error:", error)
+            
             navigate("/login");
           }
     }
@@ -122,7 +124,7 @@ function setQuestion(props){
 
         }
         try { 
-            const response = await axios.post(`https://2ae8-67-250-141-193.ngrok-free.app/course/grade`, postData, {
+            const response = await axios.post(`https://6491-67-250-141-193.ngrok-free.app/course/grade`, postData, {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     
@@ -130,7 +132,11 @@ function setQuestion(props){
                 withCredentials: true  // This ensures that cookies are sent and received
             })
             console.log(response.data);
-            navigate("/courses");
+            setLoading(true);
+            setTimeout(() => {
+                navigate("/courses");
+            }, 1000);
+            
         } catch (error){
             console.error("error", error);
             setIsOpen(true);
@@ -144,9 +150,11 @@ function setQuestion(props){
     useEffect(() => {
         // Async function inside useEffect
         const fetchData = async () => {
-            await loginCheck();
-            await grabQuestions();  // Assuming grabInfo is an async function 
-            setLoading(false);
+            if (!isFinished) {
+                await grabQuestions();  // Assuming grabInfo is an async function 
+                setLoading(false);
+                setIsFinished(true);
+            }
         };
     
         fetchData();  // Call async function
