@@ -1,7 +1,7 @@
 import React from "react";
 import Quizzes from "./Quizzes";
 import Overview from "./Overview";
-import Video from "./Video.jsX";
+import Video from "./Video";
 import Documentation from "./Documentation";
 
 
