@@ -13,7 +13,7 @@ function Features() {
               </h3>
             </div>
             <p className="text-[#F2FDFF] text-[16px]">
-              We are currently working on an update to create personalized quizzes for every user using AI. For now, enjoy are standardized quizzes to help you learn.
+              We are currently working on an update to create personalized quizzes for every user using AI. For now, enjoy our standardized quizzes to help you learn.
             </p>
           </div>
         </div>
