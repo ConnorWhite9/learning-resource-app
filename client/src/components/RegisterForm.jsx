@@ -128,8 +128,8 @@ function RegisterForm() {
         <>
             <form id="loginForm" onSubmit={handleSubmit}>
                 <div className="self-center ml-[auto] mr-[auto] mt-[5rem] min-h-[30rem] w-[35rem] p-10 rounded-lg bg-white flex flex-col items-center">
-                <h1 className="text-[2.5rem] text-nowrap decoration-white">Create An Account</h1>
-                <hr className="w-[15rem] h-[0.3rem] bg-black rounded-[1rem]"/>
+                <h1 className="text-[2.5rem] text-nowrap decoration-white">Sign Up</h1>
+                <hr className="w-[5rem] h-[0.5rem] bg-black rounded-[1rem]"/>
                 <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
                     <img src={email} />
                     <input

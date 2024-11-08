@@ -16,6 +16,8 @@ function LoginForm() {
     const [isOpen, setIsOpen] = useState(false);
     const [isError, setIsError] = useState(null);
 
+    
+
     const closeModal = () => {
         setIsOpen(false);
     };
@@ -141,33 +143,35 @@ function LoginForm() {
         <>
             <form id="loginForm" onSubmit={handleSubmit}>
                 <div className="self-center ml-[auto] mr-[auto] mt-[5rem] min-h-[30rem] w-[25rem] p-10 rounded-lg bg-[white] flex flex-col items-center">
-                <h1 className="text-[3rem] decoration-white">Login </h1>
-                <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
-                    <img src={email} />
-                    <input
+                    <h1 className="text-[3rem] decoration-white">Login</h1>
+                    <hr className="h-[0.5rem] w-[5rem] rounded-[1rem] bg-black " />
+                    <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
+                        <img src={email} />
+                        <input
+                        
+                        name="email" 
+                        type="email" 
+                        onChange={handleChange} 
+                        value={formData.email} 
+                        className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
+                        placeholder='Email'/>
+                    </div>
+                    <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
+                        <img src={password} />
+                        <input 
+                        name="password"
+                        onChange={handleChange}
+                        type=""
+                        value={formData.password} 
+                        className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
+                        placeholder='Password'/>
+                    </div>
                     
-                    name="email" 
-                    type="email" 
-                    onChange={handleChange} 
-                    value={formData.email} 
-                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
-                    placeholder='Email'/>
-                </div>
-                <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
-                    <img src={password} />
-                    <input 
-                    name="password"
-                    onChange={handleChange}
-                    type=""
-                    value={formData.password} 
-                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
-                    placeholder='Password'/>
-                </div>
-                <div className="flex items-center gap-3 mt-[3rem] ">
-                    <button type="submit" className="h-[50px] text-center border-0 outline-none rounded-full  text-[white] bg-blue-600 text-[18px] w-[20rem] py-[0.5rem]" >Login</button>
-                </div>
+                    <div className="flex items-center gap-3 mt-[3rem] ">
+                        <button type="submit" className="h-[50px] text-center border-0 outline-none rounded-full  text-[white] bg-blue-600 text-[18px] w-[20rem] py-[0.5rem]" >Login</button>
+                    </div>
                     <p className="text-[12px] text-center mt-[0.5rem]">
-                        Don't Have An Account? <Link to="/register" className=" hover:underline">Sign Up</Link>
+                            Don't Have An Account? <Link to="/register" className=" underline">Sign Up</Link>
                     </p>
                 </div>
             </form>
