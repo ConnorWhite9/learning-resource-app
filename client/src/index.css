@@ -24,4 +24,6 @@
   /* Apply the font size using rem */
 html {
     font-size: var(--base-font-size);
+    background-color: black;
+    overflow-y: auto;
 }
