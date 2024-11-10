@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { Link, useLocation } from "react-router-dom";
+import logo from '../assets/logo.png';
 
 
 function Navbar() {
@@ -20,40 +21,45 @@ function Navbar() {
   };
   if (isPortrait) {
     return (
-      <div className="relative">
-        <button
-          className="flex flex-col gap-1 p-2 focus:outline-none"
-          onClick={toggleMenu}
-        >
-          {/* Hamburger icon with Tailwind styles */}
-          <div
-            className={`w-6 h-0.5 bg-gray-800 transition-transform ${
-              isOpen ? 'rotate-45 translate-y-1.5' : ''
-            }`}
-          ></div>
-          <div
-            className={`w-6 h-0.5 bg-gray-800 transition-opacity ${
-              isOpen ? 'opacity-0' : ''
-            }`}
-          ></div>
-          <div
-            className={`w-6 h-0.5 bg-gray-800 transition-transform ${
-              isOpen ? '-rotate-45 -translate-y-1.5' : ''
-            }`}
-          ></div>
-        </button>
+
+      <div className="flex flex-col bg-black">
+        <div className="flex flex-row">
+          <img src={logo} className="w-[7rem] h-[5rem]"/>
+          <p className="text-white my-[auto] text-3xl">Intelliprogramming</p>
+          <button
+            className="flex flex-col gap-3 p-6 focus:outline-none ml-[auto]"
+            onClick={toggleMenu}
+          >
+            {/* Hamburger icon with Tailwind styles */}
+            <div
+              className={`w-12 h-2 bg-white transition-transform ${
+                isOpen ? 'rotate-45 translate-y-5' : ''
+              }`}
+            ></div>
+            <div
+              className={`w-12 h-2 bg-white transition-opacity ${
+                isOpen ? 'opacity-0' : ''
+              }`}
+            ></div>
+            <div
+              className={`w-12 h-2 bg-white transition-transform ${
+                isOpen ? '-rotate-45 -translate-y-5' : ''
+              }`}
+            ></div>
+          </button>
+        </div>
 
         {/* Menu content */}
         <nav
-          className={`absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg transition-opacity ${
-            isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+          className={` w-[100%] bg-white border border-gray-200 rounded-lg shadow-lg transition-opacity ${
+            isOpen ? 'block' : 'hidden'
           }`}
         >
           <ul className="flex flex-col p-4 space-y-2">
-            <li>
+            <li className="py-[2rem] border-b border-black">
               <Link
                 to="/"
-                className={`relative font-custom text-2xl transition-all duration-300`}
+                className={`relative font-custom text-3xl transition-all duration-300`}
               >
                 Home
                 <span
@@ -63,10 +69,10 @@ function Navbar() {
                 />
               </Link>
             </li>
-            <li>
+            <li className="py-[2rem] border-b border-black" >
               <Link
                 to="/courses"
-                className={`relative font-custom text-2xl transition-all duration-300`}
+                className={`relative font-custom text-3xl transition-all duration-300`}
               >
                 Courses
                 <span
@@ -76,10 +82,10 @@ function Navbar() {
                 />
               </Link>
             </li>
-            <li>
+            <li className="py-[2rem] border-b border-black">
               <Link
                 to="/aboutus"
-                className={`relative font-custom text-2xl transition-all duration-300`}
+                className={`relative font-custom text-3xl transition-all duration-300`}
               >
                 About Us
                 <span
@@ -89,10 +95,10 @@ function Navbar() {
                 />
               </Link>
             </li>
-            <li>
+            <li className="py-[2rem] border-b border-black">
               <Link
                 to="/register"
-                className={`relative font-custom text-2xl transition-all duration-300`}
+                className={`relative font-custom text-3xl transition-all duration-300`}
               >
                 Get Started
                 <span
@@ -102,16 +108,16 @@ function Navbar() {
                 />
               </Link>
             </li>
-            <li>
+            <li className="py-[2rem] border-b border-black">
               <Link
                 to="/login"
-                className={`relative font-custom text-2xl transition-all duration-300`}
+                className={`relative font-custom text-3xl transition-all duration-300`}
               >
                 Login
                 <span
                   className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
                     location.pathname === "/login" ? "scale-x-100" : ""
-                  }`}
+                  }`}   
                 />
               </Link>
             </li>
