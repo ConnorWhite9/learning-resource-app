@@ -153,7 +153,7 @@ function LoginForm() {
                         type="email" 
                         onChange={handleChange} 
                         value={formData.email} 
-                        className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
+                        className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262] text-[18px] max-md:w-[15rem]" 
                         placeholder='Email'/>
                     </div>
                     <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
@@ -163,7 +163,7 @@ function LoginForm() {
                         onChange={handleChange}
                         type=""
                         value={formData.password} 
-                        className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
+                        className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px] max-md:w-[15rem]" 
                         placeholder='Password'/>
                     </div>
                     
