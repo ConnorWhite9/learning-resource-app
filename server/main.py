@@ -30,8 +30,7 @@ app = FastAPI()
 
 
 origins = [
-    "http://localhost:5173",  # Your frontend origin
-    "https://13a1-67-250-141-193.ngrok-free.app"  # Your ngrok URL
+    "https://www.intelliprogramming.org",
 ]
 
 app.add_middleware(

@@ -12,8 +12,8 @@ function Features() {
                 Quizzes created by AI
               </h3>
             </div>
-            <p className="text-[#F2FDFF] text-[1rem] mt-[0.5rem]">
-              Right now we only have our standardized quizzes to offer. But we are currently hard at work to bring you quizzes that are personally tailored to your needs.
+            <p className="text-[#F2FDFF] text-[16px]">
+              We are currently working on an update to create personalized quizzes for every user using AI. For now, enjoy our standardized quizzes to help you learn.
             </p>
           </div>
         </div>
