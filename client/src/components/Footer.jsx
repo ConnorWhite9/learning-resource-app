@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="flex justify-center h-[10.56rem] bg-black max-md:py-[5rem] mt-[5rem]">
+    <div className="flex justify-center h-[10.56rem] bg-black max-md:py-[15rem] mt-[5rem]">
       <div className="flex justify-center items-center w-[30.75rem]">
         <section className="flex flex-1 flex-col justify-center item-center text-[#4F8EEB] h-[7.25rem] text-center" >
           <h4 className="text-[16px] font-bold italic mb-2">Company</h4>

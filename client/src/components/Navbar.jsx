@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
-
+import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
+
+  const { isLoggedIn, logout } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isPortrait, setIsPortrait] = useState(window.innerWidth < window.innerHeight);
@@ -108,19 +110,35 @@ function Navbar() {
                 />
               </Link>
             </li>
+            {isLoggedIn ? (
             <li className="py-[2rem] border-b border-black">
               <Link
-                to="/login"
+                to="/logout"
                 className={`relative font-custom text-3xl transition-all duration-300`}
               >
-                Login
+                Logout
                 <span
                   className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
-                    location.pathname === "/login" ? "scale-x-100" : ""
-                  }`}   
+                    location.pathname === "/logout" ? "scale-x-100" : ""
+                  }`}
                 />
               </Link>
-            </li>
+            </li> ) : (
+                <li className="py-[2rem] border-b border-black">
+                <Link
+                  to="/login"
+                  className={`relative font-custom text-3xl transition-all duration-300`}
+                >
+                  Login
+                  <span
+                    className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+                      location.pathname === "/login" ? "scale-x-100" : ""
+                    }`}
+                  />
+                </Link>
+              </li>
+
+            )}
           </ul>
         </nav>
       </div>
@@ -182,32 +200,36 @@ function Navbar() {
               />
             </Link>
           </li>
-          <li>
-            <Link
-              to="/login"
-              className={`relative font-custom text-2xl transition-all duration-300`}
-            >
-              Login
-              <span
-                className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
-                  location.pathname === "/login" ? "scale-x-100" : ""
-                }`}
-              />
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/logout"
-              className={`relative font-custom text-2xl transition-all duration-300`}
-            >
-              Logout
-              <span
-                className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
-                  location.pathname === "/logout" ? "scale-x-100" : ""
-                }`}
-              />
-            </Link>
-          </li>
+       
+          {isLoggedIn ? (
+            <li>
+              <Link
+                to="/logout"
+                className={`relative font-custom text-2xl transition-all duration-300`}
+              >
+                Logout
+                <span
+                  className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+                    location.pathname === "/logout" ? "scale-x-100" : ""
+                  }`}
+                />
+              </Link>
+            </li> ) : (
+                <li>
+                <Link
+                  to="/login"
+                  className={`relative font-custom text-2xl transition-all duration-300`}
+                >
+                  Login
+                  <span
+                    className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+                      location.pathname === "/login" ? "scale-x-100" : ""
+                    }`}
+                  />
+                </Link>
+              </li>
+
+            )}
         </ul>
       </div>
     );

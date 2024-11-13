@@ -6,10 +6,10 @@ import ErrorModal from "./ErrorModal";
 import email from "../assets/email.png";
 import password from '../assets/password.png';
 import person from '../assets/person.png'
-
+import { AuthProvider, useAuth } from '../context/AuthContext';
 
 function LoginForm() {
-
+    const { login } = useAuth();
     const apiUrl = import.meta.env.VITE_BACKEND_API;
     const navigate = useNavigate();
     
@@ -94,6 +94,7 @@ function LoginForm() {
             
             console.log(postResponse.data); // Log the login response
             console.log(document.cookie); // Check all cookies in the browser
+            login();
             navigate("/courses"); // Navigate to the courses page after successful login
         
         } catch (error) {
