@@ -10,6 +10,7 @@ import person from '../assets/person.png'
 
 function LoginForm() {
 
+    const apiUrl = import.meta.env.VITE_BACKEND_API;
     const navigate = useNavigate();
     
     const [isRefreshed, setIsRefreshed] = useState(false);
@@ -31,7 +32,7 @@ function LoginForm() {
     const [csrf_token, setCsrf_token] = useState([]);
     const csrf = async () => {
         try {
-            const response = await axios.get("https://learning-resource-app-f024.onrender.com/auth/get_csrf_token", {
+            const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -83,7 +84,7 @@ function LoginForm() {
         // Perform the login POST request
         try {
             
-            const postResponse = await axios.post("https://learning-resource-app-f024.onrender.com/auth/login", postData, {
+            const postResponse = await axios.post(`${apiUrl}/auth/login`, postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     'X-CSRF-Token': csrf_token,  // Include the CSRF token in the header

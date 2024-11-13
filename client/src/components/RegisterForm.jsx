@@ -6,8 +6,10 @@ import email from '../assets/email.png';
 import password from '../assets/password.png';
 import person from '../assets/person.png';
 
+
 function RegisterForm() {
 
+    const apiUrl = import.meta.env.VITE_BACKEND_API;
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -32,7 +34,7 @@ function RegisterForm() {
         
         
         try {
-            const response = await axios.get("https://learning-resource-app-f024.onrender.com/auth/get_csrf_token", {
+            const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -65,7 +67,7 @@ function RegisterForm() {
         }
 
         try { 
-            const response = await axios.post("https://learning-resource-app-f024.onrender.com/auth/register", postData, {
+            const response = await axios.post(`${apiUrl}/auth/register`, postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     'X-CSRF-Token': csrf_token,
