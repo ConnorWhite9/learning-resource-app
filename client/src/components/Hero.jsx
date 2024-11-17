@@ -1,5 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
+
 function Hero() {
 
   const demoLogin = () => {
@@ -12,6 +14,12 @@ function Hero() {
     
   }
 
+  const {isDemo, activateDemo } = useAuth();
+  
+  const demoSignIn = () => {
+    demoLogin();
+    activateDemo();
+  }
 
   return (
     <div className="flex font-custom h-[500px] mb-8 justify-center items-center">
