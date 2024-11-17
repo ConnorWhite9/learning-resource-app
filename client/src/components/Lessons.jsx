@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
+import { useAuth } from '../context/AuthContext';
 //import Circle from "./Circle";
 
 const htmlQuizzes = [
@@ -72,6 +73,7 @@ function Lessons() {
   const [userInfo, setUserInfo] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { isDemo } = useAuth();
 
   const closeModal = () => {
     setIsOpen(false);
@@ -160,22 +162,18 @@ function Lessons() {
   }
 
 
-      
-
-
-    
-
-
-  
-
 
   useEffect(() => {
     // Async function inside useEffect
     const fetchData = async () => {
       if (!isRefreshing) {
-        await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
-        await grabInfo();  // Assuming grabInfo is an async function
-        await quizzes();    // Fetch quizzes
+        if (isDemo === false){
+          await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
+          await grabInfo();  // Assuming grabInfo is an async function
+        
+          
+        } 
+        await quizzes(); // Fetch quizzes
         setLoading(false);
       }
     };
