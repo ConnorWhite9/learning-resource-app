@@ -2,7 +2,7 @@ import react, {useState, useEffect} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
-
+import { useAuth } from '../context/AuthContext';
 
 function setQuestion(props){
 
@@ -12,6 +12,7 @@ function setQuestion(props){
     const [isError, setIsError] = useState(null);  // Error state
     const [isOpen, setIsOpen]  = useState(false);
     const [isFinished, setIsFinished] = useState(false);
+    const { isDemo } = useAuth();
     const closeModal = () => {
         setIsOpen(false);
     };
@@ -118,10 +119,14 @@ function setQuestion(props){
     }
     
     const submit = async () => {
-        await loginCheck();
+        if (isDemo === false) {
+            await loginCheck();
+        }
+        
         const postData = {
             "answers": answers,
-            "quiz_id": quiz_id
+            "quiz_id": quiz_id,
+            "isDemo": isDemo
 
         }
         try { 

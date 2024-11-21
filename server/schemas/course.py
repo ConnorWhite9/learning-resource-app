@@ -13,3 +13,4 @@ class QuizSchema(BaseModel):
 class userAnswers(BaseModel):
     quiz_id: int 
     answers: Dict[int, int]
+    isDemo: bool

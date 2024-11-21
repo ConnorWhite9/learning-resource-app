@@ -37,12 +37,16 @@ async def getQuiz_service(course, level, db: AsyncSession):
 
 
 async def grade_service(access_token, userAnswers, db: AsyncSession):
-    payload = decode_token(access_token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    user_id = 0
+    #If not a demo user do this
+    if userAnswers.isDemo == False:
+        payload = decode_token(access_token)
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
-    # Extract user info from the payload
-    user_id = payload.get("id")
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    
     answer_key = await getAnswers(userAnswers.quiz_id, db)
     correlation = {
         0: 'NA',
@@ -58,9 +62,10 @@ async def grade_service(access_token, userAnswers, db: AsyncSession):
             correct[answer.number] = 1
         else:
             correct[answer.number] = 0 
-        print(correct)
-        print(sum(correct))
-        grade = sum(correct.values())/len(correct) * 100 
+             
+    grade = sum(correct.values())/len(correct) * 100
+    #If not a demo user add Grade to the demo user 
+    if userAnswers.isDemo == False:
         check = await addGrade(user_id, grade, userAnswers.quiz_id, db)
     return grade
 
