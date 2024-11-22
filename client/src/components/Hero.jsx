@@ -1,8 +1,10 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 function Hero() {
+  const navigate = useNavigate();
 
   const demoLogin = () => {
     const demoUser = {
@@ -19,6 +21,7 @@ function Hero() {
   const demoSignIn = () => {
     demoLogin();
     activateDemo();
+    
   }
 
   return (
@@ -39,7 +42,7 @@ function Hero() {
                   Sign Up
                 </button>
               </Link>
-              <Link to="/" className="ml-[2rem]">
+              <Link to="/courses" className="ml-[2rem]">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white text-nowrap font-bold py-2 px-4 rounded w-[125px] mt-[40px]" >
                   Demo User
                 </button>

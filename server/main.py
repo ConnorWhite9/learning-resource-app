@@ -31,6 +31,7 @@ app = FastAPI()
 
 origins = [
     "https://www.intelliprogramming.org",
+    "http://localhost:5173"
 ]
 
 app.add_middleware(

@@ -24,12 +24,13 @@ class Settings(BaseSettings):
 
     refresh_token_expiry: int = 30
 
-    access_token_expiry: int 
+    access_token_expiry: int = 5
 
-    csrf_secret_key: str
+    csrf_secret_key: str = SECRET_KEY
 
     class Config:
         env_file = ".env"
+        extra = "ignore"  # This allows extra fields like 'settings_key' to be ignored
 try:
     settings = Settings()
 except ValidationError as e:
