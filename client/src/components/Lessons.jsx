@@ -66,7 +66,7 @@ const pythonVideo = "https://www.youtube.com/embed/VchuKL44s6E"
 
 function Lessons() {
 
-
+  const apiUrl = import.meta.env.VITE_BACKEND_API;
   const [loading, setLoading] = useState(true);  // Loading state
   const [error, setError] = useState(null);  // Error state
   const [userInfo, setUserInfo] = useState(null);
@@ -82,7 +82,7 @@ function Lessons() {
   const loginCheck = async () => {
          
     
-    const response = await axios.get("https://learning-resource-app-f024.onrender.com/auth/get_csrf_token", {
+    const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
       headers: {
           'Content-Type': 'application/json'
       },
@@ -98,7 +98,7 @@ function Lessons() {
     // Retrieve the CSRF token from the cookie
     
     try {
-      const response = await axios.post("https://learning-resource-app-f024.onrender.com/auth/refresh", {},
+      const response = await axios.post(`${apiUrl}/auth/refresh`, {},
       {
         headers: {
             'Content-Type': 'application/json',  // Ensure the server expects JSON
@@ -121,7 +121,7 @@ function Lessons() {
   const grabInfo = async () => {
 
     try {
-      const response = await axios.get(`https://learning-resource-app-f024.onrender.com/user/userInfo`, {
+      const response = await axios.get(`${apiUrl}/user/userInfo`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                
@@ -143,7 +143,7 @@ function Lessons() {
   const quizzes = async () => {
 
     try {
-      const response = await axios.get(`https://learning-resource-app-f024.onrender.com/course/getAllQuiz`, {
+      const response = await axios.get(`${apiUrl}/course/getAllQuiz`, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                

@@ -4,10 +4,15 @@ from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker, registry
 from db.config import settings 
 
+
+import os 
+from dotenv import load_dotenv, dotenv_values 
+# loading variables from .env file
+load_dotenv() 
 #URL from config file
 
-DATABASE_URL = settings.DATABASE_URL
-
+#DATABASE_URL = settings.DATABASE_URL
+DATABASE_URL = os.getenv('DATABASE_URL')
 # Create SQLAlchemy engine
 engine = create_async_engine(DATABASE_URL, echo=True)
 

@@ -2,9 +2,14 @@ import React, {useState} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
+import email from '../assets/email.png';
+import password from '../assets/password.png';
+import person from '../assets/person.png';
+
 
 function RegisterForm() {
 
+    const apiUrl = import.meta.env.VITE_BACKEND_API;
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -29,7 +34,7 @@ function RegisterForm() {
         
         
         try {
-            const response = await axios.get("https://learning-resource-app-f024.onrender.com/auth/get_csrf_token", {
+            const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -62,7 +67,7 @@ function RegisterForm() {
         }
 
         try { 
-            const response = await axios.post("https://learning-resource-app-f024.onrender.com/auth/register", postData, {
+            const response = await axios.post(`${apiUrl}/auth/register`, postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     'X-CSRF-Token': csrf_token,
@@ -124,47 +129,52 @@ function RegisterForm() {
     return (
         <>
             <form id="loginForm" onSubmit={handleSubmit}>
-                <div className="self-center ml-[auto] mr-[auto] mt-[5rem] min-h-[30rem] w-[35rem] p-10 rounded-lg bg-[#6300ff] flex flex-col items-center">
-                <h1 className="text-[2.5rem] text-nowrap decoration-white">Create An Account</h1>
-                <div className="flex-column items-center gap-3 mt-[3rem]">
+                <div className="self-center ml-[auto] mr-[auto] mt-[5rem] min-h-[30rem] w-[35rem] p-10 rounded-lg bg-white flex flex-col items-center">
+                <h1 className="text-[2.5rem] text-nowrap decoration-white">Sign Up</h1>
+                <hr className="w-[5rem] h-[0.5rem] bg-black rounded-[1rem]"/>
+                <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
+                    <img src={email} />
                     <input
                     name="email" 
                     type="email" 
                     onChange={handleChange} 
                     value={formData.email} 
-                    className="h-[50px] w-[20rem] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
+                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
                     placeholder='Email'/>
                 </div>
-                <div className="flex-column items-center gap-3 mt-[3rem]">
+                <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
+                    <img src={person} />
                     <input 
                     name="username"
                     onChange={handleChange}
                     type="text"
                     value={formData.username} 
-                    className="h-[50px] w-[20rem] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
+                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
                     placeholder='Username'/>
                 </div>
-                <div className="flex-column items-center gap-3 mt-[3rem]">
+                <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
+                    <img src={password} />
                     <input 
                     name="password"
                     onChange={handleChange}
                     type="text"
                     value={formData.password} 
-                    className="h-[50px] w-[20rem] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
+                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
                     placeholder='Password'/>
                 </div>
-                <div className="flex-column items-center gap-3 mt-[3rem]">
+                <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
+                    <img src={password} />
                     <input 
                     name="confirmPassword"
                     onChange={handleChange}
                     type="text"
                     value={formData.confirmPassword} 
-                    className="h-[50px] w-[20rem] border-0 outline-none rounded-full pl-[25px] text-[#626262] bg-[#ebfffc] text-[18px]" 
+                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
                     placeholder='Confirm Password'/>
                 </div>
                 <hr className="color-[white] mt-[1.5rem] w-[25rem]" />
                 <div className="flex items-center gap-3 mt-[1.5rem] ">
-                    <button type="submit" className="h-[50px] text-center border-0 outline-none rounded-full  text-[#626262] bg-[#ffffff] text-[18px] w-[20rem] " ><p>Create Account </p></button>
+                    <button type="submit" className="h-[50px] text-center border-0 outline-none rounded-full  text-[white] bg-blue-600 text-[18px] w-[20rem] py-[0.5rem]" >Sign Up</button>
                 </div>
                 </div>
             </form>

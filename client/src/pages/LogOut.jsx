@@ -1,9 +1,11 @@
 import react, {useState, useEffect} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { AuthProvider, useAuth } from '../context/AuthContext';
 
 function LogOut() {
 
+    const { logout } = useAuth();
     const navigate = useNavigate();
     const [isRefreshed, setIsRefreshed] = useState(false);
     const removeCookies = async () => {
@@ -17,6 +19,7 @@ function LogOut() {
 
             })
             console.log(response.data)
+            logout();
             navigate("/");
         } catch(error)  {
                 console.error("Error:", error)
