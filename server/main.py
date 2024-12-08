@@ -87,7 +87,7 @@ async def startup_event():
         #await conn.run_sync(Quiz.__table__.drop)
         # Recreate the table asynchronously
         #await conn.run_sync(Quiz.__table__.create)
-        await rebuild_database(engine)
+        #await rebuild_database(engine)
 
 @app.get("/")
 def read_root():
