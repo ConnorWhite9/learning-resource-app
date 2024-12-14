@@ -108,7 +108,7 @@ function Lessons() {
         },
         withCredentials: true,  // This ensures that cookies are sent and received
       })
-      console.log("This is right before the modal");
+      
       if (response.status !== 200) {
         navigate("/login");
       }
@@ -130,7 +130,6 @@ function Lessons() {
         },
         withCredentials: true  // This ensures that cookies are sent and received
     });
-    console.log(response.data);
     setUserInfo(response.data);
     } catch (error){
       console.error("Error:", error)
@@ -152,7 +151,6 @@ function Lessons() {
         },
         withCredentials: true  // This ensures that cookies are sent and received
     });
-    console.log(response.data)
     setTestQuizzes(response.data);
     } catch (error){
       console.error("Error:", error)
@@ -168,12 +166,20 @@ function Lessons() {
     const fetchData = async () => {
       if (!isRefreshing) {
         const checker = checkDemo();
-        if (checker === false){
+        if (checker === false) {
           await loginCheck();  
           await grabInfo();  
-        
+        } else {
+          const demoUser = JSON.parse(localStorage.getItem('demoUser'));
           
-        } 
+          console.log(demoUser);
+        
+          if (demoUser) {
+            setUserInfo(demoUser); // Asynchronous update
+          } else {
+            console.error("Demo user is null or undefined in localStorage");
+          }
+        }
         await quizzes(); // Fetch quizzes
         setLoading(false);
       }

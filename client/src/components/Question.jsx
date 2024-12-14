@@ -148,17 +148,16 @@ function setQuestion(props){
 
                 // Extract course name and course number from the path
                 const courseName = pathParts[2];  // "HTML"
-                const courseNumber = parseInt(pathParts[3]); // "1"
-                console.log(courseName);
-                console.log(typeof courseName)
+                
+               
                 // Add a new key-value pair to the quizScores object
                 // Ensure that the course name exists in quizScores
-                if (!demoUser.quizScores[courseName]) {
-                    demoUser.quizScores[courseName] = {};  // Initialize if it doesn't exist
+                if (!demoUser.grades[courseName]) {
+                    demoUser.grades[courseName] = {};  // Initialize if it doesn't exist
                 }
                 
                 // Now set the value for the specific course number
-                demoUser.quizScores[courseName][courseNumber] = info;
+                demoUser.grades[courseName][quiz_id] = info;
 
                 // Save the updated demoUser object back to localStorage
                 localStorage.setItem('demoUser', JSON.stringify(demoUser));

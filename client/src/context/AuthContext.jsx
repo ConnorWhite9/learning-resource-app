@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check local storage or some persistent storage for auth status
-    console.log("Useeffect runs each relod");
+   
     const authStatus = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(authStatus);
 

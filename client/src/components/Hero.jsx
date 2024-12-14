@@ -10,7 +10,7 @@ function Hero() {
     const demoUser = {
       id: `demo_${Date.now()}`,
       name: "Demo User",
-      quizScores: {"Python": {}, 
+      grades: {"Python": {}, 
       "CSS": {}, 
       "HTML": {}
       }, // or whatever initial data you need

@@ -24,7 +24,7 @@ function Navbar() {
   if (isPortrait) {
     return (
 
-      <div className="flex flex-col bg-black">
+      <div className="flex flex-col bg-black mr-[0rem]">
         <div className="flex flex-row">
           <img src={logo} className="w-[7rem] h-[5rem]"/>
           <p className="text-white my-[auto] text-3xl">Intelliprogramming</p>

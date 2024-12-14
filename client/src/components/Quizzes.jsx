@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 function Quizzes({ language, quizzes, userInfo }) {
   const apiUrl = import.meta.env.VITE_BACKEND_API;
+  
   return (
     <div className="border-r-2 border-black h-full flex-1">
       <h2 className="font-semibold text-2xl ml-4 my-4">Quizzes</h2>
@@ -16,7 +17,7 @@ function Quizzes({ language, quizzes, userInfo }) {
                 
                 {/* Check if a grade exists for the quiz, and display it if it does */}
                 {userInfo?.grades?.[language]?.[quizzes[key]["id"]] != null ? (
-                  <>:  {userInfo.grades[language][quizzes[key]["id"]].grade}%   ✔️</>
+                  <>:  {userInfo.grades[language][quizzes[key]["id"]]}%   ✔️</>
                 ) : (
                   <></>
                 )}
