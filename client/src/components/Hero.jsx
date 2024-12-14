@@ -10,7 +10,10 @@ function Hero() {
     const demoUser = {
       id: `demo_${Date.now()}`,
       name: "Demo User",
-      quizScores: [], // or whatever initial data you need
+      quizScores: {"Python": {}, 
+      "CSS": {}, 
+      "HTML": {}
+      }, // or whatever initial data you need
     };
     localStorage.setItem('demoUser', JSON.stringify(demoUser));
     

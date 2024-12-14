@@ -7,7 +7,7 @@ function Documentation({ links }) {
       <ul className="list-none">
         {links.map((link, index) => (
           <li className="mb-2 ml-4 underline" key={index}>
-            <a href={link}>{link}</a>
+            <a className="text-wrap" href={link}>{link}</a>
           </li>
         ))}
       </ul>
