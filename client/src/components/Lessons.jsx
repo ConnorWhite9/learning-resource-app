@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
+import { useAuth } from '../context/AuthContext';
 //import Circle from "./Circle";
 
 const htmlQuizzes = [
@@ -72,6 +73,7 @@ function Lessons() {
   const [userInfo, setUserInfo] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { checkDemo } = useAuth();
 
   const closeModal = () => {
     setIsOpen(false);
@@ -89,8 +91,8 @@ function Lessons() {
       withCredentials: true,  // Important to include cookies
     });
     
-    console.log(response.status);
-    console.log(response.data);
+    //console.log(response.status);
+    //console.log(response.data);
   
     // Log the response to check if the token is retrieved
     const csrf_token = response.data.csrf_token;
@@ -106,7 +108,7 @@ function Lessons() {
         },
         withCredentials: true,  // This ensures that cookies are sent and received
       })
-      console.log("This is right before the modal");
+      
       if (response.status !== 200) {
         navigate("/login");
       }
@@ -128,7 +130,6 @@ function Lessons() {
         },
         withCredentials: true  // This ensures that cookies are sent and received
     });
-    console.log(response.data);
     setUserInfo(response.data);
     } catch (error){
       console.error("Error:", error)
@@ -150,7 +151,6 @@ function Lessons() {
         },
         withCredentials: true  // This ensures that cookies are sent and received
     });
-    console.log(response.data)
     setTestQuizzes(response.data);
     } catch (error){
       console.error("Error:", error)
@@ -160,22 +160,27 @@ function Lessons() {
   }
 
 
-      
-
-
-    
-
-
-  
-
 
   useEffect(() => {
     // Async function inside useEffect
     const fetchData = async () => {
       if (!isRefreshing) {
-        await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
-        await grabInfo();  // Assuming grabInfo is an async function
-        await quizzes();    // Fetch quizzes
+        const checker = checkDemo();
+        if (checker === false) {
+          await loginCheck();  
+          await grabInfo();  
+        } else {
+          const demoUser = JSON.parse(localStorage.getItem('demoUser'));
+          
+          console.log(demoUser);
+        
+          if (demoUser) {
+            setUserInfo(demoUser); // Asynchronous update
+          } else {
+            console.error("Demo user is null or undefined in localStorage");
+          }
+        }
+        await quizzes(); // Fetch quizzes
         setLoading(false);
       }
     };

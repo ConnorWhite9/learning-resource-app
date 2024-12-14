@@ -2,7 +2,7 @@ import react, {useState, useEffect} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
-
+import { useAuth } from '../context/AuthContext';
 
 function setQuestion(props){
 
@@ -12,6 +12,7 @@ function setQuestion(props){
     const [isError, setIsError] = useState(null);  // Error state
     const [isOpen, setIsOpen]  = useState(false);
     const [isFinished, setIsFinished] = useState(false);
+    const { checkDemo } = useAuth();
     const closeModal = () => {
         setIsOpen(false);
     };
@@ -118,10 +119,15 @@ function setQuestion(props){
     }
     
     const submit = async () => {
-        await loginCheck();
+        const checker = checkDemo();
+        if (checker === false) {
+            await loginCheck();
+        }
+        
         const postData = {
+            "quiz_id": quiz_id,
             "answers": answers,
-            "quiz_id": quiz_id
+            "isDemo": checker
 
         }
         try { 
@@ -133,6 +139,30 @@ function setQuestion(props){
                 withCredentials: true  // This ensures that cookies are sent and received
             })
             console.log(response.data);
+
+            
+            if (checker) {
+                const info = response.data["grade"]
+                const demoUser = JSON.parse(localStorage.getItem('demoUser'));
+                const pathParts = new URL(window.location.href).pathname.split('/'); // Split the URL into parts based on "/"
+
+                // Extract course name and course number from the path
+                const courseName = pathParts[2];  // "HTML"
+                
+               
+                // Add a new key-value pair to the quizScores object
+                // Ensure that the course name exists in quizScores
+                if (!demoUser.grades[courseName]) {
+                    demoUser.grades[courseName] = {};  // Initialize if it doesn't exist
+                }
+                
+                // Now set the value for the specific course number
+                demoUser.grades[courseName][quiz_id] = info;
+
+                // Save the updated demoUser object back to localStorage
+                localStorage.setItem('demoUser', JSON.stringify(demoUser));
+            }
+            
             setLoading(true);
             setTimeout(() => {
                 navigate("/courses");

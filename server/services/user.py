@@ -32,7 +32,7 @@ async def userInfo_service(access_token, db: AsyncSession):
         
         for grade in grades:
             if convert.id == grade.quiz_id:
-                newGrades[convert.course][grade.quiz_id] = grade
+                newGrades[convert.course][grade.quiz_id] = grade.grade
     
     #Need to calculate mastery for each course
     mastery = {}
