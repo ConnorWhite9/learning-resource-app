@@ -73,7 +73,7 @@ function Lessons() {
   const [userInfo, setUserInfo] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { isDemo } = useAuth();
+  const { checkDemo } = useAuth();
 
   const closeModal = () => {
     setIsOpen(false);
@@ -91,8 +91,8 @@ function Lessons() {
       withCredentials: true,  // Important to include cookies
     });
     
-    console.log(response.status);
-    console.log(response.data);
+    //console.log(response.status);
+    //console.log(response.data);
   
     // Log the response to check if the token is retrieved
     const csrf_token = response.data.csrf_token;
@@ -167,9 +167,10 @@ function Lessons() {
     // Async function inside useEffect
     const fetchData = async () => {
       if (!isRefreshing) {
-        if (isDemo === false){
-          await loginCheck();  // Assuming grabInfo is an async function  // Fetch quizzes
-          await grabInfo();  // Assuming grabInfo is an async function
+        const checker = checkDemo();
+        if (checker === false){
+          await loginCheck();  
+          await grabInfo();  
         
           
         } 

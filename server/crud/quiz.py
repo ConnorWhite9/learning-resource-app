@@ -70,6 +70,7 @@ async def grab_all_quizzes(db: AsyncSession):
     try:
         formatted_quizzes = {}
         languages = await get_courses(db)
+        
         for language in languages:
             name = language.name
             formatted_quizzes[name] = {}
@@ -79,7 +80,7 @@ async def grab_all_quizzes(db: AsyncSession):
             quizzes = raw.scalars().all()
             for quiz in quizzes:
                 formatted_quizzes[key][quiz.level] = quiz
-
+        
         return formatted_quizzes
 
     except SQLAlchemyError as e:

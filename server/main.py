@@ -81,14 +81,14 @@ async def rebuild_database(async_engine: AsyncEngine):
         await conn.run_sync(Base.metadata.create_all)  # Recreates all tables
 
 
-@app.on_event("startup")
-async def startup_event():
+#@app.on_event("startup")
+#async def startup_event():
     # async with engine.begin() as conn:
         # Drop the table asynchronously
         #await conn.run_sync(Quiz.__table__.drop)
         # Recreate the table asynchronously
         #await conn.run_sync(Quiz.__table__.create)
-        await rebuild_database(engine)
+        #await rebuild_database(engine)
 
 @app.get("/")
 def read_root():

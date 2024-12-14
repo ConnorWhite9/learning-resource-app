@@ -8,10 +8,12 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check local storage or some persistent storage for auth status
+    console.log("Useeffect runs each relod");
     const authStatus = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(authStatus);
 
     const demoStatus = localStorage.getItem('isDemo') === 'true';
+
     setIsDemo(demoStatus);
   }, []);
 
@@ -19,6 +21,11 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(true);
     localStorage.setItem('isLoggedIn', 'true');
   };
+
+  const checkDemo = () => {
+    const demoStatus = localStorage.getItem('isDemo') === 'true';
+    return demoStatus;
+  }
 
   const logout = () => {
     setIsLoggedIn(false);
@@ -38,7 +45,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        login,
+        logout,
+        isDemo, // Include isDemo in the context value
+        activateDemo,
+        deactivateDemo,
+        checkDemo
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

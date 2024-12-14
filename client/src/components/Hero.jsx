@@ -16,12 +16,12 @@ function Hero() {
     
   }
 
-  const {isDemo, activateDemo } = useAuth();
+  const { activateDemo } = useAuth();
   
   const demoSignIn = () => {
     demoLogin();
     activateDemo();
-    
+    navigate("/courses");
   }
 
   return (
@@ -42,11 +42,11 @@ function Hero() {
                   Sign Up
                 </button>
               </Link>
-              <Link to="/courses" className="ml-[2rem]">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white text-nowrap font-bold py-2 px-4 rounded w-[125px] mt-[40px]" >
+              
+                <button onClick={demoSignIn} className="ml-[2rem] bg-blue-500 hover:bg-blue-700 text-white text-nowrap font-bold py-2 px-4 rounded w-[125px] mt-[40px]" >
                   Demo User
                 </button>
-              </Link>
+        
             </div>
           </div>
         </section>

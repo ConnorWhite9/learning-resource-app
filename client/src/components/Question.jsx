@@ -124,8 +124,8 @@ function setQuestion(props){
         }
         
         const postData = {
-            "answers": answers,
             "quiz_id": quiz_id,
+            "answers": answers,
             "isDemo": isDemo
 
         }
@@ -138,6 +138,11 @@ function setQuestion(props){
                 withCredentials: true  // This ensures that cookies are sent and received
             })
             console.log(response.data);
+            if (isDemo) {
+                info = response.data["grade"]
+                const demoUser = JSON.parse(localStorage.getItem('demoUser'));
+            }
+            
             setLoading(true);
             setTimeout(() => {
                 navigate("/courses");
