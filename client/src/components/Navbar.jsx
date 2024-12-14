@@ -9,6 +9,12 @@ function Navbar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isPortrait, setIsPortrait] = useState(window.innerWidth < window.innerHeight);
+
+  const close = () => {
+      console.log("Menu should be closing");
+      setIsOpen(false);
+  }
+
   useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.innerWidth < window.innerHeight);
@@ -60,6 +66,7 @@ function Navbar() {
           <ul className="flex flex-col p-4 space-y-2">
             <li className="py-[2rem] border-b border-black">
               <Link
+                onClick = {close}
                 to="/"
                 className={`relative font-custom text-3xl transition-all duration-300`}
               >
@@ -73,6 +80,7 @@ function Navbar() {
             </li>
             <li className="py-[2rem] border-b border-black" >
               <Link
+                onClick = {close}
                 to="/courses"
                 className={`relative font-custom text-3xl transition-all duration-300`}
               >
@@ -86,6 +94,7 @@ function Navbar() {
             </li>
             <li className="py-[2rem] border-b border-black">
               <Link
+                onClick = {close}
                 to="/aboutus"
                 className={`relative font-custom text-3xl transition-all duration-300`}
               >
@@ -99,6 +108,7 @@ function Navbar() {
             </li>
             <li className="py-[2rem] border-b border-black">
               <Link
+                onClick = {close}
                 to="/register"
                 className={`relative font-custom text-3xl transition-all duration-300`}
               >
@@ -113,6 +123,7 @@ function Navbar() {
             {isLoggedIn ? (
             <li className="py-[2rem] border-b border-black">
               <Link
+                onClick = {close}
                 to="/logout"
                 className={`relative font-custom text-3xl transition-all duration-300`}
               >
@@ -126,6 +137,7 @@ function Navbar() {
             </li> ) : (
                 <li className="py-[2rem] border-b border-black">
                 <Link
+                  onClick = {close}
                   to="/login"
                   className={`relative font-custom text-3xl transition-all duration-300`}
                 >
@@ -150,6 +162,7 @@ function Navbar() {
         <ul className="flex list-none p-0 m-0 space-x-8 text-white">
           <li>
             <Link
+              
               to="/"
               className={`relative font-custom text-2xl transition-all duration-300`}
             >
@@ -163,6 +176,7 @@ function Navbar() {
           </li>
           <li>
             <Link
+              
               to="/courses"
               className={`relative font-custom text-2xl transition-all duration-300`}
             >
@@ -176,6 +190,7 @@ function Navbar() {
           </li>
           <li>
             <Link
+              
               to="/aboutus"
               className={`relative font-custom text-2xl transition-all duration-300`}
             >
@@ -189,6 +204,7 @@ function Navbar() {
           </li>
           <li>
             <Link
+              
               to="/register"
               className={`relative font-custom text-2xl transition-all duration-300`}
             >
@@ -204,6 +220,7 @@ function Navbar() {
           {isLoggedIn ? (
             <li>
               <Link
+                
                 to="/logout"
                 className={`relative font-custom text-2xl transition-all duration-300`}
               >
@@ -217,6 +234,7 @@ function Navbar() {
             </li> ) : (
                 <li>
                 <Link
+                  
                   to="/login"
                   className={`relative font-custom text-2xl transition-all duration-300`}
                 >
