@@ -84,8 +84,8 @@ function Lessons() {
 
   const loginCheck = async () => {
          
-    
-    const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
+    const constructedUrl = `${apiUrl}/auth/get_csrf_token`;
+    const response = await axios.get(constructedUrl, {
       headers: {
           'Content-Type': 'application/json'
       },
@@ -101,7 +101,8 @@ function Lessons() {
     // Retrieve the CSRF token from the cookie
     
     try {
-      const response = await axios.post(`${apiUrl}/auth/refresh`, {},
+      const constructedUrl = `${apiUrl}/auth/refresh`;
+      const response = await axios.post(constructedUrl, {},
       {
         headers: {
             'Content-Type': 'application/json',  // Ensure the server expects JSON
@@ -124,7 +125,8 @@ function Lessons() {
   const grabInfo = async () => {
 
     try {
-      const response = await axios.get(`${apiUrl}/user/userInfo`, {
+      const constructedUrl = `${apiUrl}/user/userInfo`;
+      const response = await axios.get(constructedUrl, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
                

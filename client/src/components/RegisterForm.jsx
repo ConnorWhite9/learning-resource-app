@@ -34,14 +34,15 @@ function RegisterForm() {
         
         
         try {
-            const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
+            const constructedUrl = `${apiUrl}/auth/get_csrf_token`;
+            const response = await axios.get(constructedUrl, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 withCredentials: true
             });
             console.log(response.status)
-            console.log(response.data);
+            
             
             setCsrf_token(response.data.csrf_token);
             
@@ -66,8 +67,9 @@ function RegisterForm() {
             return;
         }
 
-        try { 
-            const response = await axios.post(`${apiUrl}/auth/register`, postData, {
+        try {
+            const constructedUrl = `${apiUrl}/auth/register`;
+            const response = await axios.post(constructedUrl, postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     'X-CSRF-Token': csrf_token,

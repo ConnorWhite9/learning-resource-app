@@ -23,7 +23,8 @@ function setQuestion(props){
     
     const grabQuestions = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/course/getQuiz/?course=${props.course}&level=${props.level}`, {
+            const constructedUrl = `${apiUrl}/course/getQuiz/?course=${props.course}&level=${props.level}`;
+            const response = await axios.get(constructedUrl, {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     
@@ -42,8 +43,8 @@ function setQuestion(props){
     }
     
     const loginCheck = async () => {
-          
-        const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
+        const constructedUrl = `${apiUrl}/auth/get_csrf_token`;  
+        const response = await axios.get(constructedUrl, {
           headers: {
               'Content-Type': 'application/json'
           },
@@ -56,7 +57,8 @@ function setQuestion(props){
         // Retrieve the CSRF token from the cookie
         
         try {
-          const response = await axios.post(`${apiUrl}/auth/refresh`, {},
+          const constructedUrl = `${apiUrl}/auth/get_csrf_token`;  
+          const response = await axios.post(constructedUrl, {},
           {
             headers: {
                 'Content-Type': 'application/json',  // Ensure the server expects JSON
@@ -130,8 +132,9 @@ function setQuestion(props){
             "isDemo": checker
 
         }
-        try { 
-            const response = await axios.post(`${apiUrl}/course/grade`, postData, {
+        try {
+            const constructedUrl = `${apiUrl}/course/grade`;  
+            const response = await axios.post(constructedUrl, postData, {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     

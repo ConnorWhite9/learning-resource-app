@@ -32,7 +32,8 @@ function LoginForm() {
     const [csrf_token, setCsrf_token] = useState([]);
     const csrf = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/auth/get_csrf_token`, {
+            const constructedUrl = `${apiUrl}/auth/get_csrf_token`;
+            const response = await axios.get(constructedUrl, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -83,8 +84,8 @@ function LoginForm() {
         
         // Perform the login POST request
         try {
-            
-            const postResponse = await axios.post(`${apiUrl}/auth/login`, postData, {
+            const constructedUrl = `${apiUrl}/auth/login`;
+            const postResponse = await axios.post(constructedUrl, postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     'X-CSRF-Token': csrf_token,  // Include the CSRF token in the header
