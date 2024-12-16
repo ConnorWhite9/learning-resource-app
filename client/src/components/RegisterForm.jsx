@@ -9,7 +9,7 @@ import person from '../assets/person.png';
 
 function RegisterForm() {
 
-    const apiUrl = import.meta.env.VITE_BACKEND_API;
+    const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isError, setIsError] = useState(false);

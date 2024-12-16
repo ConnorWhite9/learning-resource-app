@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 
 function setQuestion(props){
 
-    const apiUrl = import.meta.env.VITE_BACKEND_API;
+    const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);  // Loading state
     const [isError, setIsError] = useState(null);  // Error state

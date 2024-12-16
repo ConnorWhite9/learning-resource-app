@@ -10,7 +10,7 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 
 function LoginForm() {
     const { login } = useAuth();
-    const apiUrl = import.meta.env.VITE_BACKEND_API;
+    const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const navigate = useNavigate();
     
     const [isRefreshed, setIsRefreshed] = useState(false);
