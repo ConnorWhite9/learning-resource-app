@@ -7,8 +7,7 @@ import Documentation from "./Documentation";
 
 
 function Lesson({language, quizzes, documentation, title, color, video, userInfo }) {
-  console.log("We are now in the lesson component");
-  console.log(userInfo);
+  
   return (
     <>
       <div className="flex justify-center mt-[40px] font-sans">

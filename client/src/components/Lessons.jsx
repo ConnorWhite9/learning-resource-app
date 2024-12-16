@@ -74,11 +74,8 @@ function Lessons() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { checkDemo } = useAuth();
-  axios.interceptors.request.use(request => {
-    console.log("Request URL:", request.url);
-    console.log("Request Headers:", request.headers);
-    return request;
-});
+  
+
 
   const closeModal = () => {
     setIsOpen(false);

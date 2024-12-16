@@ -72,7 +72,6 @@ function LoginForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log("Csrf_token: " + csrf_token);
         // Prepare the data for the POST request
         const postData = {
             email: formData.email,

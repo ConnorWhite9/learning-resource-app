@@ -66,7 +66,7 @@ function RegisterForm() {
             setIsError("Password and password confirmation must be the same");
             return;
         }
-        console.log("Csrf_Token: " + csrf_token);
+        
         try {
             const constructedUrl = `${apiUrl}/auth/register`;
             const response = await axios.post(constructedUrl, postData, {
