@@ -199,7 +199,7 @@ function setQuestion(props){
         return <p>Loading ... </p>
     }
 
-
+    console.log("Questions: " + questions);
     return (
         <>
             <div className="ml-auto mr-auto mt-[10rem] bg-[white] w-[30rem] h-[35rem] p-[3rem]  flex-column rounded-[10%]">
