@@ -199,7 +199,7 @@ function Lessons() {
             console.error("Demo user is null or undefined in localStorage");
           }
         }
-        await quizzes(); // Fetch quizzes
+        await tester(); // Fetch quizzes
         setLoading(false);
       }
     };
