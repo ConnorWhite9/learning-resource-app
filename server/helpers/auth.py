@@ -44,7 +44,7 @@ def decode_access_token(token):
     
 
 def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):
-    expire = datetime.now(timezone.utc) + timedelta(days=int(REFRESH_TOKEN_EXPIRY))
+    expire = datetime.now() + timedelta(days=int(REFRESH_TOKEN_EXPIRY))
     encode = {"sub": username, 'id': user_id}
     encode.update({'exp': expire})
 
