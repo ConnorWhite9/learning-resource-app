@@ -74,8 +74,26 @@ function Lessons() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { checkDemo } = useAuth();
-  const constructedUrl = `${apiUrl}/user/userInfo`;
+  const constructedUrl = `${apiUrl}/course/getAllQuiz`;
   console.log("Constructed URL:", constructedUrl);
+  const tester = async () => {
+    try {
+        const response = await fetch(constructedUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+        const data = await response.json();
+        setUserInfo(data);
+    } catch (error) {
+        console.error("Error:", error);
+        setIsOpen(true);
+        setError("There was an issue grabbing your account information. Reload the page and make sure you are logged in.");
+    }
+  }
+  tester();
   const closeModal = () => {
     setIsOpen(false);
   };
