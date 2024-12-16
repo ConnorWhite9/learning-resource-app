@@ -67,7 +67,7 @@ const pythonVideo = "https://www.youtube.com/embed/VchuKL44s6E"
 
 function Lessons() {
 
-  const apiUrl = import.meta.env.VITE_BACKEND_API;
+  const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
   const [loading, setLoading] = useState(true);  // Loading state
   const [error, setError] = useState(null);  // Error state
   const [userInfo, setUserInfo] = useState(null);
