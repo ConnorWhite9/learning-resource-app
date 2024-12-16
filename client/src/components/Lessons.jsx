@@ -74,9 +74,8 @@ function Lessons() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { checkDemo } = useAuth();
-  console.log("THis is the API url");
-  console.log(apiUrl);
-  console.log("This is the api url");
+  const constructedUrl = `${apiUrl}/user/userInfo`;
+  console.log("Constructed URL:", constructedUrl);
   const closeModal = () => {
     setIsOpen(false);
   };
