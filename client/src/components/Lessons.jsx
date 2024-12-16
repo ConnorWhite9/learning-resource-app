@@ -67,19 +67,13 @@ const pythonVideo = "https://www.youtube.com/embed/VchuKL44s6E"
 
 function Lessons() {
 
-  const apiUrl = import.meta.env.VITE_BACKEND_API;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL.replace(/^"|"$/g, "").trim();
   const [loading, setLoading] = useState(true);  // Loading state
   const [error, setError] = useState(null);  // Error state
   const [userInfo, setUserInfo] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { checkDemo } = useAuth();
-  
-  axios.interceptors.request.use(request => {
-    console.log("Axios Request URL:", request.url);
-    console.log("Axios Request Headers:", request.headers);
-    return request;
-  });
   
   const closeModal = () => {
     setIsOpen(false);
