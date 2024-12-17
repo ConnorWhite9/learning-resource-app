@@ -9,7 +9,7 @@ import person from '../assets/person.png'
 import { AuthProvider, useAuth } from '../context/AuthContext';
 
 function LoginForm() {
-    const { login } = useAuth();
+    const { login, deactivateDemo, checkDemo } = useAuth();
     const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const navigate = useNavigate();
     
@@ -93,6 +93,10 @@ function LoginForm() {
             
             console.log(postResponse.data); // Log the login response
             console.log(document.cookie); // Check all cookies in the browser
+            checker = checkDemo();
+            if (checker) {
+                deactivateDemo();
+            }
             login();
             navigate("/courses"); // Navigate to the courses page after successful login
         
