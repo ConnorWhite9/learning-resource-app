@@ -91,8 +91,7 @@ function LoginForm() {
                 withCredentials: true  // This ensures that cookies are sent and received
             });
             
-            console.log(postResponse.data); // Log the login response
-            console.log(document.cookie); // Check all cookies in the browser
+            
             checker = checkDemo();
             if (checker) {
                 deactivateDemo();
