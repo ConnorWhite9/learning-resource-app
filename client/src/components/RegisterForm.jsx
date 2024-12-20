@@ -31,7 +31,7 @@ function RegisterForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         
-        
+    
         
         try {
             const constructedUrl = `${apiUrl}/auth/get_csrf_token`;
@@ -76,7 +76,6 @@ function RegisterForm() {
                 },
                 withCredentials: true
             })
-            console.log(response.data);
             navigate("/login");
 
         } catch (error) {
