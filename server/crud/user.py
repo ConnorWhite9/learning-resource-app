@@ -78,3 +78,12 @@ async def addStreak(user_id, db: AsyncSession):
     except SQLAlchemyError as e:
         await db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"New streak could not be created: {str(e)}")
+    
+
+async def grabAccount(user_id, db: AsyncSession):
+    try:
+        raw = db.execute(select(User).where(User.user_id == user_id))
+        accountInfo = raw.scalar_one_or_none()
+        return accountInfo
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Could not properly grab account: {str(e)}")

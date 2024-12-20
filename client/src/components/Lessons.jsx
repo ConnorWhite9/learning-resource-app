@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Lesson from "./Lesson";
 import axios from "axios";
-import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
 import { useAuth } from '../context/AuthContext';

@@ -122,20 +122,37 @@ function Navbar() {
               </Link>
             </li>
             {isLoggedIn ? (
-            <li className="py-[2rem] border-b border-black">
-              <Link
-                onClick = {close}
-                to="/logout"
-                className={`relative font-custom text-3xl transition-all duration-300`}
-              >
-                Logout
-                <span
-                  className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
-                    location.pathname === "/logout" ? "scale-x-100" : ""
-                  }`}
-                />
-              </Link>
-            </li> ) : (
+            <>
+              <li className="py-[2rem] border-b border-black">
+                <Link
+                  onClick = {close}
+                  to="/logout"
+                  className={`relative font-custom text-3xl transition-all duration-300`}
+                >
+                  Logout
+                  <span
+                    className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+                      location.pathname === "/logout" ? "scale-x-100" : ""
+                    }`}
+                  />
+                </Link>
+              </li>
+              <li className="py-[2rem] border-b border-black">
+                <Link
+                  onClick = {close}
+                  to="/account"
+                  className={`relative font-custom text-3xl transition-all duration-300`}
+                >
+                  Account Settings
+                  <span
+                    className={`absolute left-0 right-0 bottom-0 h-0.5 bg-white transition-all duration-300 transform scale-x-0 group-hover:scale-x-100 ${
+                      location.pathname === "/logout" ? "scale-x-100" : ""
+                    }`}
+                  />
+                </Link>
+              </li>
+              </>
+            ) : (
                 <li className="py-[2rem] border-b border-black">
                 <Link
                   onClick = {close}

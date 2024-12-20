@@ -3,6 +3,7 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from db.database import get_db
 from crud.course import get_courses
+
 from schemas.course import *
 from services.user import *
 
@@ -23,7 +24,7 @@ def get_user(request: Request, id: int):
 
 @router.get("/userInfo")
 @limiter.limit("10/second")
-async def userInfo (request: Request, db: AsyncSession=Depends(get_db)):
+async def userInfo(request: Request, db: AsyncSession=Depends(get_db)):
     access_token = request.cookies.get("access_token")
     #Reformat function so it grabs user_id from cookies will need to change function parameters and decode the token in teh userInfo service.
     enroll_list, grades, mastery, streak = await userInfo_service(access_token ,db)
@@ -31,3 +32,12 @@ async def userInfo (request: Request, db: AsyncSession=Depends(get_db)):
     return {"enrollment": enroll_list, "grades": grades, "mastery": mastery, "streak": streak}
 
 
+@router.get("/accountInfo")
+@limiter.limit("2/second")
+async def accountInfo(request: Request, db: AsyncSession=Depends(get_db)):
+    access_token = request.cookies.get("access_token")
+    
+    accountInfo = await accountInfo_service(access_token, db)
+
+
+    return accountInfo
