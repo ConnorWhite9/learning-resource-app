@@ -22,15 +22,15 @@ function Overview({ language, title, userInfo }) {
 
   return (
     <div className="flex flex-col justify-center items-center border-b-2 border-r-2 border-black w-full h-full">
-      <p className="font-semibold text-2xl">{title}</p>
+      <p className="font-semibold text-2xl mt-2">{title}</p>
       <div className="flex justify-between items-center w-[90%] mt-4">
-        <div className="flex flex-col p-4 ml-[1rem]">
+        <div className="flex flex-col p-4 max-md:ml-[0rem] ml-[0.5vw]">
           <h2>Mastery:   {masteryNumber}% </h2>
           
-            <ProgressBar progress={masteryNumber} />
+           <ProgressBar progress={masteryNumber} />
             
         </div>
-        <div className="flex flex-col p-4 mr-[1rem] ">
+        <div className="flex flex-col p-4 mr-[2rem] ">
     
           
             <Streak streak={streak} />
