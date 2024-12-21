@@ -3,7 +3,7 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from db.database import get_db
 from crud.course import get_courses
-
+from schemas.user import *
 from schemas.course import *
 from services.user import *
 
@@ -41,3 +41,11 @@ async def accountInfo(request: Request, db: AsyncSession=Depends(get_db)):
 
 
     return accountInfo
+
+
+@router.post("/updateInfo")
+@limiter.limit("1/second")
+async def updateInfo(request: Request, info: updateInfo, db: AsyncSession=Depends(get_db)):
+    access_token = request.cookies.get("access_token") 
+
+    await updateInfo_service(access_token, info, db)

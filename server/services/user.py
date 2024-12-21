@@ -93,3 +93,22 @@ async def accountInfo_service(access_token, db: AsyncSession):
     newDict["streak"] = accountInfo.streak
 
     return newDict
+
+
+async def updateInfo_service(access_token, info, db: AsyncSession):
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+    
+    user_id = payload.get("user_id")
+
+    accountInfo = await grabAccount(user_id, db)
+    checker = False
+    if accountInfo.email != info.email:
+        accountInfo.email = info.email
+        checker = True
+    if accountInfo.username != info.username:
+        accountInfo.username = info.username
+        check = True
+    if check:
+        db.commit()
