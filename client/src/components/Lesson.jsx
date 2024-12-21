@@ -16,7 +16,7 @@ function Lesson({ language, quizzes, documentation, title, color, video, userInf
             <Overview language={language} title={title} userInfo={userInfo} />
             <Quizzes language={language} quizzes={quizzes} userInfo={userInfo} />
           </div>
-          <div className="flex flex-col w-full md:w-auto mt-4 md:mt-0">
+          <div className="flex flex-col w-full md:w-auto mt-4 md:mt-0" style={{ backgroundColor: color }}>
             <Video link={video} />
             <Documentation links={documentation} />
           </div>
