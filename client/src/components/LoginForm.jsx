@@ -92,7 +92,7 @@ function LoginForm() {
             });
             
             
-            checker = checkDemo();
+            const checker = checkDemo();
             if (checker) {
                 deactivateDemo();
             }

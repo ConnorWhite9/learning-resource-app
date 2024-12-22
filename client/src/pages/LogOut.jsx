@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { AuthProvider, useAuth } from '../context/AuthContext';
 
 function LogOut() {
-
-    const { logout } = useAuth();
+    const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
+    const { logout, deactivateDemo } = useAuth();
     const navigate = useNavigate();
     const [isRefreshed, setIsRefreshed] = useState(false);
     const removeCookies = async () => {
         try {
-            const response = await axios.post("https://2ae8-67-250-141-193.ngrok-free.app/auth/logout", {},  {
+            const response = await axios.post(`${apiUrl}/auth/logout`, {},  {
                 headers: {
                     'Content-Type': 'application/json'  // Ensure the server expects JSON
                     
@@ -18,8 +18,9 @@ function LogOut() {
                 withCredentials: true  // This ensures that cookies are sent and receive
 
             })
-            console.log(response.data)
+            console.log(response.data);
             logout();
+            deactivateDemo();
             navigate("/");
         } catch(error)  {
                 console.error("Error:", error)
