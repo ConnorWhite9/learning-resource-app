@@ -10,13 +10,23 @@ import axios from "axios";
 function UpdateForm() {
     const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const [account, setAccount] = useState(null);
-
+    const [formData, setFormData] = useState({
+        email: '',
+        username: '',
+    });
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({
+          ...formData,
+          [name]: value
+        });
+      };
     const navigate = useNavigate();
 
     const grabAccount = async() => {
         try {
             const constructedUrl = `${apiUrl}/user/accountInfo`;
-            const response = await axios.get(constructedUrl, {},
+            const response = await axios.get(constructedUrl,
             {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
@@ -24,24 +34,29 @@ function UpdateForm() {
                 },
                 withCredentials: true,  // This ensures that cookies are sent and received
             })
-
-            s
+            setFormData({
+                email: response.data.email,
+                username: response.data.username
+            });
+            
         } catch(error) {
             console.error("There was an issue: ", error);
         }
     }
 
-    {/*useEffect(async () => {
-        // Async function inside useEffect
-        
-        await grabAccount();
-     
-    },[]);*/}
+    useEffect(() => {
+        const fetchAccountData = async () => {
+            await grabAccount();
+        };
+    
+        fetchAccountData();
+    
+        return () => {
+            // Cleanup logic, if necessary
+        };
+    }, []); // Empty dependency array to run once on component mount
 
-    const [formData, setFormData] = useState({
-        email: '',
-        username: '',
-    });
+ 
 
     const changePassword = () => {
         navigate("/aboutus");
@@ -62,18 +77,20 @@ function UpdateForm() {
                     name="email" 
                     type="email" 
                     value={formData.email}
+                    onChange={handleChange}
                     className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
-                    placeholder='Email'/>
+                    placeholder={formData.email}/>
                 </div>
                 <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
                     <img src={person} />
                     <input 
                     name="username"
+                    onChange={handleChange}
                     value={formData.username}
                     type="text"
                      
                     className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
-                    placeholder='Username'/>
+                    placeholder={formData.username}/>
                 </div>
                 <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
                     <img src={password} />

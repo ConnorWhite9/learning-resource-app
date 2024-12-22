@@ -79,7 +79,7 @@ async def streak_service(token, db: AsyncSession):
         
 
 async def accountInfo_service(access_token, db: AsyncSession):
-    payload = decode_token(access_token)
+    payload = verify_access(access_token)
     if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
 

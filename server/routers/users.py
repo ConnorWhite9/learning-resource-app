@@ -36,7 +36,7 @@ async def userInfo(request: Request, db: AsyncSession=Depends(get_db)):
 @limiter.limit("2/second")
 async def accountInfo(request: Request, db: AsyncSession=Depends(get_db)):
     access_token = request.cookies.get("access_token")
-    
+    print(access_token)
     accountInfo = await accountInfo_service(access_token, db)
 
 

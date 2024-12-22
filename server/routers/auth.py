@@ -9,6 +9,14 @@ from .limiter import limiter
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_csrf_protect import CsrfProtect
+
+import os
+# importing necessary functions from dotenv library
+from dotenv import load_dotenv, dotenv_values 
+# loading variables from .env file
+load_dotenv() 
+
+
 router = APIRouter(
     prefix="/auth",
 )

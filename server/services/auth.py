@@ -16,6 +16,7 @@ from crud.auth import *
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 

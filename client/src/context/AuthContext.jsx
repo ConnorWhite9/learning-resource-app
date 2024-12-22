@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const deactivateDemo = () => {
     setIsDemo(false);
     localStorage.removeItem('isDemo');
+    localStorage.removeItem('demoUser');
   };
 
   return (

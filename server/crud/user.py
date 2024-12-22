@@ -82,7 +82,7 @@ async def addStreak(user_id, db: AsyncSession):
 
 async def grabAccount(user_id, db: AsyncSession):
     try:
-        raw = db.execute(select(User).where(User.user_id == user_id))
+        raw = await db.execute(select(User).where(User.id == user_id))
         accountInfo = raw.scalar_one_or_none()
         return accountInfo
     except SQLAlchemyError as e:

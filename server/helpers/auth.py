@@ -23,7 +23,7 @@ REFRESH_TOKEN_EXPIRY = os.getenv("REFRESH_TOKEN_EXPIRY")
 ACCESS_TOKEN_EXPIRY = os.getenv("ACCESS_TOKEN_EXPIRY")
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=5)):
+def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=10)):
     encode = {'sub': username, 'id': user_id}
     expires = datetime.now(timezone.utc) + expires_delta
     encode.update({'exp': expires})
@@ -67,19 +67,15 @@ def decode_token(token: str):
         raise ValueError(e)
     
 def verify_access(token: str):
-    payload = decode_token(token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-    user_id = payload.get("sub")
-    user = get_user(user_id)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={"verify_exp": False})
+        print(payload['exp'])
+        return payload
+    except JWTError as e:
+        raise ValueError(e)
     #Add signature matching
 
-    #Add expiration check
-
-    return True
+    #Add expiration chec
 
 async def validate_csrf(request: Request, csrf_protect: CsrfProtect = Depends()):
     csrf_token = request.headers.get("X-CSRF-Token")
