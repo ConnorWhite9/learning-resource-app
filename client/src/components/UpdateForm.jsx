@@ -5,11 +5,13 @@ import password from '../assets/password.png';
 import person from '../assets/person.png';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ChangePassword from './ChangePassword';
 
 
 function UpdateForm() {
     const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const [account, setAccount] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         username: '',
@@ -22,6 +24,8 @@ function UpdateForm() {
         });
       };
     const navigate = useNavigate();
+    
+
 
     const grabAccount = async() => {
         try {
@@ -59,9 +63,12 @@ function UpdateForm() {
  
 
     const changePassword = () => {
-        navigate("/aboutus");
-    }
 
+        setIsOpen(true);
+    }
+    const closeModal = () => {
+        setIsOpen(false);
+    };
 
     return (
         <>
@@ -94,7 +101,11 @@ function UpdateForm() {
                 </div>
                 <div className="flex items-center mt-[3rem] bg-gray-200 rounded-[1rem] px-[1rem] py-[0.3rem]">
                     <img src={password} />
-                    <button onClick={changePassword} className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-left text-[#626262]  text-[18px]">
+                    <button onClick={(e) => {
+                    e.preventDefault(); // Prevent form submission
+                    changePassword();
+                    }} 
+                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-left text-[#626262]  text-[18px]">
                         Change Password
                     </button>
             
@@ -107,6 +118,7 @@ function UpdateForm() {
                 </div>
             </form>
             {/*<ErrorModal open={isOpen} message={isError} onClose={closeModal} />*/}
+            <ChangePassword open={isOpen} onClose={closeModal} />
         </>
     );
 }

@@ -30,7 +30,7 @@ function Hero() {
   return (
     <div className="flex font-custom h-[500px] mb-8 justify-center items-center">
       <div className="flex justify-center items-center w-[90%]">
-        <section className="flex justify-center items-center flex-1">
+        <section className="flex justify-center  flex-1">
           <div className="flex flex-col justify-center w-[80%]">
             <h1 className="font-bold text-6xl text-white">
               AI Generated Lesson Plans
