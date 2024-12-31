@@ -51,4 +51,4 @@ async def grade (request: Request, userAnswers: userAnswers, db: AsyncSession=De
 async def getAllQuiz (request: Request, db: AsyncSession=Depends(get_db)):
     quizzes = await getAllQuiz_service(db)
 
-    return quizzes 
+    return quizzes

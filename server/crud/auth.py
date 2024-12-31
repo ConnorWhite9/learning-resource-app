@@ -114,3 +114,24 @@ async def save_refresh(token, expire, user_id, db: AsyncSession):
         await db.rollback()
         print(f"Problem in saving new refresh token: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"New refresh token could not be succesfully added: {str(e)}")
+
+async def grabPassword(user_id, db: AsyncSession):
+    try:
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        return user
+    except Exception as e:
+        await db.rollback()
+        print(f"Problem in grabbing new password: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Password could not be grabbed: {str(e)}")
+    
+async def updatePassword_crud(user_id, password, db: AsyncSession):
+    try:
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        user.password = password
+        await db.commit()
+    except Exception as e:
+        await db.rollback()
+        print(f"Problem in changing the password: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Password could not be changed: {str(e)}")

@@ -2,7 +2,7 @@ import react, {useState, useEffect} from "react";
 import password from '../assets/password.png';
 import axios from "axios";
 
-const ChangePassword = ({open, onClose, openNew}) => {
+const UpdatePassword = ({open, onClose}) => {
     const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
     const [formData, setFormData] = useState({
         password: '',
@@ -16,13 +16,12 @@ const ChangePassword = ({open, onClose, openNew}) => {
         });
       };
 
-      const checkPassword = async () => {
-        try{
-            const constructedUrl = `${apiUrl}/auth/checkPassword`;
+    const updateRequest = async() => {
+        try {
+            const constructedUrl = `${apiUrl}/auth/updatePassword`;
             const postData = {
                 "password": formData.password
             }
-            console.log(postData);
             const response = await axios.post(constructedUrl, postData,
             {
                 headers: {
@@ -32,15 +31,13 @@ const ChangePassword = ({open, onClose, openNew}) => {
                 withCredentials: true,  // This ensures that cookies are sent and received
             
             })
-            console.log(response.data.message);
-            if (response.data.message == "true") {
+            if (response.data["message"] == true) {
                 //set updatePassword modal to true
-                openNew();
-                console.log("did check properly");
+            
             } else {
                 // oppen the error modal
-                console.log("did not check properly")
             }
+          
         } catch(error) {
             console.error(error);
         }
@@ -61,13 +58,13 @@ const ChangePassword = ({open, onClose, openNew}) => {
                     value={formData.password}
                     onChange={handleChange}
                     className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-[#626262]  text-[18px]" 
-                    placeholder="Password"/>
+                    placeholder="New Password"/>
                 </div>
                 <button
-                    onClick={checkPassword}
+                    onClick={updateRequest}
                     className="bg-blue-500 w-full mt-3 text-white px-4 py-2 flex rounded hover:bg-blue-600"
                 >
-                    Check Password
+                    Update Password
                 </button>
                 </div>
             </div>
@@ -83,4 +80,4 @@ const ChangePassword = ({open, onClose, openNew}) => {
        
 }
 
-export default ChangePassword;
+export default UpdatePassword;

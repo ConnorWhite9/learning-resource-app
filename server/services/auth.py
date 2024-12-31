@@ -110,3 +110,36 @@ async def logout_service(token, db: Session):
         return True
     else: 
         return False
+    
+
+async def checkPassword_service(access_token, password, db: AsyncSession):
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+
+    # Extract user info from the payload
+    user_id = payload.get("id")
+
+    user = await grabPassword(user_id, db)
+
+    if bcrypt_context.verify(password.password, user.password):
+    
+        password_token = create_access_token(user.username, user_id)
+        return True, password_token
+    else:
+       
+        return False, None
+
+async def updatePassword_service(access_token, password_token, password, db: AsyncSession):
+    #Password token checker functionality 
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    payload2 = decode_token(password_token)
+    if not payload2:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not verified to change password")
+    
+    user_id = payload.get("id")
+
+    await updatePassword_crud(user_id, bcrypt_context.hash(password.password), db)
+    return True

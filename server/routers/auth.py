@@ -122,3 +122,34 @@ def get_csrf_token(request: Request, csrf_protect: CsrfProtect = Depends()):
 
     return response
 
+
+@router.post("/checkPassword")
+@limiter.limit("1/second")
+async def passwordChecker(request: Request, password: checkPassword, db: AsyncSession = Depends(get_db)):
+    access_token = request.cookies.get("access_token")
+    boolean, password_token = await checkPassword_service(access_token, password, db)
+    if boolean: 
+        data={"message": "true"}
+        response = JSONResponse(content=data)
+        response.set_cookie(
+            key="password_token",
+            value=access_token,
+            httponly=True,  # Prevents access via JavaScript
+            secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+            samesite="None", # Controls cross-site request handling
+            path="/"
+        )
+    else:
+        data={"message": "false"}
+        response = JSONResponse(content=data)
+    #create change password cookie
+    return response
+
+@router.post("/updatePassword")
+@limiter.limit("1/second")
+async def updatePassword(request: Request, password: checkPassword, db: AsyncSession = Depends(get_db)):
+    #Password change grab
+    password_token = request.cookies.get("password_token")
+    access_token = request.cookies.get("access_token")
+    check = await updatePassword_service(access_token, password_token, password, db)
+    return check
