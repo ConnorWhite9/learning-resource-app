@@ -18,3 +18,7 @@ class tokenSchema(BaseModel):
 
 class checkPassword(BaseModel):
     password: str
+
+class infoUpdateSchema(BaseModel):
+    email: EmailStr
+    username: str

@@ -143,3 +143,15 @@ async def updatePassword_service(access_token, password_token, password, db: Asy
 
     await updatePassword_crud(user_id, bcrypt_context.hash(password.password), db)
     return True
+
+
+async def infoUpdate_service(access_token, newInfo, db: AsyncSession):
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Access token was invalid")
+    user_id = payload.get("id")
+
+    #crud function with new info
+    infoUpdate_crud(user_id, newInfo, db)
+
+    return True

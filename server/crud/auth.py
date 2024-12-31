@@ -135,3 +135,16 @@ async def updatePassword_crud(user_id, password, db: AsyncSession):
         await db.rollback()
         print(f"Problem in changing the password: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Password could not be changed: {str(e)}")
+    
+
+async def infoUpdate_crud(user_id, newInfo, db: AsyncSession):
+    try:
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        user.email = newInfo.email
+        user.username = newInfo.username 
+        await db.commit()
+        return True
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Info could not be updated: {str(e)}")

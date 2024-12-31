@@ -153,3 +153,10 @@ async def updatePassword(request: Request, password: checkPassword, db: AsyncSes
     access_token = request.cookies.get("access_token")
     check = await updatePassword_service(access_token, password_token, password, db)
     return check
+
+@router.post("/infoUpdate")
+@limiter.limit("1/second")
+async def infoUpdate(request: Request, newInfo: infoUpdateSchema , db: AsyncSession = Depends(get_db)):
+    access_token = request.cookies.get("access_token")
+    check = await infoUpdate_service(access_token, newInfo, db)
+    return check
