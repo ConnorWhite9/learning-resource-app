@@ -152,6 +152,6 @@ async def infoUpdate_service(access_token, newInfo, db: AsyncSession):
     user_id = payload.get("id")
 
     #crud function with new info
-    infoUpdate_crud(user_id, newInfo, db)
+    check = await infoUpdate_crud(user_id, newInfo, db)
 
-    return True
+    return check

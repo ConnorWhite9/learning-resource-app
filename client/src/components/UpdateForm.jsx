@@ -80,22 +80,22 @@ function UpdateForm() {
         setIsModalOne(false);
         setIsModalTwo(true);
     }
-    const infoUpdate = async(e) => {
-        e.preventdefault()
+    const infoUpdate = async(event) => {
+        event.preventDefault();
         try {
             const constructedUrl = `${apiUrl}/auth/infoUpdate`;
             const postData = {
                 "email": formData.email,
                 "username": formData.username
             }
-            response = await axios.post(constructedUrl, postData, {
+            const response = await axios.post(constructedUrl, postData, {
                 headers: {
                     'Content-Type': 'application/json',  // Ensure the server expects JSON
                     //'X-CSRF-Token': csrf_token,
                 },
                 withCredentials: true,  // This ensures that cookies are sent and received
             })
-            
+
         } catch(error) {
             console.error(error);
         }
