@@ -112,13 +112,17 @@ async def logout_service(token, db: Session):
         return False
     
 
-async def checkPassword_service(access_token, password, db: AsyncSession):
-    payload = decode_token(access_token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+async def checkPassword_service(refresh_token, access_token, password, response: Response, db: AsyncSession):
+    payload, checker = decode_token(refresh_token, access_token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
 
-    # Extract user info from the payload
-    user_id = payload.get("id")
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
 
     user = await grabPassword(user_id, db)
 
@@ -130,12 +134,20 @@ async def checkPassword_service(access_token, password, db: AsyncSession):
        
         return False, None
 
-async def updatePassword_service(access_token, password_token, password, db: AsyncSession):
+async def updatePassword_service(refresh_token, access_token, password_token, password, response: Response, db: AsyncSession):
     #Password token checker functionality 
-    payload = decode_token(access_token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-    payload2 = decode_token(password_token)
+    payload, checker = decode_token(refresh_token, access_token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
+
+    payload2 = verify_access(password_token)
     if not payload2:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not verified to change password")
     
@@ -145,8 +157,17 @@ async def updatePassword_service(access_token, password_token, password, db: Asy
     return True
 
 #Current info update service being used
-async def infoUpdate_service(access_token, newInfo, db: AsyncSession):
-    payload = decode_token(access_token)
+async def infoUpdate_service(refresh_token, access_token, newInfo, response: Response, db: AsyncSession):
+    payload, checker = decode_token(refresh_token, access_token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
     if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Access token was invalid")
     user_id = payload.get("id")
