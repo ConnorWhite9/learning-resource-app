@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LogOut from './pages/LogOut';
 import Quiz from './pages/Quiz';
+import Account from './pages/Account';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<LogOut />} />
           <Route path="/quiz/:course/:level" element={<Quiz />} />
+          <Route path="/account" element={<Account />} />
         </Routes>
         <Footer />
       </Router>

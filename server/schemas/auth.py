@@ -15,3 +15,10 @@ class LoginSchema(BaseModel):
 
 class tokenSchema(BaseModel):
     token: str
+
+class checkPassword(BaseModel):
+    password: str
+
+class infoUpdateSchema(BaseModel):
+    email: EmailStr
+    username: str

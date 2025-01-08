@@ -9,6 +9,14 @@ from .limiter import limiter
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_csrf_protect import CsrfProtect
+
+import os
+# importing necessary functions from dotenv library
+from dotenv import load_dotenv, dotenv_values 
+# loading variables from .env file
+load_dotenv() 
+
+
 router = APIRouter(
     prefix="/auth",
 )
@@ -114,3 +122,41 @@ def get_csrf_token(request: Request, csrf_protect: CsrfProtect = Depends()):
 
     return response
 
+
+@router.post("/checkPassword")
+@limiter.limit("1/second")
+async def passwordChecker(request: Request, password: checkPassword, db: AsyncSession = Depends(get_db)):
+    access_token = request.cookies.get("access_token")
+    boolean, password_token = await checkPassword_service(access_token, password, db)
+    if boolean: 
+        data={"message": "true"}
+        response = JSONResponse(content=data)
+        response.set_cookie(
+            key="password_token",
+            value=access_token,
+            httponly=True,  # Prevents access via JavaScript
+            secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+            samesite="None", # Controls cross-site request handling
+            path="/"
+        )
+    else:
+        data={"message": "false"}
+        response = JSONResponse(content=data)
+    #create change password cookie
+    return response
+
+@router.post("/updatePassword")
+@limiter.limit("1/second")
+async def updatePassword(request: Request, password: checkPassword, db: AsyncSession = Depends(get_db)):
+    #Password change grab
+    password_token = request.cookies.get("password_token")
+    access_token = request.cookies.get("access_token")
+    check = await updatePassword_service(access_token, password_token, password, db)
+    return check
+
+@router.post("/infoUpdate")
+@limiter.limit("1/second")
+async def infoUpdate(request: Request, newInfo: infoUpdateSchema , db: AsyncSession = Depends(get_db)):
+    access_token = request.cookies.get("access_token")
+    check = await infoUpdate_service(access_token, newInfo, db)
+    return check

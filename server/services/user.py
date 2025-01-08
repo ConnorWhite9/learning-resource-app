@@ -76,3 +76,39 @@ async def streak_service(token, db: AsyncSession):
         else:
             await setCurrentStreak(user_id, streak, db)
             return {"message": "Streak increased"}
+        
+
+async def accountInfo_service(access_token, db: AsyncSession):
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+
+    # Extract user info from the payload
+    user_id = payload.get("id")
+
+    accountInfo = await grabAccount(user_id, db)
+    newDict = {}
+    newDict["email"] = accountInfo.email
+    newDict["username"] = accountInfo.username
+    newDict["streak"] = accountInfo.streak
+
+    return newDict
+
+#not being used as of the moment
+async def updateInfo_service(access_token, info, db: AsyncSession):
+    payload = decode_token(access_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+    
+    user_id = payload.get("user_id")
+
+    accountInfo = await grabAccount(user_id, db)
+    checker = False
+    if accountInfo.email != info.email:
+        accountInfo.email = info.email
+        checker = True
+    if accountInfo.username != info.username:
+        accountInfo.username = info.username
+        check = True
+    if check:
+        db.commit()
