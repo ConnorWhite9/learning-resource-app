@@ -35,14 +35,19 @@ async def getQuiz (request: Request, course: str, level: int, db: AsyncSession=D
 
 @router.post("/grade")
 @limiter.limit("1/second")
-async def grade (request: Request, userAnswers: userAnswers, db: AsyncSession=Depends(get_db)):
+async def grade (request: Request, userAnswers: userAnswers, response: Response, db: AsyncSession=Depends(get_db)):
+    access_token = None
+    refresh_token = None
     if userAnswers.isDemo == False:
         access_token = request.cookies.get("access_token")
+        refresh_token = request.cookies.get("refresh_token")
     else:
         access_token = "No token"
-    grade = await grade_service(access_token, userAnswers, db)
+        refresh_token = "No token"
+
+    grade = await grade_service(refresh_token, access_token, userAnswers, response, db)
     if userAnswers.isDemo == False:
-        await streak_service(access_token, db)
+        await streak_service(refresh_token, access_token, response, db)
     return  {"message": "new grade added", "grade": grade}
 
 

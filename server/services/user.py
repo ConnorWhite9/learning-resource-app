@@ -58,14 +58,18 @@ async def userInfo_service(refresh_token, access_token, response: Response, db: 
     return courses, newGrades, mastery, streak
 
 
-#not currently in use
-async def streak_service(token, db: AsyncSession):
-    payload = decode_token(token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
-    # Extract user info from the payload
-    user_id = payload.get("id")
+async def streak_service(refresh_token, token, response, db: AsyncSession):
+    payload, checker = decode_token(refresh_token, token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
 
     streak = await get_last_streak(user_id, db)
     if streak is None:
@@ -103,7 +107,7 @@ async def accountInfo_service(refresh_token, access_token, response: Response, d
 
     return newDict, response
 
-#not being used as of the moment
+#not currently in use
 async def updateInfo_service(refresh_token, access_token, info, response: Response, db: AsyncSession):
     payload, checker = decode_token(refresh_token, access_token, response, db)
     user_id = None
