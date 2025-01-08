@@ -4,6 +4,7 @@ import email from '../assets/email.png';
 import password from '../assets/password.png';
 import person from '../assets/person.png';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 import axios from "axios";
 import ChangePassword from './ChangePassword';
 import UpdatePassword from './UpdatePasswordModal';
@@ -11,6 +12,7 @@ import UpdatePassword from './UpdatePasswordModal';
 
 function UpdateForm() {
     const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
+    const { isLoggedIn } = useAuth();
     const [account, setAccount] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [isModalOne, setIsModalOne] = useState(false);
@@ -52,6 +54,9 @@ function UpdateForm() {
     }
 
     useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/login");
+        }
         const fetchAccountData = async () => {
             await grabAccount();
         };
@@ -136,7 +141,7 @@ function UpdateForm() {
                     e.preventDefault(); // Prevent form submission
                     changePassword();
                     }} 
-                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] pl-[25px] text-center text-[#626262] text-[18px]">
+                    className="h-[50px] w-[20rem] border-0 outline-none bg-gray-200 rounded-[1rem] text-center text-[#626262] text-[18px]">
                         Change Password
                     </button>
                 </div>

@@ -144,7 +144,7 @@ async def updatePassword_service(access_token, password_token, password, db: Asy
     await updatePassword_crud(user_id, bcrypt_context.hash(password.password), db)
     return True
 
-
+#Current info update service being used
 async def infoUpdate_service(access_token, newInfo, db: AsyncSession):
     payload = decode_token(access_token)
     if not payload:

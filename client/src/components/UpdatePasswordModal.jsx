@@ -43,6 +43,7 @@ const UpdatePassword = ({open, onClose}) => {
             } else {
                 // oppen the error modal
                 setIsOpen(true);
+                setMessage("Could not update password. Authentication required again.")
             }
             onClose();
         } catch(error) {

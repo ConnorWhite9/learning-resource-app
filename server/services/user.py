@@ -94,7 +94,7 @@ async def accountInfo_service(access_token, db: AsyncSession):
 
     return newDict
 
-
+#not being used as of the moment
 async def updateInfo_service(access_token, info, db: AsyncSession):
     payload = decode_token(access_token)
     if not payload:
