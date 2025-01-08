@@ -36,16 +36,20 @@ async def getQuiz_service(course, level, db: AsyncSession):
 
 
 
-async def grade_service(access_token, userAnswers, db: AsyncSession):
+async def grade_service(refresh_token, access_token, userAnswers, response: Response, db: AsyncSession):
     user_id = 0
     #If not a demo user do this
     if userAnswers.isDemo == False:
-        payload = decode_token(access_token)
-        if not payload:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+        payload, checker = decode_token(refresh_token, access_token, response, db)
+        user_id = None
+        if checker: 
+            if not payload:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
 
-        # Extract user info from the payload
-        user_id = payload.get("id")
+            # Extract user info from the payload
+            user_id = payload.get("id")
+        else:
+            user_id = payload
     
     answer_key = await getAnswers(userAnswers.quiz_id, db)
     correlation = {

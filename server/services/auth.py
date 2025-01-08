@@ -93,7 +93,7 @@ async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
             raise ValueError(e)
     # Return the new tokens
     cookies = {"access_token": new_access_token, "refresh_token": new_refresh_token}
-    return cookies
+    return cookies, user_id
 
 
 

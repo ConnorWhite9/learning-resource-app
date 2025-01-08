@@ -6,13 +6,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from helpers.auth import *
 from datetime import timedelta, datetime, timezone
 
-async def userInfo_service(access_token, db: AsyncSession):
+async def userInfo_service(refresh_token, access_token, response: Response, db: AsyncSession):
     #Need to grab enrollment 
-    payload = decode_token(access_token)
-    if payload is None: 
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=access_token)
+    payload, checker = decode_token(refresh_token, access_token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
 
-    user_id = payload.get("id")
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
 
     courses = await get_courses(db)
 
@@ -53,7 +58,7 @@ async def userInfo_service(access_token, db: AsyncSession):
     return courses, newGrades, mastery, streak
 
 
-
+#not currently in use
 async def streak_service(token, db: AsyncSession):
     payload = decode_token(token)
     if not payload:
@@ -78,13 +83,17 @@ async def streak_service(token, db: AsyncSession):
             return {"message": "Streak increased"}
         
 
-async def accountInfo_service(access_token, db: AsyncSession):
-    payload = decode_token(access_token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+async def accountInfo_service(refresh_token, access_token, response: Response, db: AsyncSession):
+    payload, checker = decode_token(refresh_token, access_token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
 
-    # Extract user info from the payload
-    user_id = payload.get("id")
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
 
     accountInfo = await grabAccount(user_id, db)
     newDict = {}
@@ -92,15 +101,20 @@ async def accountInfo_service(access_token, db: AsyncSession):
     newDict["username"] = accountInfo.username
     newDict["streak"] = accountInfo.streak
 
-    return newDict
+    return newDict, response
 
 #not being used as of the moment
-async def updateInfo_service(access_token, info, db: AsyncSession):
-    payload = decode_token(access_token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
-    
-    user_id = payload.get("user_id")
+async def updateInfo_service(refresh_token, access_token, info, response: Response, db: AsyncSession):
+    payload, checker = decode_token(refresh_token, access_token, response, db)
+    user_id = None
+    if checker: 
+        if not payload:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token")
+
+        # Extract user info from the payload
+        user_id = payload.get("id")
+    else:
+        user_id = payload
 
     accountInfo = await grabAccount(user_id, db)
     checker = False
@@ -112,3 +126,4 @@ async def updateInfo_service(access_token, info, db: AsyncSession):
         check = True
     if check:
         db.commit()
+    return 

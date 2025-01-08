@@ -7,9 +7,11 @@ from typing import Annotated
 from routers.dependencies import csrf_protect
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from db.database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
 from crud.user import *
 from fastapi import APIRouter, HTTPException, Request, Response, Cookie, FastAPI, Depends, Header, status
 from fastapi_csrf_protect import CsrfProtect
+from services.auth import *
 import os
 # importing necessary functions from dotenv library
 from dotenv import load_dotenv, dotenv_values 
@@ -59,12 +61,35 @@ def verify_token(token: str, credentials_exception):
     
 
 
-def decode_token(token: str):
+async def decode_token(refresh_token, token: str, response: Response, db: AsyncSession):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
+        return payload, True
+    
+
     except JWTError as e:
-        raise ValueError(e)
+        tokens, user_id = await refresh_token_service(refresh_token, token, db)
+        
+        response.set_cookie(
+            key="access_token",
+            value=tokens["access_token"],
+            httponly=True,  # Prevents access via JavaScript
+            secure=True,    # Ensure the cookie is sent only over HTTPS (production)
+            samesite="None", # Controls cross-site request handling
+            path="/",
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=tokens["refresh_token"],
+            httponly=True,  # Prevents access via JavaScript
+            secure=True, # Ensure the cookie is sent only over HTTPS (production)
+            samesite="None", # Controls cross-site request handling
+            path="/",
+        )
+         
+        return user_id, False
+
+        
     
 def verify_access(token: str):
     try:
