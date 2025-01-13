@@ -8,7 +8,7 @@ from datetime import timedelta, datetime, timezone
 
 async def userInfo_service(refresh_token, access_token, response: Response, db: AsyncSession):
     #Need to grab enrollment 
-    payload, checker = decode_token(refresh_token, access_token, response, db)
+    payload, checker = await decode_token(refresh_token, access_token, response, db)
     user_id = None
     if checker: 
         if not payload:
@@ -60,7 +60,7 @@ async def userInfo_service(refresh_token, access_token, response: Response, db: 
 
 
 async def streak_service(refresh_token, token, response, db: AsyncSession):
-    payload, checker = decode_token(refresh_token, token, response, db)
+    payload, checker = await decode_token(refresh_token, token, response, db)
     user_id = None
     if checker: 
         if not payload:
@@ -88,7 +88,7 @@ async def streak_service(refresh_token, token, response, db: AsyncSession):
         
 
 async def accountInfo_service(refresh_token, access_token, response: Response, db: AsyncSession):
-    payload, checker = decode_token(refresh_token, access_token, response, db)
+    payload, checker = await decode_token(refresh_token, access_token, response, db)
     user_id = None
     if checker: 
         if not payload:
@@ -109,7 +109,7 @@ async def accountInfo_service(refresh_token, access_token, response: Response, d
 
 #not currently in use
 async def updateInfo_service(refresh_token, access_token, info, response: Response, db: AsyncSession):
-    payload, checker = decode_token(refresh_token, access_token, response, db)
+    payload, checker = await decode_token(refresh_token, access_token, response, db)
     user_id = None
     if checker: 
         if not payload:

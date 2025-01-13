@@ -1,6 +1,7 @@
 from jose import jwt, JWTError
 from db.database import get_db
-from datetime import timedelta, datetime, timezone
+from datetime import datetime, timezone
+from datetime import timedelta as extra
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from typing import Annotated
@@ -25,11 +26,17 @@ REFRESH_TOKEN_EXPIRY = os.getenv("REFRESH_TOKEN_EXPIRY")
 ACCESS_TOKEN_EXPIRY = os.getenv("ACCESS_TOKEN_EXPIRY")
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta = timedelta(minutes=15)):
-    encode = {'sub': username, 'id': user_id}
-    expires = datetime.now(timezone.utc) + expires_delta
-    encode.update({'exp': expires})
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+def create_access_token(username: str, user_id: int):
+    try:
+        expires_delta = extra(minutes=int(ACCESS_TOKEN_EXPIRY))    
+        encode = {'sub': username, 'id': user_id}
+        expires = expires_delta + datetime.now(timezone.utc) 
+   
+        encode.update({'exp': expires})
+        return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+    except Exception as e:
+        print(e)
+        print("This was inside the create access toekn function")
 
 
 def decode_access_token(token):
@@ -45,8 +52,8 @@ def decode_access_token(token):
         raise ValueError
     
 
-def create_refresh_token(username: str, user_id: int, expires_delta: timedelta = None):
-    expire = datetime.now() + timedelta(days=int(REFRESH_TOKEN_EXPIRY))
+def create_refresh_token(username: str, user_id: int):
+    expire = datetime.now() + extra(days=int(REFRESH_TOKEN_EXPIRY))
     encode = {"sub": username, 'id': user_id}
     encode.update({'exp': expire})
 
@@ -104,7 +111,6 @@ def verify_access(token: str):
 
 async def validate_csrf(request: Request, csrf_protect: CsrfProtect = Depends()):
     csrf_token = request.headers.get("X-CSRF-Token")
-
     if not csrf_token:
         # If the token is missing, raise an exception
         raise HTTPException(
@@ -113,7 +119,7 @@ async def validate_csrf(request: Request, csrf_protect: CsrfProtect = Depends())
         )
     try:
 
-        csrf_protect.validate_csrf(request.headers.get("X-CSRF-Token"))
+        csrf_protect.validate_csrf(csrf_token)
         return {"message": "Form submitted successfully"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid CSRF token {str(e)}")

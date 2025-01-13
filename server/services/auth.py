@@ -58,7 +58,7 @@ async def login_service(email, password, db: Session):
 
 async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
     # Verify the refresh token
-    payload2 = decode_token(refresh_token)
+    payload2 =  await decode_token(refresh_token)
     if not payload2:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
@@ -113,7 +113,7 @@ async def logout_service(token, db: Session):
     
 
 async def checkPassword_service(refresh_token, access_token, password, response: Response, db: AsyncSession):
-    payload, checker = decode_token(refresh_token, access_token, response, db)
+    payload, checker = await decode_token(refresh_token, access_token, response, db)
     user_id = None
     if checker: 
         if not payload:
@@ -136,7 +136,7 @@ async def checkPassword_service(refresh_token, access_token, password, response:
 
 async def updatePassword_service(refresh_token, access_token, password_token, password, response: Response, db: AsyncSession):
     #Password token checker functionality 
-    payload, checker = decode_token(refresh_token, access_token, response, db)
+    payload, checker = await decode_token(refresh_token, access_token, response, db)
     user_id = None
     if checker: 
         if not payload:
@@ -158,7 +158,7 @@ async def updatePassword_service(refresh_token, access_token, password_token, pa
 
 #Current info update service being used
 async def infoUpdate_service(refresh_token, access_token, newInfo, response: Response, db: AsyncSession):
-    payload, checker = decode_token(refresh_token, access_token, response, db)
+    payload, checker = await decode_token(refresh_token, access_token, response, db)
     user_id = None
     if checker: 
         if not payload:

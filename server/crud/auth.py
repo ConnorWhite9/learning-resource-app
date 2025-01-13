@@ -59,6 +59,7 @@ async def authenticate_user(db: AsyncSession, email: str, password: str):
         user = result.scalar()
         if not user:
             return False, "There is no user with this email."
+        print("before bcrypt")
         if not bcrypt_context.verify(password, user.password):
             return False, "Incorrect password."
         return user, "Correctly grabbed everything"

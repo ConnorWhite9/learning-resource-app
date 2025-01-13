@@ -40,7 +40,7 @@ async def grade_service(refresh_token, access_token, userAnswers, response: Resp
     user_id = 0
     #If not a demo user do this
     if userAnswers.isDemo == False:
-        payload, checker = decode_token(refresh_token, access_token, response, db)
+        payload, checker = await decode_token(refresh_token, access_token, response, db)
         user_id = None
         if checker: 
             if not payload:
