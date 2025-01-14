@@ -43,10 +43,12 @@ function UpdateForm() {
                 },
                 withCredentials: true,  // This ensures that cookies are sent and received
             })
+          
             setFormData({
-                email: response.data.email,
-                username: response.data.username
+                email: response.data[0].email,
+                username: response.data[0].username
             });
+
             
         } catch(error) {
             console.error("There was an issue: ", error);

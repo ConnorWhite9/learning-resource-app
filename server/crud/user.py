@@ -50,7 +50,7 @@ async def get_last_streak(user_id, db: AsyncSession):
 
 async def setCurrentStreak(user_id, streak, db: AsyncSession):
     try: 
-        streak.lastActivity = datetime.now(timezone.utc)
+        streak.lastActivity = datetime.now()
         streak.current += 1
         if streak.current > streak.longest:
             streak.longest = streak.current
@@ -61,7 +61,7 @@ async def setCurrentStreak(user_id, streak, db: AsyncSession):
     
 async def resetStreak(user_id, streak, db: AsyncSession):
     try: 
-        streak.lastActivity = datetime.now(timezone.utc)
+        streak.lastActivity = datetime.now()
         streak.current = 1
         await db.commit()
         
