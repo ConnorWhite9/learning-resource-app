@@ -136,8 +136,14 @@ function Lessons() {
     setUserInfo(response.data);
     } catch (error){
       console.error("Error:", error)
+      if (response.status === 401) {
+        console.log('Unauthorized access - 401');
+        navigate("/login");
+        // Handle unauthorized access, such as redirecting to login or showing an error message
+      }
       setIsOpen(true);
       setError("There was an issue grabbing your account information. Reload the page and make sure you are logged in.");
+
     }
   }
   
@@ -160,6 +166,7 @@ function Lessons() {
       console.error("Error:", error)
       setIsOpen(true);
       setError("There was an issue grabbing the quizzes.");
+      
     }
   }
 
@@ -171,7 +178,6 @@ function Lessons() {
       if (!isRefreshing) {
         const checker = checkDemo();
         if (checker === false) {
-          await loginCheck();  
           await grabInfo();  
         } else {
           const demoUser = JSON.parse(localStorage.getItem('demoUser'));

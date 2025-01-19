@@ -42,36 +42,7 @@ function setQuestion(props){
         }
     }
     
-    const loginCheck = async () => {
-        const constructedUrl = `${apiUrl}/auth/get_csrf_token`;  
-        const response = await axios.get(constructedUrl, {
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          withCredentials: true  // Important to include cookies
-        });
-      
-        // Log the response to check if the token is retrieved
-        const csrf_token = response.data.csrf_token
-        
-        // Retrieve the CSRF token from the cookie
-        
-        try {
-          const constructedUrl = `${apiUrl}/auth/get_csrf_token`;  
-          const response = await axios.post(constructedUrl, {},
-          {
-            headers: {
-                'Content-Type': 'application/json',  // Ensure the server expects JSON
-                'X-CSRF-Token': csrf_token,
-            },
-            withCredentials: true  // This ensures that cookies are sent and received
-          })
-        } catch(error) {
-            console.error("Error:", error)
-            
-            navigate("/login");
-          }
-    }
+
 
 
 
@@ -122,9 +93,6 @@ function setQuestion(props){
     
     const submit = async () => {
         const checker = checkDemo();
-        if (checker === false) {
-            await loginCheck();
-        }
         
         const postData = {
             "quiz_id": quiz_id,

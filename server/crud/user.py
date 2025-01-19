@@ -42,7 +42,6 @@ async def get_last_streak(user_id, db: AsyncSession):
     try: 
         raw = await db.execute(select(Streak).where(Streak.user_id==user_id) )
         streak = raw.scalar_one_or_none()
-        
             
         return streak
     except SQLAlchemyError as e:
@@ -51,7 +50,7 @@ async def get_last_streak(user_id, db: AsyncSession):
 
 async def setCurrentStreak(user_id, streak, db: AsyncSession):
     try: 
-        streak.lastActivity = datetime.now(timezone.utc)
+        streak.lastActivity = datetime.now()
         streak.current += 1
         if streak.current > streak.longest:
             streak.longest = streak.current
@@ -62,7 +61,7 @@ async def setCurrentStreak(user_id, streak, db: AsyncSession):
     
 async def resetStreak(user_id, streak, db: AsyncSession):
     try: 
-        streak.lastActivity = datetime.now(timezone.utc)
+        streak.lastActivity = datetime.now()
         streak.current = 1
         await db.commit()
         
@@ -72,7 +71,7 @@ async def resetStreak(user_id, streak, db: AsyncSession):
 
 async def addStreak(user_id, db: AsyncSession):
     try:
-        newStreak = Streak(user_id=user_id, current=1, lastActivity=datetime.now(timezone.utc), longest=0)
+        newStreak = Streak(user_id=user_id, current=1, lastActivity=datetime.now(), longest=0)
         db.add(newStreak)
         await db.commit()
     except SQLAlchemyError as e:

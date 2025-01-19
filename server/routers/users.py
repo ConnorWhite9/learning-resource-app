@@ -24,20 +24,21 @@ def get_user(request: Request, id: int):
 
 @router.get("/userInfo")
 @limiter.limit("10/second")
-async def userInfo(request: Request, db: AsyncSession=Depends(get_db)):
+async def userInfo(request: Request, response: Response, db: AsyncSession=Depends(get_db)):
     access_token = request.cookies.get("access_token")
+    refresh_token = request.cookies.get("refresh_token")
     #Reformat function so it grabs user_id from cookies will need to change function parameters and decode the token in teh userInfo service.
-    enroll_list, grades, mastery, streak = await userInfo_service(access_token ,db)
+    enroll_list, grades, mastery, streak = await userInfo_service(refresh_token, access_token, response, db)
 
     return {"enrollment": enroll_list, "grades": grades, "mastery": mastery, "streak": streak}
 
 
 @router.get("/accountInfo")
 @limiter.limit("2/second")
-async def accountInfo(request: Request, db: AsyncSession=Depends(get_db)):
+async def accountInfo(request: Request, response: Response, db: AsyncSession=Depends(get_db)):
     access_token = request.cookies.get("access_token")
-    print(access_token)
-    accountInfo = await accountInfo_service(access_token, db)
+    refresh_token = request.cookies.get("refresh_token")
+    accountInfo = await accountInfo_service(refresh_token, access_token, response, db)
 
 
     return accountInfo
@@ -45,7 +46,10 @@ async def accountInfo(request: Request, db: AsyncSession=Depends(get_db)):
 
 @router.post("/updateInfo")
 @limiter.limit("1/second")
-async def updateInfo(request: Request, info: updateInfo, db: AsyncSession=Depends(get_db)):
+async def updateInfo(request: Request, info: updateInfo, response: Response, db: AsyncSession=Depends(get_db)):
+    refresh_token = request.cookies.get("refresh_token")
     access_token = request.cookies.get("access_token") 
 
-    await updateInfo_service(access_token, info, db)
+    await updateInfo_service(refresh_token, access_token, info, response, db)
+
+    return True

@@ -125,9 +125,10 @@ def get_csrf_token(request: Request, csrf_protect: CsrfProtect = Depends()):
 
 @router.post("/checkPassword")
 @limiter.limit("1/second")
-async def passwordChecker(request: Request, password: checkPassword, db: AsyncSession = Depends(get_db)):
+async def passwordChecker(request: Request, password: checkPassword, response: Response, db: AsyncSession = Depends(get_db)):
     access_token = request.cookies.get("access_token")
-    boolean, password_token = await checkPassword_service(access_token, password, db)
+    refresh_token = request.cookies.get("refresh_token")
+    boolean, password_token = await checkPassword_service(refresh_token, access_token, password, response, db)
     if boolean: 
         data={"message": "true"}
         response = JSONResponse(content=data)
@@ -147,16 +148,18 @@ async def passwordChecker(request: Request, password: checkPassword, db: AsyncSe
 
 @router.post("/updatePassword")
 @limiter.limit("1/second")
-async def updatePassword(request: Request, password: checkPassword, db: AsyncSession = Depends(get_db)):
+async def updatePassword(request: Request, password: checkPassword, response: Response, db: AsyncSession = Depends(get_db)):
     #Password change grab
     password_token = request.cookies.get("password_token")
+    refresh_token = request.cookies.get("refresh_token")
     access_token = request.cookies.get("access_token")
-    check = await updatePassword_service(access_token, password_token, password, db)
+    check = await updatePassword_service(refresh_token, access_token, password_token, password, response, db)
     return check
 
 @router.post("/infoUpdate")
 @limiter.limit("1/second")
-async def infoUpdate(request: Request, newInfo: infoUpdateSchema , db: AsyncSession = Depends(get_db)):
+async def infoUpdate(request: Request, newInfo: infoUpdateSchema , response: Response, db: AsyncSession = Depends(get_db)):
+    refresh_token = request.cookies.get("refresh_token")
     access_token = request.cookies.get("access_token")
-    check = await infoUpdate_service(access_token, newInfo, db)
+    check = await infoUpdate_service(refresh_token, access_token, newInfo, response, db)
     return check

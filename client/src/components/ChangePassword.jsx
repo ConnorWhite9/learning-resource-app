@@ -28,7 +28,6 @@ const ChangePassword = ({open, onClose, openNew}) => {
             const postData = {
                 "password": formData.password
             }
-            console.log(postData);
             const response = await axios.post(constructedUrl, postData,
             {
                 headers: {
@@ -42,12 +41,12 @@ const ChangePassword = ({open, onClose, openNew}) => {
             if (response.data.message == "true") {
                 //set updatePassword modal to true
                 openNew();
-                console.log("did check properly");
+               
             } else {
                 // oppen the error modal
-                console.log("did not check properly")
+                
                 setIsOpen(true);
-                setMessage("Incorrect Password");
+                setMessage("Incorrect Password!");
             }
         } catch(error) {
             console.error(error);
