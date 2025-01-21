@@ -12,6 +12,7 @@ function Video({ link }) {
         allowFullScreen
         title="YouTube video player"
       ></iframe>
+      <h6>This video was not created in any way by me. It is solely used to help users find good quality free coding education.</h6>
     </div>
   );
 }
