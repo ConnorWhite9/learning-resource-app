@@ -13,7 +13,7 @@ function NewVideo({ link }) {
                 allowFullScreen
                 title="YouTube video player"
             ></iframe>
-            <h6 className="text-[7px] text-white text-center">This video was not created in any way by the creators of this website. It is solely used to help users find good quality free coding education.</h6>
+            <h6 className="text-[30%] text-white text-center">This video was not created in any way by the creators of this website. It is solely used to help users find good quality free coding education.</h6>
         </div>
     
     
