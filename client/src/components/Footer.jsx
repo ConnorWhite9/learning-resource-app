@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 function Footer() {
   return (
@@ -8,7 +9,7 @@ function Footer() {
           <h4 className="text-[16px] font-bold italic mb-2">Company</h4>
           <ul className="flex flex-col text-[0.8rem]">
             <li className="mb-2">
-              <a href="#">About Us</a>
+              <Link to="/credits">Credits</Link>
             </li>
             <li className="mb-2">
               <a href="#">Copyright</a>
