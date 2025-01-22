@@ -138,7 +138,7 @@ function Lessons() {
         console.log(error);
         navigate("/login");
         // Handle unauthorized access, such as redirecting to login or showing an error message
-      }
+      
       setIsOpen(true);
       setError("There was an issue grabbing your account information. Reload the page and make sure you are logged in.");
 
