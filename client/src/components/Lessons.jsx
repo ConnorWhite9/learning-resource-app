@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
 import { useAuth } from '../context/AuthContext';
+import NewLesson from './NewLesson';
 //import Circle from "./Circle";
 
 const htmlQuizzes = [
@@ -191,6 +192,17 @@ function Lessons() {
             color="#A6DBFF"
             video={pythonVideo}
             userInfo={userInfo}
+          />
+
+          <NewLesson
+            language="CSS"
+            quizzes={testQuizzes["CSS"]}
+            documentation={cssDocumentation}
+            title="Introduction to CSS"
+            color="#FFA76C"
+            video={cssVideo}
+            userInfo={userInfo}
+          
           />
           <ErrorModal open={isOpen} message={error} onClose={closeModal} />
         </div>
