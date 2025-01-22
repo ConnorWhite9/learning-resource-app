@@ -73,53 +73,12 @@ function Lessons() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { checkDemo } = useAuth();
-  
-
 
   const closeModal = () => {
     setIsOpen(false);
   };
 
   const navigate = useNavigate();
-
-  const loginCheck = async () => {
-         
-    const constructedUrl = `${apiUrl}/auth/get_csrf_token`;
-    const response = await axios.get(constructedUrl, {
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      withCredentials: true,  // Important to include cookies
-    });
-    
-    //console.log(response.status);
-    //console.log(response.data);
-  
-    // Log the response to check if the token is retrieved
-    const csrf_token = response.data.csrf_token;
-    
-    // Retrieve the CSRF token from the cookie
-    
-    try {
-      const constructedUrl = `${apiUrl}/auth/refresh`;
-      const response = await axios.post(constructedUrl, {},
-      {
-        headers: {
-            'Content-Type': 'application/json',  // Ensure the server expects JSON
-            'X-CSRF-Token': csrf_token,
-        },
-        withCredentials: true,  // This ensures that cookies are sent and received
-      })
-      
-      if (response.status !== 200) {
-        navigate("/login");
-      }
-      
-    } catch(error) {
-        console.error("Error:", error)
-        navigate("/login");
-      }
-}
 
 
   const grabInfo = async () => {
