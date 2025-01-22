@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import LogOut from './pages/LogOut';
 import Quiz from './pages/Quiz';
 import Account from './pages/Account';
+import Credits from './pages/Credits'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/logout" element={<LogOut />} />
           <Route path="/quiz/:course/:level" element={<Quiz />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/credits" element={<Credits/>} />
         </Routes>
         <Footer />
       </Router>

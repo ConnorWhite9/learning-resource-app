@@ -22,9 +22,9 @@ function CourseHead({ language, title, color, video, userInfo }) {
     return (<>
         <div className="flex flex-column border-b border-blue-500">
             <div>
-                <p className="py-6 px-5 text-white text-[150%] font-semibold">{title}</p>
+                <p className="py-6 px-5 text-white text-[150%] font-custom font-semibold">{title}</p>
             </div>
-            <div className="flex flex-row py-3 text-white ml-[auto] mr-[2%] gap-5">
+            <div className="flex flex-row py-3 text-white ml-[auto] font-custom mr-[2%] gap-5">
                 <div className="flex flex-col py-2 max-[730px]:py-5 ">
                     <h2 className="font-semibold">Mastery:   {masteryNumber}% </h2>  
                     <ProgressBar progress={masteryNumber} />

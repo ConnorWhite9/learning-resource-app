@@ -30,9 +30,9 @@ function Lesson({ language, quizzes, documentation, title, color, video, userInf
         <div className="flex flex-row border border-blue-500 w-[75%] mx-auto mt-[4rem]">
           <div id="header" className="border-b border-blue-500 w-[100%]">
             <CourseHead userInfo={userInfo} language={language} title={title}/>
-            <div id="body" className="flex flex-row max-[730px]:flex-col ">
-                <Quizzes language={language} quizzes={quizzes} userInfo={userInfo}/>
-                <div id="other" className="w-[100%] h-[100%] border-l border-blue-500">
+            <div id="body" className="flex flex-row max-[730px]:flex-col">
+                <Quizzes className="h-[100%]" language={language} quizzes={quizzes} userInfo={userInfo}/>
+                <div id="other" className=" w-[100%] h-[100%] border-l border-blue-500">
                     <Video link={video} className=""/>
                     <Documentation links={documentation} />
                 </div>

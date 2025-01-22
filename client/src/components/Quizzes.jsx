@@ -5,7 +5,7 @@ function Quizzes({ language, quizzes, userInfo }) {
   const apiUrl = import.meta.env.VITE_BACKEND_API;
   
   return (
-    <div id="quizzes" className="w-[40%] h-full max-[730px]:w-[100%] max-[730px]:border-b max-[730px]:border-blue-500">
+    <div id="quizzes" className="w-[40%] h-full max-[730px]:w-[100%] max-[730px]:border-b max-[730px]:border-blue-500 font-custom">
       <h2 className="font-semibold text-2xl ml-4 my-4 text-white max-[730px]:text-center">Quizzes</h2>
       <ul className="list-none p-0">
         {Object.keys(quizzes).map((key, index) => (
