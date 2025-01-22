@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from crud.user import *
 from fastapi import APIRouter, HTTPException, Request, Response, Cookie, FastAPI, Depends, Header, status
 from fastapi_csrf_protect import CsrfProtect
-from services.auth import *
 import os
 # importing necessary functions from dotenv library
 from dotenv import load_dotenv, dotenv_values 
@@ -75,6 +74,7 @@ async def decode_token(refresh_token, token: str, response: Response, db: AsyncS
     
 
     except JWTError as e:
+        from services.auth import refresh_token_service
         tokens, user_id = await refresh_token_service(refresh_token, token, db)
         
         response.set_cookie(
@@ -96,7 +96,15 @@ async def decode_token(refresh_token, token: str, response: Response, db: AsyncS
          
         return user_id, False
 
-        
+def decode_refresh_token(refresh_token):
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh Token could not be verified"
+        )
     
 def verify_access(token: str):
     try:

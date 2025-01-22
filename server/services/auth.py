@@ -58,7 +58,7 @@ async def login_service(email, password, db: Session):
 
 async def refresh_token_service(refresh_token, access_token, db: AsyncSession):
     # Verify the refresh token
-    payload2 =  await decode_token(refresh_token)
+    payload2 = decode_refresh_token(refresh_token)
     if not payload2:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
