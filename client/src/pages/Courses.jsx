@@ -7,8 +7,6 @@ import axios from 'axios';  // Import axios
 
 function Courses() {
 
-  const navigate = useNavigate();
-
   
 
 

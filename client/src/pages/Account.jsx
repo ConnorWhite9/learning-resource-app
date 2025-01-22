@@ -6,7 +6,6 @@ function Account () {
     return (<>
         <UpdateForm />
     
-    
     </>);
 }
 

@@ -126,6 +126,7 @@ function Lessons() {
 
     try {
       const constructedUrl = `${apiUrl}/user/userInfo`;
+      console.log(constructedUrl);
       const response = await axios.get(constructedUrl, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
@@ -152,6 +153,7 @@ function Lessons() {
 
     try {
       const constructedUrl = `${apiUrl}/course/getAllQuiz`;
+      console.log("Constructed Url", constructedUrl);
       const response = await axios.get(constructedUrl, {
         headers: {
             'Content-Type': 'application/json'  // Ensure the server expects JSON
