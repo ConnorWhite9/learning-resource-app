@@ -135,9 +135,7 @@ function Lessons() {
     });
     setUserInfo(response.data);
     } catch (error){
-      console.error("Error:", error)
-      if (response.status === 401) {
-        console.log('Unauthorized access - 401');
+        console.log(error);
         navigate("/login");
         // Handle unauthorized access, such as redirecting to login or showing an error message
       }
