@@ -27,7 +27,7 @@ function CourseHead({ language, title, color, video, userInfo }) {
             </div>
             <div className="flex flex-row py-3 text-white ml-[auto] font-custom mr-[2%] gap-2">
                 <div className="flex flex-col py-2 max-[730px]:py-5 border-r border-white px-4">
-                    <h2 className="font-semibold">Mastery:   {masteryNumber}% </h2>  
+                    <h2 className="font-semibold ">Mastery:   {masteryNumber}% </h2>  
                     <ProgressBar progress={masteryNumber} />
                 </div>
                 <Streak streak={streak}/>
