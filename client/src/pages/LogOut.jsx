@@ -2,6 +2,7 @@ import react, {useState, useEffect} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import Circle from "../components/Circle";
 
 function LogOut() {
     const apiUrl = import.meta.env.VITE_BACKEND_API.replace(/^"|"$/g, "").trim();
@@ -43,7 +44,11 @@ function LogOut() {
             setIsRefreshed(false);
         };
     }, [isRefreshed]); 
-    
+    return (
+        <>
+            <Circle />
+        </>
+    );
 }
 
 export default LogOut;
