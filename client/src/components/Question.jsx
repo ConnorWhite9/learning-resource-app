@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
 import { useAuth } from '../context/AuthContext';
+import Circle from './Circle';
 
 function setQuestion(props){
 
@@ -12,6 +13,7 @@ function setQuestion(props){
     const [isError, setIsError] = useState(null);  // Error state
     const [isOpen, setIsOpen]  = useState(false);
     const [isFinished, setIsFinished] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const { checkDemo } = useAuth();
     const closeModal = () => {
         setIsOpen(false);
@@ -110,7 +112,7 @@ function setQuestion(props){
                 withCredentials: true  // This ensures that cookies are sent and received
             })
             console.log(response.data);
-
+            setIsSubmitted(true);
             
             if (checker) {
                 const info = response.data["grade"]
@@ -163,11 +165,10 @@ function setQuestion(props){
     
       }, []); 
 
-    if (loading) {
-        return <p>Loading ... </p>
+    if (loading || isSubmitted) {
+        return <Circle />
     }
 
-    console.log("Questions: " + questions);
     return (
         <>
             <div className="ml-auto mr-auto mt-[10rem] bg-[white] w-[30rem] h-[35rem] p-[3rem]  flex-column rounded-[10%]">

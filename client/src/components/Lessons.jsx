@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "./ErrorModal";
 import { useAuth } from '../context/AuthContext';
+import Circle from "./Circle"
 //import Circle from "./Circle";
 
 const htmlQuizzes = [
@@ -159,7 +160,7 @@ function Lessons() {
   }, []); 
 
     if (loading) {
-      return  <p>Loading ... </p> 
+      return <Circle  /> 
       {/*<Circle />*/}
     }
     else {

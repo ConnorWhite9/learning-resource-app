@@ -1,9 +1,10 @@
 import React from "react";
-import {CircularProgress} from '@mui/joy';
+import '../index.css'
 
 function Circle() {
     return (
-        <CircularProgress/>
+        <div id="spinner" className="spinner mx-auto my-[15%]"
+        ></div>
     );
 }
 
