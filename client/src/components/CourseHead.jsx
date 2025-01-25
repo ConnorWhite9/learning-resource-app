@@ -13,19 +13,20 @@ function CourseHead({ language, title, color, video, userInfo }) {
           setMasteryNumber(userInfo?.mastery?.[language] || 0); // Default to 0 if the language key doesn't exist
         }
      
-        if (userInfo?.streak  === null) {
+        if (userInfo?.streak === undefined) {
           setStreak(0);
         } else {
           setStreak(userInfo?.streak?.current);
         }
+        console.log("Streak", streak);
       }, [userInfo, language]); // Run effect whenever userInfo or language changes
     return (<>
         <div className="flex flex-column border-b border-blue-500">
             <div>
                 <p className="py-6 px-5 text-white text-[150%] font-custom font-semibold">{title}</p>
             </div>
-            <div className="flex flex-row py-3 text-white ml-[auto] font-custom mr-[2%] gap-5">
-                <div className="flex flex-col py-2 max-[730px]:py-5 ">
+            <div className="flex flex-row py-3 text-white ml-[auto] font-custom mr-[2%] gap-2">
+                <div className="flex flex-col py-2 max-[730px]:py-5 border-r border-white px-4">
                     <h2 className="font-semibold">Mastery:   {masteryNumber}% </h2>  
                     <ProgressBar progress={masteryNumber} />
                 </div>
