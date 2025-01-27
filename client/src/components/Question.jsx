@@ -196,7 +196,8 @@ function setQuestion(props){
                     ))}
                 </ul>
                 <div className="flex-row mt-[4rem]">
-                    {index!=0 && <button className="" onClick={prev}>Previous</button>}
+                    {index!=1 && <button className="" onClick={prev}>Previous</button>}
+                    {index==1 && <button className="invisible">Previous</button>}
                     {index<10 && <button className="ml-[18rem] " onClick={resetChoice}>Next</button>}
                     {index==10 && <button className="ml-[16rem]" onClick={submit}>Submit</button>}
                 
