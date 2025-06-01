@@ -50,7 +50,7 @@ function RegisterForm() {
             
             console.log(error);
             setIsOpen(true);
-            setIsError("It appears there is already an account with this username or password");
+            setIsError("It appears there may already be an account with this email");
             return;
         }
         
